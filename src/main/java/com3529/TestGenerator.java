@@ -15,6 +15,11 @@ public class TestGenerator
         CompilationUnit cu = sourceRoot.parse("", classToTest);
 
         ClassDecomposition decomposition = new ClassDecomposition(cu);
+
+        decomposition.getBranches().forEach(branch -> {
+            new TruthTable(decomposition.getVariableTypes(), branch);
+        });
+
         System.out.println(decomposition.getBranches());
     }
 }
