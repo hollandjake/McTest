@@ -46,11 +46,6 @@ public class ClassDecomposition
 
         cu.accept(new VoidVisitorAdapter<Void>() {
             @Override
-            public void visit(MethodDeclaration n, Void arg) {
-                n.getParameters().forEach(parameter -> variableTypes.put(parameter.getName(), parameter.getType()));
-            }
-
-            @Override
             public void visit(BinaryExpr n, Void arg)
             {
                 branches.add(n);

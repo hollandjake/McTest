@@ -8,6 +8,7 @@ public class TestGenerator
 {
     private TestGenerator() {}
 
+
     public static void of(String classToTest) {
         SourceRoot sourceRoot = new SourceRoot(CodeGenerationUtils.mavenModuleRoot(TestGenerator.class).resolve("src/main/resources"));
 
@@ -16,10 +17,19 @@ public class TestGenerator
 
         ClassDecomposition decomposition = new ClassDecomposition(cu);
 
+
         decomposition.getBranches().forEach(branch -> {
-            new TruthTable(decomposition.getVariableTypes(), branch);
+            System.out.println(branch);
+            //(side1 > side2)
+            // a>b  T
+            // a<=b F
+
+
+
+            //new TruthTable(decomposition.getVariableTypes(), branch);
+
         });
 
-        System.out.println(decomposition.getBranches());
+        //System.out.println(decomposition.getBranches());*/
     }
 }

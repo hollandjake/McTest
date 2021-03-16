@@ -11,6 +11,10 @@ public class Triangle {
 
     public static Type classify(int side1, int side2, int side3) {
         Type type;
+        // a || (b && c) && c || a
+        if (side1 || side2 && side3 && side3 || side1) {
+            //wow
+        }
 
         if (side1 > side2) {
             int temp = side1;
