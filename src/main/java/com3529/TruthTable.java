@@ -19,10 +19,8 @@ public class TruthTable
 
     private final int numberOfConditions;
 
-    public static TruthTable from(BinaryExpr expression)
+    public static TruthTable from(String expressionString)
     {
-
-        String expressionString = expression.toString();
 
         final Matcher matcher = TruthTable.GET_OPERATORS.matcher(expressionString);
 
