@@ -35,6 +35,7 @@ public class ClassDecomposition
             {
                 returnType[0] = n.getType();
                 n.getParameters().forEach(parameter -> variableTypes.put(parameter.getName(), parameter.getType()));
+                super.visit(n, arg);
             }
 
             @Override
