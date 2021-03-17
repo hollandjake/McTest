@@ -5,16 +5,20 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.Type;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import javax.script.ScriptException;
+
 import java.util.Map;
 
-public class TruthTableTest {
+public class TruthTableTest
+{
     @Test
-    public void AlessthanB() throws ScriptException {
-
+    public void AlessthanB()
+    {
         // a || (b && c) && c || a
         Expression a = new NameExpr("a");
         Expression b = new NameExpr("b");
@@ -32,8 +36,6 @@ public class TruthTableTest {
         BinaryExpr finalExpression1 = new BinaryExpr(finalExpression, expressionC, and);
         BinaryExpr finalExpression2 = new BinaryExpr(finalExpression1, expressionA, or);
 
-
-        Map<SimpleName, Type> emptyMap = null;
         TruthTable truthTable = TruthTable.from(andExpression);
     }
 }

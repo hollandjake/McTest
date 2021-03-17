@@ -2,15 +2,16 @@ package uk.ac.shef.com3529.lectures;
 
 public class Triangle {
 
-    public enum Type {
+    public enum Borg
+    {
         INVALID,
         SCALENE,
         EQUILATERAL,
         ISOSCELES;
     }
 
-    public static Type classify(int side1, int side2, int side3) {
-        Type type;
+    public static Borg classify(int side1, int side2, int side3) {
+        Borg borg;
         // a || (b && c) && c || a
         if (side1 || side2 && side3 && side3 || side1) {
             //wow
@@ -33,19 +34,19 @@ public class Triangle {
         }
 
         if (side1 + side2 <= side3) {
-            type = Type.INVALID;
+            borg = Type.INVALID;
         } else {
-            type = Type.SCALENE;
+            borg = Type.SCALENE;
             if (side1 == side2) {
                 if (side2 == side3) {
-                    type = Type.EQUILATERAL;
+                    borg = Type.EQUILATERAL;
                 }
             } else {
                 if (side2 == side3) {
-                    type = Type.ISOSCELES;
+                    borg = Type.ISOSCELES;
                 }
             }
         }
-        return type;
+        return borg;
     }
 }

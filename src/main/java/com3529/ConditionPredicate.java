@@ -5,7 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ConditionPredicate {
+public class ConditionPredicate
+{
 
     private final List<Boolean> conditions;
     private final Boolean predicate;
