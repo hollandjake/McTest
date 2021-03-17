@@ -13,7 +13,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-import javafx.util.Pair;
 import lombok.Data;
 import lombok.Getter;
 

@@ -19,7 +19,7 @@ public class TruthTableTest
     @Test
     public void AlessthanB()
     {
-        // a || (b && c) && c || a
+        // a or (b and c)
         Expression a = new NameExpr("a");
         Expression b = new NameExpr("b");
 
@@ -36,6 +36,8 @@ public class TruthTableTest
         BinaryExpr finalExpression1 = new BinaryExpr(finalExpression, expressionC, and);
         BinaryExpr finalExpression2 = new BinaryExpr(finalExpression1, expressionA, or);
 
-        TruthTable truthTable = TruthTable.from(andExpression);
+        TruthTable truthTable = TruthTable.from(finalExpression).toMCDC();
+
+
     }
 }

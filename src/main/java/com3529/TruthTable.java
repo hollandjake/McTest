@@ -1,7 +1,6 @@
 package com3529;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +16,8 @@ public class TruthTable
     private static final Pattern GET_OPERATORS = Pattern.compile("(\\|\\|)|(&&)");
 
     private final List<ConditionPredicate> conditionPredicates;
+
+    private final int numberOfConditions;
 
     public static TruthTable from(BinaryExpr expression)
     {
@@ -63,6 +64,37 @@ public class TruthTable
             conditionPredicates.add(new ConditionPredicate(conditions, predicate));
         }
 
-        return new TruthTable(conditionPredicates);
+        return new TruthTable(conditionPredicates, n);
+    }
+
+    public TruthTable toMCDC() {
+        Set<ConditionPredicate> newConditionPredicates = new HashSet<>();
+
+        for (int i = 0; i < numberOfConditions; i++) {
+            ConditionPredicate truthy = null;
+            ConditionPredicate falsey = null;
+            for (ConditionPredicate conditionPredicate : this.conditionPredicates) {
+                List<Boolean> conditions = conditionPredicate.getConditions();
+                if (conditions.get(i)) {
+                    if (truthy == null) {
+                        if (conditionPredicate.getPredicate()) {
+                            truthy = conditionPredicate;
+                        }
+                    }
+                } else {
+                    if (falsey == null) {
+                        if (!conditionPredicate.getPredicate()) {
+                            falsey = conditionPredicate;
+                        }
+                    }
+                }
+            }
+            newConditionPredicates.add(truthy);
+            newConditionPredicates.add(falsey);
+        }
+
+        List<ConditionPredicate> newListConditionPredicates = new ArrayList<>(newConditionPredicates);
+
+        return new TruthTable(newListConditionPredicates,this.numberOfConditions);
     }
 }
