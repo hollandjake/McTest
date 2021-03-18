@@ -1,34 +1,38 @@
 package com3529;
 
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class ClassDecomposition
 {
     private final Map<SimpleName, Type> variableTypes;
-    private final List<String> branches;
+    private final List<Expression> branches;
     private final Type returnType;
 
     public static ClassDecomposition from(CompilationUnit cu) {
         Map<SimpleName, Type> variableTypes = new HashMap<>();
-        List<List<String>> branches = new ArrayList<>();
+        List<List<Expression>> branches = new ArrayList<>();
         final Type[] returnType = new Type[1];
-        Stack<String> ifStack = new Stack<>();
+        Stack<Expression> expressionStack = new Stack<>();
 
         cu.accept(new VoidVisitorAdapter<Void>()
         {
@@ -43,24 +47,36 @@ public class ClassDecomposition
             @Override
             public void visit(IfStmt n, Void arg)
             {
-                ifStack.push("("+n.getCondition().toString()+")");
-                branches.add(new ArrayList<>(ifStack));
+                expressionStack.push(new EnclosedExpr(n.getCondition()));
+                branches.add(new ArrayList<>(expressionStack));
 
                 n.getThenStmt().accept(this, arg);
-                ifStack.pop();
-                ifStack.push("!("+n.getCondition().toString()+")");
-                n.getElseStmt().ifPresent((l) -> {
-                    l.accept(this, arg);
-                });
-                ifStack.pop();
+                expressionStack.pop();
+                expressionStack.push(invertExpression(n.getCondition()));
+                n.getElseStmt().ifPresent(l -> l.accept(this, arg));
+                expressionStack.pop();
             }
         }, null);
 
-        List<String> finalbranches = new ArrayList<>();
-        for (List<String> branchComponents : branches) {
-            finalbranches.add(String.join(" && ", branchComponents));
+        List<Expression> finalbranches = new ArrayList<>();
+        for (List<Expression> branchComponents : branches) {
+            if (branchComponents.size() > 1)
+            {
+                Expression expression1 = branchComponents.remove(1);
+                Expression reduce = branchComponents.stream().reduce(expression1,
+                                                                     (a, b) -> new BinaryExpr(a,
+                                                                                              b,
+                                                                                              BinaryExpr.Operator.AND));
+                finalbranches.add(reduce);
+            } else {
+                finalbranches.add(branchComponents.get(0));
+            }
         }
 
         return new ClassDecomposition(variableTypes, finalbranches, returnType[0]);
+    }
+
+    public static Expression invertExpression(Expression expression) {
+        return new UnaryExpr(new EnclosedExpr(expression), UnaryExpr.Operator.LOGICAL_COMPLEMENT);
     }
 }

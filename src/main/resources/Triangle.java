@@ -13,8 +13,16 @@ public class Triangle {
     public static Borg classify(int side1, int side2, int side3) {
         Borg borg;
         // a || (b && c) && c || a
-        if (side1 || side2 && side3 && side3 || side1) {
-            //wow
+        if (side1 || side2 && side3 && side3 || side1 || side1==7) {
+            System.out.println('a');
+        } else {
+            if (side1 == side2) {
+                System.out.println('b');
+            } else {
+                if (side2 == side3) {
+                    System.out.println("wow");
+                }
+            }
         }
 
         if (side1 > side2) {
