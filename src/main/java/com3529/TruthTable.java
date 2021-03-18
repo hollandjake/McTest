@@ -2,18 +2,11 @@ package com3529;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -25,7 +18,6 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap;
 
 import lombok.Data;
 
@@ -37,6 +29,8 @@ public class TruthTable
     private final List<ConditionPredicate> conditionPredicates;
 
     private final int numberOfConditions;
+
+    private final Expression expression;
 
     private static final List<BinaryExpr.Operator> LOGICAL_OPERATORS = Arrays.asList(
             BinaryExpr.Operator.OR,
@@ -91,7 +85,8 @@ public class TruthTable
         List<PlaceholderExpr> placeholderExprs = new ArrayList<>();
         booleanExpression.accept(new VoidVisitorAdapter<Void>()
         {
-            public void visit(NameExpr n, Void arg) {
+            public void visit(NameExpr n, Void arg)
+            {
                 if (n instanceof PlaceholderExpr)
                 {
                     placeholderExprs.add((PlaceholderExpr) n);
@@ -113,11 +108,13 @@ public class TruthTable
             char[] binaryCharSequence = String.format(binaryFormatPattern, Integer.toBinaryString(i)).toCharArray();
 
             AtomicInteger j = new AtomicInteger(0);
-            Expression appliedExpression = (Expression) booleanExpression.accept(new CloneVisitorWithPlaceholder(), null);
+            Expression appliedExpression = (Expression) booleanExpression.accept(new CloneVisitorWithPlaceholder(),
+                                                                                 null);
             Expression newAppliedExpression = (Expression) appliedExpression.accept(new ModifierVisitor<Void>()
             {
                 @Override
-                public Visitable visit(NameExpr n, Void arg) {
+                public Visitable visit(NameExpr n, Void arg)
+                {
                     if (n instanceof PlaceholderExpr)
                     {
                         boolean isTruthy = binaryCharSequence[j.getAndIncrement()] == '1';
@@ -128,12 +125,13 @@ public class TruthTable
                 }
             }, null);
 
-            boolean predicate = new org.mariuszgromada.math.mxparser.Expression(appliedExpression.toString()).calculate() == 1;
+            boolean predicate =
+                    new org.mariuszgromada.math.mxparser.Expression(newAppliedExpression.toString()).calculate() == 1;
 
             conditionPredicates.add(new ConditionPredicate(conditions, predicate));
         }
 
-        return new TruthTable(conditionPredicates, n);
+        return new TruthTable(conditionPredicates, n, expression);
     }
 
     public TruthTable toMCDC()
@@ -174,6 +172,6 @@ public class TruthTable
 
         List<ConditionPredicate> newListConditionPredicates = new ArrayList<>(newConditionPredicates);
 
-        return new TruthTable(newListConditionPredicates, this.numberOfConditions);
+        return new TruthTable(newListConditionPredicates, this.numberOfConditions, this.expression);
     }
 }

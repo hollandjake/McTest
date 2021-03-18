@@ -21,7 +21,7 @@ public class TestGenerator
         decomposition.getBranches().forEach(branch -> {
             TruthTable truthTable = TruthTable.from(branch);
             TruthTable mcdcReduction = truthTable.toMCDC();
-            System.out.println(truthTable);
+            System.out.println(mcdcReduction);
             //(side1 > side2)
             // a>b  T
             // a<=b F

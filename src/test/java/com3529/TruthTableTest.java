@@ -37,7 +37,5 @@ public class TruthTableTest
         BinaryExpr finalExpression2 = new BinaryExpr(finalExpression1, expressionA, or);
 
         TruthTable truthTable = TruthTable.from(finalExpression).toMCDC();
-
-
     }
 }
