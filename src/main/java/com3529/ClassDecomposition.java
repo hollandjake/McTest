@@ -28,7 +28,8 @@ public class ClassDecomposition
     private final List<Expression> branches;
     private final Type returnType;
 
-    public static ClassDecomposition from(CompilationUnit cu) {
+    public static ClassDecomposition from(CompilationUnit cu)
+    {
         Map<SimpleName, Type> variableTypes = new HashMap<>();
         List<List<Expression>> branches = new ArrayList<>();
         final Type[] returnType = new Type[1];
@@ -59,7 +60,8 @@ public class ClassDecomposition
         }, null);
 
         List<Expression> finalbranches = new ArrayList<>();
-        for (List<Expression> branchComponents : branches) {
+        for (List<Expression> branchComponents : branches)
+        {
             if (branchComponents.size() > 1)
             {
                 Expression expression1 = branchComponents.remove(1);
@@ -68,7 +70,9 @@ public class ClassDecomposition
                                                                                               b,
                                                                                               BinaryExpr.Operator.AND));
                 finalbranches.add(reduce);
-            } else {
+            }
+            else
+            {
                 finalbranches.add(branchComponents.get(0));
             }
         }
@@ -76,7 +80,8 @@ public class ClassDecomposition
         return new ClassDecomposition(variableTypes, finalbranches, returnType[0]);
     }
 
-    public static Expression invertExpression(Expression expression) {
+    public static Expression invertExpression(Expression expression)
+    {
         return new UnaryExpr(new EnclosedExpr(expression), UnaryExpr.Operator.LOGICAL_COMPLEMENT);
     }
 }

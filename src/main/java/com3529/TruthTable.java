@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -15,7 +13,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
-import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -24,13 +21,10 @@ import lombok.Data;
 @Data
 public class TruthTable
 {
-    private static final Pattern GET_OPERATORS = Pattern.compile("(\\|\\|)|(&&)");
-
+    private final Expression originalExpression;
+    private final Set<NameExpr> variables;
+    private final List<Expression> conditionalExpressions;
     private final List<ConditionPredicate> conditionPredicates;
-
-    private final int numberOfConditions;
-
-    private final Expression expression;
 
     private static final List<BinaryExpr.Operator> LOGICAL_OPERATORS = Arrays.asList(
             BinaryExpr.Operator.OR,
@@ -40,130 +34,135 @@ public class TruthTable
             BinaryExpr.Operator.XOR
     );
 
-    private static Expression convertExpressionToBooleanComponents(Expression expression)
-    {
-        Expression expressionToProcess;
-        UnaryOperator<Expression> placeholderSupplier;
-
-        if (expression instanceof EnclosedExpr)
-        {
-            expressionToProcess = ((EnclosedExpr) expression).getInner();
-            placeholderSupplier = expr -> expr;
-        }
-        else if (expression instanceof UnaryExpr)
-        {
-            expressionToProcess = ((UnaryExpr) expression).getExpression();
-            placeholderSupplier = expr -> new UnaryExpr(expr, ((UnaryExpr) expression).getOperator());
-        }
-        else
-        {
-            expressionToProcess = expression;
-            placeholderSupplier = expr -> expr;
-        }
-
-        if (expressionToProcess instanceof BinaryExpr &&
-                LOGICAL_OPERATORS.contains(((BinaryExpr) expressionToProcess).getOperator()))
-        {
-            BinaryExpr binaryExpressionToProcess = (BinaryExpr) expressionToProcess;
-            Expression left = convertExpressionToBooleanComponents(binaryExpressionToProcess.getLeft());
-            Expression right = convertExpressionToBooleanComponents(binaryExpressionToProcess.getRight());
-
-            return placeholderSupplier.apply(new BinaryExpr(left, right, binaryExpressionToProcess.getOperator()));
-        }
-        else
-        {
-            return placeholderSupplier.apply(new PlaceholderExpr());
-        }
-    }
-
     public static TruthTable from(Expression expression)
     {
-        //Extract all conditions as placeholders
-        Expression booleanExpression = convertExpressionToBooleanComponents(expression);
+        Set<NameExpr> variables = extractVariables(expression);
+        List<Expression> conditions = extractConditions(expression);
 
-        //Count number of placeholders
-        List<PlaceholderExpr> placeholderExprs = new ArrayList<>();
-        booleanExpression.accept(new VoidVisitorAdapter<Void>()
+        List<ConditionPredicate> conditionPredicates = new ArrayList<>();
+
+        int n = conditions.size();
+        String binaryFormatPattern = "%" + n + "s";
+
+        for (int i = 0; i < 1 << n; i++)
         {
-            public void visit(NameExpr n, Void arg)
+            char[] binaryCharSequence = String.format(binaryFormatPattern, Integer.toBinaryString(i)).toCharArray();
+
+            conditionPredicates.add(generateConditionPredicate(expression, conditions, binaryCharSequence));
+        }
+
+        return new TruthTable(expression, variables, conditions, conditionPredicates);
+    }
+
+    public static ConditionPredicate generateConditionPredicate(Expression expression,
+            List<Expression> conditions,
+            char[] binaryCharSequence)
+    {
+        List<Boolean> conditionalStates = new ArrayList<>();
+        AtomicInteger i = new AtomicInteger(0);
+        Expression newAppliedExpression = (Expression) expression.clone().accept(new ModifierVisitorWithExpression()
+        {
+            @Override
+            public Visitable visit(Expression n, Void arg)
             {
-                if (n instanceof PlaceholderExpr)
+                if (conditions.contains(n))
                 {
-                    placeholderExprs.add((PlaceholderExpr) n);
+                    boolean isTruthy = binaryCharSequence[i.getAndIncrement()] == '1';
+                    conditionalStates.add(isTruthy);
+                    return new IntegerLiteralExpr(isTruthy ? "1" : "0");
                 }
+                return super.visit(n, arg);
+            }
+        }, null);
+
+        boolean predicate = new org.mariuszgromada.math.mxparser.Expression(newAppliedExpression.toString()).calculate()
+                == 1;
+
+        return new ConditionPredicate(conditionalStates, predicate);
+    }
+
+    public static List<Expression> extractConditions(Expression expression)
+    {
+        List<Expression> conditions = new ArrayList<>();
+
+        expression.accept(new VoidVisitorAdapterWithExpression()
+        {
+            @Override
+            public void visit(BinaryExpr n, Void arg)
+            {
+                if (!LOGICAL_OPERATORS.contains(n.getOperator()))
+                {
+                    conditions.add(n);
+                }
+                else
+                {
+                    n.getLeft().accept(this, arg);
+                    n.getRight().accept(this, arg);
+                    n.getComment().ifPresent(l -> l.accept(this, arg));
+                }
+            }
+
+            @Override
+            public void visit(EnclosedExpr n, Void arg)
+            {
+                n.getInner().accept(this, arg);
+            }
+
+            @Override
+            public void visit(UnaryExpr n, Void arg)
+            {
+                n.getExpression().accept(this, arg);
+            }
+
+            @Override
+            public void visit(Expression n, Void arg)
+            {
+                conditions.add(n);
                 super.visit(n, arg);
             }
         }, null);
 
-        int n = placeholderExprs.size();
+        return conditions;
+    }
 
-        List<ConditionPredicate> conditionPredicates = new ArrayList<>();
+    public static Set<NameExpr> extractVariables(Expression expression)
+    {
+        Set<NameExpr> variables = new HashSet<>();
 
-        String binaryFormatPattern = "%" + n + "s";
-
-        //Generate all permutations of conditions and evaluate the expressions
-        for (int i = 0; i < 1 << n; i++)
+        expression.accept(new VoidVisitorAdapter<Void>()
         {
-            List<Boolean> conditions = new ArrayList<>();
-            char[] binaryCharSequence = String.format(binaryFormatPattern, Integer.toBinaryString(i)).toCharArray();
-
-            AtomicInteger j = new AtomicInteger(0);
-            Expression appliedExpression = (Expression) booleanExpression.accept(new CloneVisitorWithPlaceholder(),
-                                                                                 null);
-            Expression newAppliedExpression = (Expression) appliedExpression.accept(new ModifierVisitor<Void>()
+            @Override
+            public void visit(NameExpr n, Void arg)
             {
-                @Override
-                public Visitable visit(NameExpr n, Void arg)
-                {
-                    if (n instanceof PlaceholderExpr)
-                    {
-                        boolean isTruthy = binaryCharSequence[j.getAndIncrement()] == '1';
-                        conditions.add(isTruthy);
-                        return new IntegerLiteralExpr(isTruthy ? "1" : "0");
-                    }
-                    return super.visit(n, arg);
-                }
-            }, null);
+                variables.add(n);
+            }
+        }, null);
 
-            boolean predicate =
-                    new org.mariuszgromada.math.mxparser.Expression(newAppliedExpression.toString()).calculate() == 1;
-
-            conditionPredicates.add(new ConditionPredicate(conditions, predicate));
-        }
-
-        return new TruthTable(conditionPredicates, n, expression);
+        return variables;
     }
 
     public TruthTable toMCDC()
     {
+        int numberOfConditionalExpressions = conditionalExpressions.size();
+
         Set<ConditionPredicate> newConditionPredicates = new HashSet<>();
 
-        for (int i = 0; i < numberOfConditions; i++)
+        for (int i = 0; i < numberOfConditionalExpressions; i++)
         {
             ConditionPredicate truthy = null;
             ConditionPredicate falsey = null;
             for (ConditionPredicate conditionPredicate : this.conditionPredicates)
             {
-                List<Boolean> conditions = conditionPredicate.getConditions();
-                if (conditions.get(i))
+                if (conditionPredicate.getConditions().get(i))
                 {
-                    if (truthy == null)
+                    if (truthy == null && conditionPredicate.getPredicate())
                     {
-                        if (conditionPredicate.getPredicate())
-                        {
-                            truthy = conditionPredicate;
-                        }
+                        truthy = conditionPredicate;
                     }
                 }
-                else
+                else if (falsey == null && !conditionPredicate.getPredicate())
                 {
-                    if (falsey == null)
-                    {
-                        if (!conditionPredicate.getPredicate())
-                        {
-                            falsey = conditionPredicate;
-                        }
-                    }
+                    falsey = conditionPredicate;
                 }
             }
             newConditionPredicates.add(truthy);
@@ -172,6 +171,9 @@ public class TruthTable
 
         List<ConditionPredicate> newListConditionPredicates = new ArrayList<>(newConditionPredicates);
 
-        return new TruthTable(newListConditionPredicates, this.numberOfConditions, this.expression);
+        return new TruthTable(this.originalExpression,
+                              this.variables,
+                              this.conditionalExpressions,
+                              newListConditionPredicates);
     }
 }

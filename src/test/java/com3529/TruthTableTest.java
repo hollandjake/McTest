@@ -1,41 +1,112 @@
 package com3529;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.type.Type;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import javax.script.ScriptException;
-
-import java.util.Map;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class TruthTableTest
 {
-    @Test
-    public void AlessthanB()
+    private Expression a;
+    private Expression b;
+    private Expression c;
+    private Expression equalityComparison;
+    private Expression condition;
+
+    @Before
+    public void beforeEach()
     {
-        // a or (b and c)
-        Expression a = new NameExpr("a");
-        Expression b = new NameExpr("b");
+        a = new NameExpr("a");
+        b = new NameExpr("b");
+        c = new NameExpr("c");
+        equalityComparison = new BinaryExpr(a, new IntegerLiteralExpr("7"), Operator.EQUALS);
+        condition = new EnclosedExpr(
+                new BinaryExpr(
+                        new BinaryExpr(
+                                new BinaryExpr(
+                                        a,
+                                        new BinaryExpr(
+                                                new BinaryExpr(
+                                                        b,
+                                                        a,
+                                                        Operator.AND
+                                                ),
+                                                c,
+                                                Operator.AND
+                                        ),
+                                        Operator.OR
+                                ),
+                                a,
+                                Operator.OR
+                        ),
+                        equalityComparison,
+                        Operator.OR
+                )
+        );
+    }
 
-        BinaryExpr.Operator lessThan = BinaryExpr.Operator.LESS;
-        BinaryExpr.Operator and = BinaryExpr.Operator.AND;
-        BinaryExpr.Operator or = BinaryExpr.Operator.OR;
+    @Test
+    public void shouldExtractConditions()
+    {
+        assertEquals(
+                Arrays.asList(a, b, a, c, a, equalityComparison),
+                TruthTable.extractConditions(condition)
+        );
+    }
 
-        BinaryExpr expressionA = new BinaryExpr(a, b, lessThan);
-        BinaryExpr expressionB = new BinaryExpr(a, b, lessThan);
-        BinaryExpr expressionC = new BinaryExpr(a, b, lessThan);
+    @Test
+    public void shouldExtractVariables()
+    {
+        assertEquals(
+                new HashSet<>(Arrays.asList(a, b, c)),
+                TruthTable.extractVariables(condition)
+        );
+    }
 
-        BinaryExpr andExpression = new BinaryExpr(expressionB, expressionC, and);
-        BinaryExpr finalExpression = new BinaryExpr(expressionA, andExpression, or);
-        BinaryExpr finalExpression1 = new BinaryExpr(finalExpression, expressionC, and);
-        BinaryExpr finalExpression2 = new BinaryExpr(finalExpression1, expressionA, or);
+    @Test
+    public void shouldGenerateConditionPredicate()
+    {
+        assertEquals(
+                new ConditionPredicate(Arrays.asList(false, false, false, false, false, false), false),
+                TruthTable.generateConditionPredicate(
+                        condition,
+                        Arrays.asList(a, b, a, c, a, equalityComparison),
+                        new char[] { ' ', ' ', ' ', ' ', ' ', '0' }
+                )
+        );
+    }
 
-        TruthTable truthTable = TruthTable.from(finalExpression).toMCDC();
+    @Test
+    public void shouldGenerateTruthTable()
+    {
+        TruthTable actual = TruthTable.from(condition);
+        assertEquals(condition, actual.getOriginalExpression());
+        assertEquals(new HashSet<>(Arrays.asList(a, b, c)), actual.getVariables());
+        assertEquals(Arrays.asList(a, b, a, c, a, equalityComparison), actual.getConditionalExpressions());
+        assertEquals(64, actual.getConditionPredicates().size());
+    }
+
+    @Test
+    public void shouldReduceWithMCDC()
+    {
+        TruthTable truthTable = TruthTable.from(condition);
+        TruthTable mcdc = truthTable.toMCDC();
+
+        assertEquals(truthTable.getOriginalExpression(), mcdc.getOriginalExpression());
+        assertEquals(truthTable.getVariables(), mcdc.getVariables());
+        assertEquals(truthTable.getConditionalExpressions(), mcdc.getConditionalExpressions());
+        assertEquals(7, mcdc.getConditionPredicates().size());
     }
 }
