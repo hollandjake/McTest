@@ -1,5 +1,7 @@
 package com3529;
 
+import com.github.hollandjake.com3529.TestSuiteGenerator;
+
 import org.junit.Test;
 
 public class TestGeneratorTest
@@ -7,7 +9,7 @@ public class TestGeneratorTest
     @Test
     public void shouldGenerateTest()
     {
-        TestGenerator.of("Triangle.java");
+        TestSuiteGenerator.forPackage("com.github.hollandjake.test");
 
         // create all branch nested conditions with recursive joins
 
