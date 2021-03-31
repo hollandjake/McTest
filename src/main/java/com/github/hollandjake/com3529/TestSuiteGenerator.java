@@ -1,8 +1,8 @@
 package com.github.hollandjake.com3529;
 
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -31,6 +31,6 @@ public class TestSuiteGenerator
                         .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(packageName)))
         );
 
-        reflections.getSubTypesOf(Object.class).forEach(ClassTestGenerator::forClass);
+        reflections.getSubTypesOf(Object.class).stream().filter(clazz-> Modifier.isPublic(clazz.getModifiers())).forEach(ClassTestGenerator::forClass);
     }
 }
