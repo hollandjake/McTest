@@ -18,8 +18,7 @@ public class ClassTestGenerator
 
     public static void forClass(String className)
     {
-        ParseConvert parseConvert = new ParseConvert(className);
-        Class<?> clazz = parseConvert.getClazz();
+        Class<?> clazz = ParseConvert.parse(className);
 
         Arrays.stream(clazz.getMethods())
                 .filter(method -> Modifier.isPublic(method.getModifiers()))

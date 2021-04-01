@@ -1,3 +1,5 @@
+package com.github.hollandjake.com3529.test;
+
 public class Triangle
 {
 
