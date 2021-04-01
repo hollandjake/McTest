@@ -15,11 +15,10 @@ public class ElitismGenerator
 
     public static List<MethodTestSuite> onPopulation(List<MethodTestSuite> population)
     {
-        List<MethodTestSuite> sorted = population
+        return population
                 .stream()
                 .sorted(Comparator.comparingInt(left -> left.getCoverageReport().getTotalBranches()))
+                .limit(TOP_N)
                 .collect(Collectors.toList());
-
-        return sorted.subList(0, TOP_N);
     }
 }

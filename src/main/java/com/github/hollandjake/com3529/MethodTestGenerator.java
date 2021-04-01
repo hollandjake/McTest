@@ -30,14 +30,19 @@ public class MethodTestGenerator
         {
             //Evalute population
             population.forEach(MethodTestSuite::execute);
+
             //Select elites
             population = ElitismGenerator.onPopulation(population);
-            //Break condition
+
+            //Termination condition
             if (population.get(0).getCoverageReport().getTotalBranches() == 14) {
                 break;
+            } else {
+                System.out.println(population.get(0).getCoverageReport().getTotalBranches());
             }
+
             //Breed
-            population = Breed.repopulate(population, POPULATION_SIZE);
+            population = Breed.repopulate(method, population, POPULATION_SIZE);
         }
 
         return population.get(0);

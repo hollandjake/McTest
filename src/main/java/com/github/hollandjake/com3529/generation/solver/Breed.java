@@ -2,6 +2,7 @@ package com.github.hollandjake.com3529.generation.solver;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -16,38 +17,48 @@ import lombok.experimental.UtilityClass;
 public class Breed
 {
     private static final Random RANDOM = new Random();
-    public static List<MethodTestSuite> repopulate(List<MethodTestSuite> oldPopulation, int populationSize)
+    private static final double CROSSOVER_PROBABILITY = 0.75;
+
+    public static List<MethodTestSuite> repopulate(Method method, List<MethodTestSuite> oldPopulation, int populationSize)
     {
         List<MethodTestSuite> newPopulation = new ArrayList<>(oldPopulation);
 
-        for (int p = oldPopulation.size() - 1; p < populationSize; p++)
+        for (int p = oldPopulation.size(); p < populationSize; p++)
         {
             MethodTestSuite parentA = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
             MethodTestSuite parentB = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
             
             TestCase[] parentATests = parentA.getTests().toArray(new TestCase[0]);
             TestCase[] parentBTests = parentB.getTests().toArray(new TestCase[0]);
-            int minSize = Math.min(parentATests.length, parentBTests.length);
-            int maxSize = Math.max(parentATests.length, parentBTests.length);
 
-            Set<TestCase> testCases = new HashSet<>();
-            int size = minSize + (Math.abs(maxSize - minSize) > 0? RANDOM.nextInt(maxSize - minSize) : 0);
+            Set<TestCase> testCases = mutate(crossover(parentATests, parentBTests));
 
-            Method method = parentA.getMethod();
-            for (int i = 0; i < size; i++)
-            {
-                Object[] inputs = new Object[parentATests.length];
-                for (int inputIndex = 0; inputIndex < parentATests.length; inputIndex++)
-                {
-                    inputs[inputIndex] = RANDOM.nextBoolean() ? parentATests[inputIndex] : parentBTests[inputIndex];
-                }
-                testCases.add(new TestCase(method, inputs));
-            }
-            MethodTestSuite newSuite = new MethodTestSuite(method, new HashSet<>(testCases));
+            MethodTestSuite newSuite = new MethodTestSuite(method, testCases);
 
             newPopulation.add(newSuite);
         }
 
         return newPopulation;
+    }
+
+    private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB) {
+        int maxTests = Math.min(parentA.length, parentB.length);
+
+        Set<TestCase> testCases = new HashSet<>();
+
+        for (int i = 0; i < maxTests; i++)
+        {
+            if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY) {
+                testCases.add(parentB[i]);
+            } else {
+                testCases.add(parentA[i]);
+            }
+        }
+        return testCases;
+    }
+
+    private static Set<TestCase> mutate(Set<TestCase> tests) {
+        //TODO: Implement mutation
+        return tests;
     }
 }

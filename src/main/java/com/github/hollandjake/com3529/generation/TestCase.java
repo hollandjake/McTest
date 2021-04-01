@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
 @Setter(AccessLevel.PRIVATE)
@@ -17,6 +18,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class TestCase
 {
+    @ToString.Exclude
     private final Method method;
     private final Object[] inputs;
 
