@@ -1,6 +1,9 @@
 package com.github.hollandjake.com3529;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.javaparser.StaticJavaParser;
@@ -16,19 +19,25 @@ import com.github.javaparser.utils.SourceRoot;
 
 import net.openhft.compiler.CompilerUtils;
 
+import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
+@Data
 public class ParseConvert
 {
+    private final Map<String, Integer> numBranches;
+    private final Class<?> clazz;
+
     @SneakyThrows
-    public static Class<?> parse(String classToTest)
+    public static ParseConvert parse(String classToTest)
     {
         SourceRoot sourceRoot = new SourceRoot(
                 CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources" )
         );
         CompilationUnit cu = sourceRoot.parse("", classToTest + ".java" );
+
+        AtomicReference<String> packageName = new AtomicReference<>("" );
+        cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(packageDeclaration.getNameAsString()+"."));
 
         //Add import to class
         cu.findAll(CompilationUnit.class).forEach(compilationUnit -> {
@@ -38,6 +47,7 @@ public class ParseConvert
             compilationUnit.addImport(newImport);
         });
 
+        Map<String, Integer> numBranches = new HashMap<>();
         cu.findAll(MethodDeclaration.class).forEach(declaration -> {
             //Add parameter to method
             Parameter newParameter = StaticJavaParser.parseParameter(
@@ -58,9 +68,10 @@ public class ParseConvert
                     ifStmt.setCondition(newCondition);
                 }
             });
+            numBranches.put(declaration.getNameAsString(), branch.get());
         });
 
         //Save n Compile
-        return CompilerUtils.CACHED_COMPILER.loadFromJava(classToTest, cu.toString());
+        return new ParseConvert(numBranches, CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get()+classToTest, cu.toString()));
     }
 }

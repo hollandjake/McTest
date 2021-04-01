@@ -1,4 +1,4 @@
-package com.github.hollandjake.com3529.test;
+package com.github.hollandjake.test;
 
 public class Triangle
 {
