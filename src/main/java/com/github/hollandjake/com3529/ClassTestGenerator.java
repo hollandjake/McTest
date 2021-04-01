@@ -21,9 +21,6 @@ public class ClassTestGenerator
         ParseConvert mappedClass = ParseConvert.parse(className);
         Class<?> clazz = mappedClass.getClazz();
 
-        Arrays.stream(clazz.getMethods())
-                .filter(method -> Modifier.isPublic(method.getModifiers()))
-                .filter(method -> method.getDeclaringClass() != Object.class)
-                .forEach(MethodTestGenerator::forMethod);
+        forClass(clazz);
     }
 }
