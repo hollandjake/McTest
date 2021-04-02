@@ -1,5 +1,7 @@
 package com.github.hollandjake.com3529;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +14,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithPublicModifier;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.utils.CodeGenerationUtils;
@@ -25,7 +28,7 @@ import lombok.SneakyThrows;
 @Data
 public class ParseConvert
 {
-    private final Map<String, Integer> numBranches;
+    private final Map<Method, Integer> methodBranches;
     private final Class<?> clazz;
 
     @SneakyThrows
@@ -37,7 +40,8 @@ public class ParseConvert
         CompilationUnit cu = sourceRoot.parse("", classToTest + ".java" );
 
         AtomicReference<String> packageName = new AtomicReference<>("" );
-        cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(packageDeclaration.getNameAsString()+"."));
+        cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(
+                packageDeclaration.getNameAsString() + "." ));
 
         //Add import to class
         cu.findAll(CompilationUnit.class).forEach(compilationUnit -> {
@@ -47,31 +51,42 @@ public class ParseConvert
             compilationUnit.addImport(newImport);
         });
 
-        Map<String, Integer> numBranches = new HashMap<>();
-        cu.findAll(MethodDeclaration.class).forEach(declaration -> {
-            //Add parameter to method
-            Parameter newParameter = StaticJavaParser.parseParameter(
-                    CoverageReport.class.getSimpleName() + " coverage"
-            );
-            declaration.addParameter(newParameter);
+        Map<String, Integer> methodStringBranches = new HashMap<>();
 
-            //Replace every if statement
-            AtomicInteger branch = new AtomicInteger(0);
-            declaration.findAll(Statement.class).forEach(statement -> {
-                if (statement.isIfStmt())
-                {
-                    IfStmt ifStmt = (IfStmt) statement;
-                    String expression = ifStmt.getCondition().toString();
-                    Expression newCondition = StaticJavaParser.parseExpression(
-                            "coverage.cover(" + branch.getAndIncrement() + ", " + expression + ")"
-                    );
-                    ifStmt.setCondition(newCondition);
-                }
-            });
-            numBranches.put(declaration.getNameAsString(), branch.get());
-        });
+        cu.findAll(MethodDeclaration.class)
+          .stream()
+          .filter(NodeWithPublicModifier::isPublic) //Skip non-public methods as they are not entry points so they do not concern this test.
+          .forEach(declaration -> {
+              //Add parameter to method
+              Parameter newParameter = StaticJavaParser.parseParameter(
+                      CoverageReport.class.getSimpleName() + " coverage"
+              );
+              declaration.addParameter(newParameter);
+
+              //Replace every if statement
+              AtomicInteger branch = new AtomicInteger(0);
+              declaration.findAll(Statement.class).forEach(statement -> {
+                  if (statement.isIfStmt())
+                  {
+                      IfStmt ifStmt = (IfStmt) statement;
+                      String expression = ifStmt.getCondition().toString();
+                      Expression newCondition = StaticJavaParser.parseExpression(
+                              "coverage.cover(" + branch.getAndIncrement() + ", " + expression + ")"
+                      );
+                      ifStmt.setCondition(newCondition);
+                  }
+              });
+              methodStringBranches.put(declaration.getNameAsString(), branch.get());
+          });
 
         //Save n Compile
-        return new ParseConvert(numBranches, CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get()+classToTest, cu.toString()));
+        Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get() + classToTest, cu.toString());
+        Map<Method, Integer> methodBranches = new HashMap<>();
+
+        Arrays.stream(clazz.getMethods())
+              .filter(method -> method.getDeclaringClass() == clazz)
+              .forEach(method -> methodBranches.put(method, methodStringBranches.get(method.getName())));
+
+        return new ParseConvert(methodBranches, clazz);
     }
 }
