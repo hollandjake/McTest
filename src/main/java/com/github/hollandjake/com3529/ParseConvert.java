@@ -31,6 +31,16 @@ public class ParseConvert
     private final Map<Method, Integer> methodBranches;
     private final Class<?> clazz;
 
+    public static ParseConvert parse(Class<?> clazz) {
+        Map<Method, Integer> methodBranches = new HashMap<>();
+
+        Arrays.stream(clazz.getMethods())
+              .filter(method -> method.getDeclaringClass() == clazz)
+              .forEach(method -> methodBranches.put(method, 0));
+
+        return new ParseConvert(methodBranches, clazz);
+    }
+
     @SneakyThrows
     public static ParseConvert parse(String classToTest)
     {

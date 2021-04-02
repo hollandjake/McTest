@@ -9,16 +9,20 @@ public class ClassTestGenerator
 {
     public static void forClass(Class<?> clazz)
     {
-        Arrays.stream(clazz.getMethods())
-              .filter(method -> method.getDeclaringClass() == clazz)
-              .forEach(MethodTestGenerator::forMethod);
+        forClass(ParseConvert.parse(clazz));
     }
 
     public static void forClass(String className)
     {
-        ParseConvert mappedClass = ParseConvert.parse(className);
+        forClass(ParseConvert.parse(className));
+    }
+
+    public static void forClass(ParseConvert mappedClass)
+    {
         Class<?> clazz = mappedClass.getClazz();
 
-        forClass(clazz);
+        Arrays.stream(clazz.getMethods())
+              .filter(method -> method.getDeclaringClass() == clazz)
+              .forEach(MethodTestGenerator::forMethod);
     }
 }
