@@ -69,12 +69,12 @@ public class IfNode extends Tree
     {
         if (branchCoverage != null)
         {
-            return branchCoverage.getResult() ?
+            return normalise(branchCoverage.getResult() ?
                     branchCoverage.getFalseDistance() :
-                    branchCoverage.getTruthDistance();
+                    branchCoverage.getTruthDistance());
         }
 
-        return 1 + normalise(parentNode.getFitness());
+        return 1 + parentNode.getFitness();
     }
 
     public double normalise(double d)
