@@ -2,10 +2,10 @@ package com.github.hollandjake.com3529.generation;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.github.hollandjake.com3529.utils.tree.Tree;
 
 import lombok.Data;
 import lombok.ToString;
@@ -15,6 +15,9 @@ public class MethodTestSuite
 {
     @ToString.Exclude
     private final Method method;
+    @ToString.Exclude
+    private final Tree methodTree;
+
     private final Set<TestCase> tests;
     private boolean executed = false;
     private CoverageReport coverageReport;
@@ -23,28 +26,17 @@ public class MethodTestSuite
     {
         if (!executed)
         {
-            coverageReport = tests.stream().map(test -> {
-                test.execute();
-                return test.getCoverageReport();
-            }).filter(Objects::nonNull)
-                                  .collect(Collectors.toList())
-                                  .stream()
-                                  .reduce(new CoverageReport(), (left, right) -> {
-                                      CoverageReport newReport = new CoverageReport();
-                                      Map<Integer, BranchCoverage> coverage = newReport.getCoveredBranches();
-                                      left.getCoveredBranches().forEach((branchNum, branchCoverage) -> coverage.compute(
-                                              branchNum,
-                                              (key, val) -> (val == null) ? branchCoverage : val.combine(branchCoverage)
-                                      ));
-                                      right.getCoveredBranches()
-                                           .forEach((branchNum, branchCoverage) -> coverage.compute(
-                                                   branchNum,
-                                                   (key, val) -> (val == null) ?
-                                                           branchCoverage :
-                                                           val.combine(branchCoverage)
-                                           ));
-                                      return newReport;
-                                  });
+            coverageReport = new CoverageReport(methodTree);
+
+            tests.stream()
+                 .map(test -> {
+                     test.execute();
+                     return test.getCoverageReport();
+                 })
+                 .filter(Objects::nonNull)
+                 .forEach(cr -> {
+//                     coverageReport.addCoveredBranches(cr.getCoveredBranches())
+                 });
             executed = true;
         }
     }
@@ -52,5 +44,10 @@ public class MethodTestSuite
     public void writeToFile(File file)
     {
         tests.forEach(test -> test.writeToFile(file));
+    }
+
+    public double getFitness()
+    {
+        return this.coverageReport.getFitness();
     }
 }

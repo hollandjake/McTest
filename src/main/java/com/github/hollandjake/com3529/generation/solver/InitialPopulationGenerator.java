@@ -2,13 +2,13 @@ package com.github.hollandjake.com3529.generation.solver;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
+import com.github.hollandjake.com3529.utils.tree.Tree;
 
 import lombok.experimental.UtilityClass;
 
@@ -17,7 +17,7 @@ public class InitialPopulationGenerator
 {
     private static final int INITIAL_NUM_TESTS = 2;
 
-    public static List<MethodTestSuite> generate(Method method, int populationSize) {
+    public static List<MethodTestSuite> generate(Method method, Tree methodTree, int populationSize) {
         List<MethodTestSuite> population = new ArrayList<>();
         Class<?>[] methodParameterTypes = method.getParameterTypes();
         int numInputs = methodParameterTypes.length - 1;
@@ -33,21 +33,21 @@ public class InitialPopulationGenerator
                 }
                 suiteInputs.add(testInputs);
             }
-            population.add(createSuite(method, suiteInputs));
+            population.add(createSuite(method, methodTree, suiteInputs));
         }
 
         return population;
     }
 
-    private static MethodTestSuite createSuite(Method method, List<Object[]> inputs) {
+    private static MethodTestSuite createSuite(Method method, Tree methodTree, List<Object[]> inputs) {
         Set<TestCase> tests = inputs.stream()
-                                    .map(inputSequence -> createTestCase(method, inputSequence))
+                                    .map(inputSequence -> createTestCase(method, methodTree, inputSequence))
                                     .collect(Collectors.toSet());
 
-        return new MethodTestSuite(method, tests);
+        return new MethodTestSuite(method, methodTree, tests);
     }
 
-    private static TestCase createTestCase(Method method, Object[] inputs) {
-        return new TestCase(method, inputs);
+    private static TestCase createTestCase(Method method, Tree methodTree, Object[] inputs) {
+        return new TestCase(method, methodTree, inputs);
     }
 }

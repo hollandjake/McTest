@@ -1,22 +1,29 @@
 package com.github.hollandjake.com3529;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.CoverageReport;
+import com.github.hollandjake.com3529.utils.ExpressionStringifier;
+import com.github.hollandjake.com3529.utils.tree.IfNode;
+import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithPublicModifier;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.visitor.ModifierVisitor;
+import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.SourceRoot;
 
@@ -28,75 +35,102 @@ import lombok.SneakyThrows;
 @Data
 public class ParseConvert
 {
-    private final Map<Method, Integer> methodBranches;
+    private final Map<Method, Tree> methodBranchTrees;
     private final Class<?> clazz;
-
-    public static ParseConvert parse(Class<?> clazz) {
-        Map<Method, Integer> methodBranches = new HashMap<>();
-
-        Arrays.stream(clazz.getMethods())
-              .filter(method -> method.getDeclaringClass() == clazz)
-              .forEach(method -> methodBranches.put(method, 0));
-
-        return new ParseConvert(methodBranches, clazz);
-    }
 
     @SneakyThrows
     public static ParseConvert parse(String classToTest)
     {
         SourceRoot sourceRoot = new SourceRoot(
-                CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources" )
+                CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources")
         );
-        CompilationUnit cu = sourceRoot.parse("", classToTest + ".java" );
+        CompilationUnit cu = sourceRoot.parse("", classToTest + ".java");
 
-        AtomicReference<String> packageName = new AtomicReference<>("" );
+        AtomicReference<String> packageName = new AtomicReference<>("");
         cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(
-                packageDeclaration.getNameAsString() + "." ));
+                String.format("%s.%s", packageDeclaration.getNameAsString(), classToTest)
+        ));
 
         //Add import to class
-        cu.findAll(CompilationUnit.class).forEach(compilationUnit -> {
-            ImportDeclaration newImport = StaticJavaParser.parseImport(
-                    "import " + CoverageReport.class.getCanonicalName() + ";"
-            );
-            compilationUnit.addImport(newImport);
-        });
+        Set<Class<?>> imports = new HashSet<>();
+        imports.add(CoverageReport.class);
 
-        Map<String, Integer> methodStringBranches = new HashMap<>();
+        Map<String, Tree> methodStringIterables = new HashMap<>();
 
-        cu.findAll(MethodDeclaration.class)
-          .stream()
-          .filter(NodeWithPublicModifier::isPublic) //Skip non-public methods as they are not entry points so they do not concern this test.
-          .forEach(declaration -> {
-              //Add parameter to method
-              Parameter newParameter = StaticJavaParser.parseParameter(
-                      CoverageReport.class.getSimpleName() + " coverage"
-              );
-              declaration.addParameter(newParameter);
+        cu = (CompilationUnit) cu.accept(new ModifierVisitor<Tree>()
+        {
+            private final AtomicInteger branchNum = new AtomicInteger();
+            private final Deque<Boolean> truthPathStack = new ArrayDeque<>();
 
-              //Replace every if statement
-              AtomicInteger branch = new AtomicInteger(0);
-              declaration.findAll(Statement.class).forEach(statement -> {
-                  if (statement.isIfStmt())
-                  {
-                      IfStmt ifStmt = (IfStmt) statement;
-                      String expression = ifStmt.getCondition().toString();
-                      Expression newCondition = StaticJavaParser.parseExpression(
-                              "coverage.cover(" + branch.getAndIncrement() + ", " + expression + ")"
-                      );
-                      ifStmt.setCondition(newCondition);
-                  }
-              });
-              methodStringBranches.put(declaration.getNameAsString(), branch.get());
-          });
+            @Override
+            public Visitable visit(MethodDeclaration n, Tree treeParent)
+            {
+                if (n.isPublic())
+                {
+                    Parameter newParameter = StaticJavaParser.parseParameter(
+                            CoverageReport.class.getSimpleName() + " coverage"
+                    );
+                    n.addParameter(newParameter);
+                    branchNum.set(0);
+                    truthPathStack.clear();
+                    Tree root = new Tree();
+                    Visitable newNode = super.visit(n, root);
+                    methodStringIterables.put(n.getNameAsString(), root);
+                    return newNode;
+                }
+                return n;
+            }
+
+            @Override
+            public Visitable visit(IfStmt n, Tree parentNode)
+            {
+                Expression expression = n.getCondition();
+                int branchNum = this.branchNum.getAndIncrement();
+                Expression newExpression = StaticJavaParser.parseExpression(String.format(
+                        "coverage.cover(%d,%s)",
+                        branchNum,
+                        ExpressionStringifier.toString(expression, imports)
+                ));
+                n.setCondition(newExpression);
+
+                IfNode self = new IfNode(parentNode, branchNum);
+                if (parentNode instanceof IfNode) {
+                    if (truthPathStack.peek()) {
+                        ((IfNode)parentNode).addThenChild(self);
+                    } else {
+                        ((IfNode)parentNode).addElseChild(self);
+                    }
+                } else {
+                    parentNode.addChild(self);
+                }
+
+                truthPathStack.push(true);
+                Statement thenStmt = (Statement) n.getThenStmt().accept(this, self);
+                truthPathStack.pop();
+                truthPathStack.push(false);
+                Statement elseStmt = n.getElseStmt().map(s -> (Statement) s.accept(this, self)).orElse(null);
+                truthPathStack.pop();
+                return n;
+            }
+        }, null);
+
+        //Add imports
+        imports.forEach(cu::addImport);
 
         //Save n Compile
-        Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get() + classToTest, cu.toString());
-        Map<Method, Integer> methodBranches = new HashMap<>();
+        Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get(), cu.toString());
+
+        Map<Method, Tree> methodIterables = new HashMap<>();
 
         Arrays.stream(clazz.getMethods())
               .filter(method -> method.getDeclaringClass() == clazz)
-              .forEach(method -> methodBranches.put(method, methodStringBranches.get(method.getName())));
+              .forEach(method -> methodIterables.put(method, methodStringIterables.get(method.getName())));
 
-        return new ParseConvert(methodBranches, clazz);
+        return new ParseConvert(methodIterables, clazz);
+    }
+
+    public Tree getBranchTree(Method method)
+    {
+        return methodBranchTrees.get(method);
     }
 }

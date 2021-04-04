@@ -33,9 +33,9 @@ public class Breed
 
             Set<TestCase> testCases = mutate(crossover(parentATests, parentBTests));
 
-            MethodTestSuite newSuite = new MethodTestSuite(method, testCases);
+//            MethodTestSuite newSuite = new MethodTestSuite(method, testCases);
 
-            newPopulation.add(newSuite);
+//            newPopulation.add(newSuite);
         }
 
         return newPopulation;
