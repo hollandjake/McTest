@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.CoverageReport;
-import com.github.hollandjake.com3529.utils.ExpressionStringifier;
+import com.github.hollandjake.com3529.utils.ExpressionToString;
 import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
@@ -85,17 +85,17 @@ public class ParseConvert
             public Visitable visit(IfStmt n, Tree parentNode)
             {
                 Expression expression = n.getCondition();
-                int branchNum = this.branchNum.getAndIncrement();
+                int branchId = this.branchNum.getAndIncrement();
                 Expression newExpression = StaticJavaParser.parseExpression(String.format(
                         "coverage.cover(%d,%s)",
-                        branchNum,
-                        ExpressionStringifier.toString(expression, imports)
+                        branchId,
+                        ExpressionToString.toString(expression, imports)
                 ));
                 n.setCondition(newExpression);
 
-                IfNode self = new IfNode(parentNode, branchNum);
+                IfNode self = new IfNode(parentNode, branchId);
                 if (parentNode instanceof IfNode) {
-                    if (truthPathStack.peek()) {
+                    if (truthPathStack.peek() == Boolean.TRUE) {
                         ((IfNode)parentNode).addThenChild(self);
                     } else {
                         ((IfNode)parentNode).addElseChild(self);
@@ -105,10 +105,10 @@ public class ParseConvert
                 }
 
                 truthPathStack.push(true);
-                Statement thenStmt = (Statement) n.getThenStmt().accept(this, self);
+                n.setThenStmt((Statement) n.getThenStmt().accept(this, self));
                 truthPathStack.pop();
                 truthPathStack.push(false);
-                Statement elseStmt = n.getElseStmt().map(s -> (Statement) s.accept(this, self)).orElse(null);
+                n.setElseStmt(n.getElseStmt().map(s -> (Statement) s.accept(this, self)).orElse(null));
                 truthPathStack.pop();
                 return n;
             }

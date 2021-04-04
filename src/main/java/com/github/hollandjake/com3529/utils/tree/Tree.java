@@ -1,21 +1,18 @@
 package com.github.hollandjake.com3529.utils.tree;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-
-import com.github.hollandjake.com3529.generation.BranchCoverage;
 
 import org.jetbrains.annotations.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Tree implements Cloneable, Iterable<IfNode> {
     @ToString.Exclude
@@ -27,6 +24,7 @@ public class Tree implements Cloneable, Iterable<IfNode> {
 
     public void addChild(IfNode child) {
         children.add(child);
+        child.setParentNode(this);
     }
 
     public IfNode getIfNode(int branchId)
@@ -53,12 +51,9 @@ public class Tree implements Cloneable, Iterable<IfNode> {
     @Override
     public Tree clone()
     {
-        return new Tree(new ArrayList<>(children));
-    }
-
-    public void search(Consumer<Tree> action) {
-        action.accept(this);
-        children.forEach(child -> child.search(action));
+        Tree clone = new Tree();
+        children.forEach(child -> clone.addChild(child.clone()));
+        return clone;
     }
 
     @NotNull
@@ -70,10 +65,6 @@ public class Tree implements Cloneable, Iterable<IfNode> {
 
     public double getFitness()
     {
-        return 0; //Skip this node
-    }
-
-    public int distanceFromExecution() {
-        return 0; //This node will always be executed;
+        return 0d; //Skip this node
     }
 }

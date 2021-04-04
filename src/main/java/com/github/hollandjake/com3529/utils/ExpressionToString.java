@@ -104,7 +104,7 @@ import com.github.javaparser.ast.type.VoidType;
 import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 
-public class ExpressionStringifier implements GenericVisitor<String, Set<Class<?>>>
+public class ExpressionToString implements GenericVisitor<String, Set<Class<?>>>
 {
     public static String toString(Expression expression)
     {
@@ -113,7 +113,7 @@ public class ExpressionStringifier implements GenericVisitor<String, Set<Class<?
 
     public static String toString(Expression expression, Set<Class<?>> imports)
     {
-        return expression.clone().accept(new ExpressionStringifier(), imports);
+        return expression.clone().accept(new ExpressionToString(), imports);
     }
 
     private String asExpressionConstructor(String expressionString, Set<Class<?>> imports)

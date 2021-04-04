@@ -5,17 +5,18 @@ import java.util.List;
 
 import com.github.hollandjake.com3529.generation.BranchCoverage;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class IfNode extends Tree
 {
     @ToString.Exclude
-    private final Tree parentNode;
+    private Tree parentNode;
     private BranchCoverage branchCoverage;
     private int distanceFromExecution;
 
@@ -25,9 +26,7 @@ public class IfNode extends Tree
     @ToString.Exclude
     private final List<IfNode> elsePath = new ArrayList<>();
 
-    public IfNode(Tree parentNode, int branchId)
-    {
-        super();
+    public IfNode(Tree parentNode, int branchId) {
         this.parentNode = parentNode;
         this.branchId = branchId;
     }
@@ -82,4 +81,19 @@ public class IfNode extends Tree
     {
         return d / (d + 1);
     }
+
+    @Override
+    public IfNode clone()
+    {
+        IfNode clonedNode = new IfNode(
+                null,
+                branchCoverage != null ? branchCoverage.clone() : null,
+                distanceFromExecution,
+                branchId
+        );
+        thenPath.forEach(child -> clonedNode.addThenChild(child.clone()));
+        elsePath.forEach(child -> clonedNode.addElseChild(child.clone()));
+        return clonedNode;
+    }
 }
+

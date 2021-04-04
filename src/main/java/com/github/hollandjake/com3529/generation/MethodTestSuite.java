@@ -1,11 +1,8 @@
 package com.github.hollandjake.com3529.generation;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Set;
-
-import com.github.hollandjake.com3529.utils.tree.Tree;
 
 import lombok.Data;
 import lombok.ToString;
@@ -15,9 +12,6 @@ public class MethodTestSuite
 {
     @ToString.Exclude
     private final Method method;
-    @ToString.Exclude
-    private final Tree methodTree;
-
     private final Set<TestCase> tests;
     private boolean executed = false;
     private CoverageReport coverageReport;
@@ -26,7 +20,7 @@ public class MethodTestSuite
     {
         if (!executed)
         {
-            coverageReport = new CoverageReport(methodTree);
+            coverageReport = new CoverageReport(method.getMethodTree());
 
             tests.stream()
                  .map(test -> {

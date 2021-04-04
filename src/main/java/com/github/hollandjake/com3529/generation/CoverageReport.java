@@ -1,9 +1,7 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.Expression;
 
@@ -31,7 +29,6 @@ public class CoverageReport
     public double getFitness()
     {
         AtomicReference<Double> totalFitness = new AtomicReference<>((double) 0);
-
         methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getFitness()));
 
         return totalFitness.get();

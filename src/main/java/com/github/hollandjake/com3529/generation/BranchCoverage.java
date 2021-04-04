@@ -6,7 +6,7 @@ import com.github.javaparser.ast.expr.Expression;
 import lombok.Data;
 
 @Data
-public class BranchCoverage
+public class BranchCoverage implements Cloneable
 {
     private static final int K = 1;
     private final int branchNum;
@@ -49,23 +49,23 @@ public class BranchCoverage
                 break;
             case LESS:
                 result = leftNum < rightNum;
-                truthDistance = result ? rightNum - leftNum + K : 0;
-                falseDistance = result ? 0 : leftNum - rightNum + K;
+                falseDistance = result ? rightNum - leftNum + K : 0;
+                truthDistance = result ? 0 : leftNum - rightNum + K;
                 break;
             case LESS_EQUALS:
                 result = leftNum <= rightNum;
-                truthDistance = result ? rightNum - leftNum + K : 0;
-                falseDistance = result ? 0 : leftNum - rightNum + K;
+                falseDistance = result ? rightNum - leftNum + K : 0;
+                truthDistance = result ? 0 : leftNum - rightNum + K;
                 break;
             case GREATER:
                 result = leftNum > rightNum;
-                truthDistance = result ? leftNum - rightNum + K : 0;
-                falseDistance = result ? 0 : rightNum - leftNum + K;
+                falseDistance = result ? leftNum - rightNum + K : 0;
+                truthDistance = result ? 0 : rightNum - leftNum + K;
                 break;
             case GREATER_EQUALS:
                 result = leftNum >= rightNum;
-                truthDistance = result ? leftNum - rightNum + K : 0;
-                falseDistance = result ? 0 : rightNum - leftNum + K;
+                falseDistance = result ? leftNum - rightNum + K : 0;
+                truthDistance = result ? 0 : rightNum - leftNum + K;
                 break;
             default:
                 throw new UnsupportedOperationException(String.format(
@@ -84,5 +84,11 @@ public class BranchCoverage
         expressionString = expressionString.replaceAll("\\+ ?-|- ?\\+", "-") //+- and -+ handling
                                            .replaceAll("- ?-|\\+ ?\\+", "+"); //-- and ++ handling
         return new org.mariuszgromada.math.mxparser.Expression(expressionString).calculate();
+    }
+
+    @Override
+    public BranchCoverage clone()
+    {
+        return new BranchCoverage(this.branchNum, this.result, this.truthDistance, this.falseDistance);
     }
 }
