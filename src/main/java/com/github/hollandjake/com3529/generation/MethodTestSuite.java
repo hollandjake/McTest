@@ -29,6 +29,7 @@ public class MethodTestSuite
                  })
                  .filter(Objects::nonNull)
                  .forEach(cr -> {
+                     //TODO: Combine the coverage reports into one super report
 //                     coverageReport.addCoveredBranches(cr.getCoveredBranches())
                  });
             executed = true;
