@@ -14,13 +14,13 @@ import java.nio.file.StandardCopyOption;
 
 public class FileTools {
 
-    public static void generateJUnitTests(MethodTestSuite methodTestSuite, Method method)
+    public static void generateJUnitTests(MethodTestSuite methodTestSuite)
     {
         //Grab details about class
-        String className = method.getExecutableMethod().getDeclaringClass().getSimpleName();
-        String methodName = method.getExecutableMethod().getName();
+        String className = methodTestSuite.getMethod().getExecutableMethod().getDeclaringClass().getSimpleName();
+        String methodName = methodTestSuite.getMethod().getExecutableMethod().getName();
         String testClassName = className+methodName.substring(0, 1).toUpperCase() + methodName.substring(1)+"Tests";
-        String packageName = method.getExecutableMethod().getDeclaringClass().getPackage().getName();
+        String packageName = methodTestSuite.getMethod().getExecutableMethod().getDeclaringClass().getPackage().getName();
 
         //Create the JUnit tests
         CompilationUnit cu = new CompilationUnit();

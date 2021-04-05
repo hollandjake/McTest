@@ -20,7 +20,7 @@ public class MethodTestGenerator
     public static void forMethod(Method method)
     {
         MethodTestSuite testSuite = generate(method);
-        FileTools.generateJUnitTests(testSuite,method);
+        FileTools.generateJUnitTests(testSuite);
     }
 
     private static MethodTestSuite generate(Method method) {
