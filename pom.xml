@@ -65,6 +65,11 @@
             <version>2.14.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.1</version>
+        </dependency>
 
     </dependencies>
 

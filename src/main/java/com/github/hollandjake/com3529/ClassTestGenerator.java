@@ -22,4 +22,14 @@ public class ClassTestGenerator
               .filter(method -> method.getDeclaringClass() == clazz)
               .forEach(method -> MethodTestGenerator.forMethod(new Method(method, mappedClass.getBranchTree(method))));
     }
+
+    public static void main(String[] args)
+    {
+        for (int i = 0; i < args.length-1; i++)
+        {
+            if (args[i].equals("-generate") || args[i].equals("-g")) {
+                forClass(args[i+1]);
+            }
+        }
+    }
 }

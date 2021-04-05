@@ -7,6 +7,7 @@ import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.solver.Breed;
 import com.github.hollandjake.com3529.generation.solver.InitialPopulationGenerator;
 import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelection;
+import com.typesafe.config.ConfigFactory;
 
 import com.github.hollandjake.com3529.utils.FileTools;
 import lombok.SneakyThrows;
@@ -15,7 +16,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MethodTestGenerator
 {
-    private static final int POPULATION_SIZE = 100;
+    private static final int POPULATION_SIZE = ConfigFactory.load().getInt("Genetics.PopulationSize");
+    private static final double TARGET_FITNESS = ConfigFactory.load().getDouble("Genetics.TargetFitness");
+
     @SneakyThrows
     public static void forMethod(Method method)
     {
@@ -23,7 +26,8 @@ public class MethodTestGenerator
         FileTools.generateJUnitTests(testSuite);
     }
 
-    private static MethodTestSuite generate(Method method) {
+    private static MethodTestSuite generate(Method method)
+    {
         List<MethodTestSuite> population = InitialPopulationGenerator.generate(method, POPULATION_SIZE);
 
         while (true)
@@ -35,9 +39,12 @@ public class MethodTestGenerator
             population = NaturalSelection.overPopulation(population);
 
             //Termination condition
-            if (population.get(0).getFitness() == 0) {
+            if (population.get(0).getFitness() <= TARGET_FITNESS)
+            {
                 break;
-            } else {
+            }
+            else
+            {
                 System.out.println(population.get(0).getFitness());
             }
 
