@@ -1,7 +1,6 @@
 package com.github.hollandjake.com3529.generation;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -31,8 +30,8 @@ public class TestCase
     public boolean execute() {
         if (!executed) {
             try {
-                CoverageReport coverage = new CoverageReport();
-                Object result = method.invoke(method.getDeclaringClass().newInstance(), ArrayUtils.add(inputs, coverage));
+                CoverageReport coverage = new CoverageReport(method.getMethodTree());
+                Object result = method.getExecutableMethod().invoke(method.getExecutableMethod().getDeclaringClass().newInstance(), ArrayUtils.add(inputs, coverage));
                 executed = true;
                 output = result;
                 coverageReport = coverage;

@@ -1,12 +1,12 @@
 package com.github.hollandjake.com3529;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
+import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.solver.Breed;
-import com.github.hollandjake.com3529.generation.solver.ElitismGenerator;
 import com.github.hollandjake.com3529.generation.solver.InitialPopulationGenerator;
+import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelection;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -32,13 +32,13 @@ public class MethodTestGenerator
             population.forEach(MethodTestSuite::execute);
 
             //Select elites
-            population = ElitismGenerator.onPopulation(population);
+            population = NaturalSelection.overPopulation(population);
 
             //Termination condition
-            if (population.get(0).getCoverageReport().getTotalBranches() == 14) {
+            if (population.get(0).getFitness() == 0) {
                 break;
             } else {
-                System.out.println(population.get(0).getCoverageReport().getTotalBranches());
+                System.out.println(population.get(0).getFitness());
             }
 
             //Breed

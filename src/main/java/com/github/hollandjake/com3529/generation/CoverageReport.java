@@ -1,44 +1,41 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import com.github.hollandjake.com3529.utils.tree.Tree;
+import com.github.javaparser.ast.expr.Expression;
+
 import lombok.Data;
-import lombok.Setter;
+import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@Setter(AccessLevel.PACKAGE)
 public class CoverageReport
 {
-    private final Map<Integer, BranchCoverage> coveredBranches;
+    @ToString.Exclude
+    private final Tree methodTree;
 
-    public CoverageReport()
+    public CoverageReport(Tree methodTree)
     {
-        this.coveredBranches = new HashMap<>();
+        this.methodTree = methodTree.clone();
     }
 
-    public boolean cover(int branchNumber, boolean result)
+    public boolean cover(int branchNumber, Expression expr)
     {
-        coveredBranches.compute(
-                branchNumber,
-                (key, val) -> (val == null) ? new BranchCoverage(result) : val.addResult(result)
-        );
-        return result;
+        BranchCoverage branchCoverage = BranchCoverage.from(branchNumber, expr);
+        methodTree.getIfNode(branchNumber).setBranchCoverage(branchCoverage);
+        return branchCoverage.getResult();
     }
 
-    public int getTotalBranches()
+    public double getFitness()
     {
-        return coveredBranches.values().stream()
-                              .mapToInt(b -> (b.getCoveredTruthy() ? 1 : 0) + (b.getCoveredFalsy() ? 1 : 0))
-                              .sum();
+        AtomicReference<Double> totalFitness = new AtomicReference<>((double) 0);
+        methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getFitness()));
+
+        return totalFitness.get();
     }
 
-    @Override
-    public String toString()
+    public CoverageReport join(CoverageReport coverageReport)
     {
-        return "CoverageReport(branchCoverage="+getTotalBranches()+",coveredBranches=" + coveredBranches + ")";
+        return new CoverageReport(methodTree.join(coverageReport.getMethodTree()));
     }
 }

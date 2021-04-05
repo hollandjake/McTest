@@ -2,16 +2,13 @@ package com.github.hollandjake.com3529;
 
 import java.util.Arrays;
 
+import com.github.hollandjake.com3529.generation.Method;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ClassTestGenerator
 {
-    public static void forClass(Class<?> clazz)
-    {
-        forClass(ParseConvert.parse(clazz));
-    }
-
     public static void forClass(String className)
     {
         forClass(ParseConvert.parse(className));
@@ -23,6 +20,6 @@ public class ClassTestGenerator
 
         Arrays.stream(clazz.getMethods())
               .filter(method -> method.getDeclaringClass() == clazz)
-              .forEach(MethodTestGenerator::forMethod);
+              .forEach(method -> MethodTestGenerator.forMethod(new Method(method, mappedClass.getBranchTree(method))));
     }
 }

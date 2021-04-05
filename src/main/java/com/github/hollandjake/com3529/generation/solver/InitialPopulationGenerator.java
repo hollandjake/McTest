@@ -1,12 +1,11 @@
 package com.github.hollandjake.com3529.generation.solver;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
 
@@ -19,7 +18,7 @@ public class InitialPopulationGenerator
 
     public static List<MethodTestSuite> generate(Method method, int populationSize) {
         List<MethodTestSuite> population = new ArrayList<>();
-        Class<?>[] methodParameterTypes = method.getParameterTypes();
+        Class<?>[] methodParameterTypes = method.getExecutableMethod().getParameterTypes();
         int numInputs = methodParameterTypes.length - 1;
 
         for (int p = 0; p < populationSize; p++)

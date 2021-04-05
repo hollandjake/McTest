@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class InputGenerator
 {
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(1);
 
     public static Object generate(Class<?> type)
     {
