@@ -2,30 +2,34 @@ package com.github.hollandjake.com3529.generation.solver;
 
 import java.util.Random;
 
+import com.typesafe.config.ConfigFactory;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class InputGenerator
 {
-    private static final Random RANDOM = new Random(1);
+    private static final Random RANDOM = new Random(ConfigFactory.load().getInt("Genetics.Seed.Input"));
+    private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber(
+            "Genetics.Initial.InputDistribution");
 
     public static Object generate(Class<?> type)
     {
         if (type == Integer.class || type == int.class)
         {
-            return RANDOM.nextInt() % 100;
+            return RANDOM.nextInt() % NUMBER_DISTRIBUTION.intValue();
         }
         else if (type == Float.class || type == float.class)
         {
-            return RANDOM.nextFloat() % 100;
+            return RANDOM.nextFloat() % NUMBER_DISTRIBUTION.floatValue();
         }
         else if (type == Double.class || type == double.class)
         {
-            return RANDOM.nextDouble() % 100;
+            return RANDOM.nextDouble() % NUMBER_DISTRIBUTION.doubleValue();
         }
         else if (type == Long.class || type == long.class)
         {
-            return RANDOM.nextLong() % 100;
+            return RANDOM.nextLong() % NUMBER_DISTRIBUTION.longValue();
         }
         else
         {

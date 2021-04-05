@@ -2,13 +2,14 @@ package com.github.hollandjake.com3529.generation;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.typesafe.config.ConfigFactory;
 
 import lombok.Data;
 
 @Data
 public class BranchCoverage implements Cloneable
 {
-    private static final int K = 1;
+    private static final int K = ConfigFactory.load().getInt("BranchCoverage.K");
     private final int branchNum;
     private final Boolean result;
     private final Double truthDistance;
@@ -91,9 +92,13 @@ public class BranchCoverage implements Cloneable
         if (left != null)
         {
             return left.join(right);
-        } else if (right != null) {
+        }
+        else if (right != null)
+        {
             return right.clone();
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
@@ -106,7 +111,8 @@ public class BranchCoverage implements Cloneable
 
     public BranchCoverage join(BranchCoverage other)
     {
-        if (other == null) {
+        if (other == null)
+        {
             return this.clone();
         }
 

@@ -1,6 +1,9 @@
 package com.github.hollandjake.com3529;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -41,14 +44,14 @@ public class ParseConvert
     @SneakyThrows
     public static ParseConvert parse(String classToTest)
     {
-        SourceRoot sourceRoot = new SourceRoot(
-                CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources")
-        );
-        CompilationUnit cu = sourceRoot.parse("", classToTest + ".java");
+        File fileToTest = parseFile(classToTest);
 
-        AtomicReference<String> packageName = new AtomicReference<>("");
-        cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(
-                String.format("%s.%s", packageDeclaration.getNameAsString(), classToTest)
+        SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
+        CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
+
+        AtomicReference<String> classPath = new AtomicReference<>("");
+        cu.getPackageDeclaration().ifPresent(packageDeclaration -> classPath.set(
+                String.format("%s.%s", packageDeclaration.getNameAsString(), fileToTest.getName().replace(".java", ""))
         ));
 
         //Add import to class
@@ -94,13 +97,19 @@ public class ParseConvert
                 n.setCondition(newExpression);
 
                 IfNode self = new IfNode(parentNode, branchId);
-                if (parentNode instanceof IfNode) {
-                    if (truthPathStack.peek() == Boolean.TRUE) {
-                        ((IfNode)parentNode).addThenChild(self);
-                    } else {
-                        ((IfNode)parentNode).addElseChild(self);
+                if (parentNode instanceof IfNode)
+                {
+                    if (truthPathStack.peek() == Boolean.TRUE)
+                    {
+                        ((IfNode) parentNode).addThenChild(self);
                     }
-                } else {
+                    else
+                    {
+                        ((IfNode) parentNode).addElseChild(self);
+                    }
+                }
+                else
+                {
                     parentNode.addChild(self);
                 }
 
@@ -118,7 +127,7 @@ public class ParseConvert
         imports.forEach(cu::addImport);
 
         //Save n Compile
-        Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(packageName.get(), cu.toString());
+        Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(classPath.get(), cu.toString());
 
         Map<Method, Tree> methodIterables = new HashMap<>();
 
@@ -132,5 +141,30 @@ public class ParseConvert
     public Tree getBranchTree(Method method)
     {
         return methodBranchTrees.get(method);
+    }
+
+    public static File parseFile(String classToTest)
+    {
+        File fileToTest = null;
+        try
+        {
+            fileToTest = new File(classToTest);
+        }
+        catch (InvalidPathException ignored) {}
+
+        if (fileToTest == null || !fileToTest.exists())
+        {
+            Path parentPath = CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources/");
+            fileToTest = new File(String.format("%s/%s", parentPath.toAbsolutePath(), classToTest));
+        }
+
+        final String fileName = fileToTest.getName();
+
+        if (!fileToTest.exists() || !fileName.endsWith(".java"))
+        {
+            throw new UnsupportedOperationException(String.format("%s is not a valid file", fileToTest.toString()));
+        }
+
+        return fileToTest;
     }
 }

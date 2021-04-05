@@ -15,39 +15,47 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Tree implements Cloneable, Iterable<IfNode> {
+public class Tree implements Cloneable, Iterable<IfNode>
+{
     @ToString.Exclude
     private final List<IfNode> children = new ArrayList<>();
 
-    public Tree(List<IfNode> children) {
+    public Tree(List<IfNode> children)
+    {
         this.children.addAll(children);
     }
 
-    public void addChild(IfNode child) {
+    public void addChild(IfNode child)
+    {
         children.add(child);
         child.setParentNode(this);
     }
 
     public IfNode getIfNode(int branchId)
     {
-        for (IfNode child: getChildren())
+        for (IfNode child : getChildren())
         {
             IfNode found = child.getIfNode(branchId);
-            if (found != null) {
+            if (found != null)
+            {
                 return found;
             }
         }
         return null;
     }
 
-    public IfNode replaceIfNode(int branchId, IfNode newNode) {
+    public IfNode replaceIfNode(int branchId, IfNode newNode)
+    {
         AtomicReference<IfNode> replacement = new AtomicReference<>();
         children.replaceAll(child -> {
             IfNode replaced = child.replaceIfNode(branchId, newNode);
-            if (replaced != null) {
+            if (replaced != null)
+            {
                 replacement.set(replaced);
                 return replaced;
-            } else {
+            }
+            else
+            {
                 return child;
             }
         });
@@ -55,7 +63,8 @@ public class Tree implements Cloneable, Iterable<IfNode> {
         return replacement.get();
     }
 
-    public List<IfNode> getAllChildren() {
+    public List<IfNode> getAllChildren()
+    {
         List<IfNode> allChildren = new ArrayList<>();
         children.forEach(child -> {
             allChildren.add(child);

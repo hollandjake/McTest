@@ -9,6 +9,6 @@ public class ClassTestGeneratorTest
     @Test
     public void shouldGenerateTestClass()
     {
-        ClassTestGenerator.forClass("Triangle");
+        ClassTestGenerator.forClass("Triangle.java");
     }
 }

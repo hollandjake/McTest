@@ -26,7 +26,8 @@ public class IfNode extends Tree
     @ToString.Exclude
     private final List<IfNode> elsePath = new ArrayList<>();
 
-    public IfNode(Tree parentNode, int branchId) {
+    public IfNode(Tree parentNode, int branchId)
+    {
         this.parentNode = parentNode;
         this.branchId = branchId;
     }
@@ -108,17 +109,20 @@ public class IfNode extends Tree
     {
         IfNode otherNode = other.getIfNode(this.branchId);
         IfNode cloneNode;
-        if (otherNode != null) {
+        if (otherNode != null)
+        {
             cloneNode = new IfNode(
-                        null,
-                        BranchCoverage.join(this.branchCoverage, otherNode.branchCoverage),
-                        Math.min(distanceFromExecution, otherNode.distanceFromExecution),
-                        this.branchId
-                );
-                this.thenPath.forEach(child -> cloneNode.addThenChild(child.join(other)));
-                this.elsePath.forEach(child -> cloneNode.addElseChild(child.join(other)));
-                return cloneNode;
-        } else {
+                    null,
+                    BranchCoverage.join(this.branchCoverage, otherNode.branchCoverage),
+                    Math.min(distanceFromExecution, otherNode.distanceFromExecution),
+                    this.branchId
+            );
+            this.thenPath.forEach(child -> cloneNode.addThenChild(child.join(other)));
+            this.elsePath.forEach(child -> cloneNode.addElseChild(child.join(other)));
+            return cloneNode;
+        }
+        else
+        {
             return this.clone();
         }
     }

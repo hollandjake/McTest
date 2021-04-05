@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.typesafe.config.ConfigFactory;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NaturalSelection
 {
-    private static final int TOP_N = 10;
+    private static final int TOP_N = ConfigFactory.load().getInt("Genetics.TopN");
 
     public static List<MethodTestSuite> overPopulation(List<MethodTestSuite> population)
     {
