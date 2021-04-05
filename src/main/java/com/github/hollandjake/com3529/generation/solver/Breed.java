@@ -1,7 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -10,7 +9,6 @@ import java.util.Set;
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
-import com.github.hollandjake.com3529.utils.tree.Tree;
 
 import lombok.experimental.UtilityClass;
 

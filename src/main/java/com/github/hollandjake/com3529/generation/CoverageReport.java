@@ -33,4 +33,9 @@ public class CoverageReport
 
         return totalFitness.get();
     }
+
+    public CoverageReport join(CoverageReport coverageReport)
+    {
+        return new CoverageReport(methodTree.join(coverageReport.getMethodTree()));
+    }
 }

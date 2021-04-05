@@ -35,7 +35,7 @@ public class MethodTestGenerator
             population = NaturalSelection.overPopulation(population);
 
             //Termination condition
-            if (population.get(0).getFitness() == 14) {
+            if (population.get(0).getFitness() == 0) {
                 break;
             } else {
                 System.out.println(population.get(0).getFitness());

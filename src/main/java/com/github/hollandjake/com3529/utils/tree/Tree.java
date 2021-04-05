@@ -3,6 +3,7 @@ package com.github.hollandjake.com3529.utils.tree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +40,21 @@ public class Tree implements Cloneable, Iterable<IfNode> {
         return null;
     }
 
+    public IfNode replaceIfNode(int branchId, IfNode newNode) {
+        AtomicReference<IfNode> replacement = new AtomicReference<>();
+        children.replaceAll(child -> {
+            IfNode replaced = child.replaceIfNode(branchId, newNode);
+            if (replaced != null) {
+                replacement.set(replaced);
+                return replaced;
+            } else {
+                return child;
+            }
+        });
+
+        return replacement.get();
+    }
+
     public List<IfNode> getAllChildren() {
         List<IfNode> allChildren = new ArrayList<>();
         children.forEach(child -> {
@@ -66,5 +82,14 @@ public class Tree implements Cloneable, Iterable<IfNode> {
     public double getFitness()
     {
         return 0d; //Skip this node
+    }
+
+    public Tree join(Tree other)
+    {
+        Tree cloneNode = new Tree();
+
+        children.forEach(child -> cloneNode.addChild(child.join(other)));
+
+        return cloneNode;
     }
 }

@@ -86,9 +86,56 @@ public class BranchCoverage implements Cloneable
         return new org.mariuszgromada.math.mxparser.Expression(expressionString).calculate();
     }
 
+    public static BranchCoverage join(BranchCoverage left, BranchCoverage right)
+    {
+        if (left != null)
+        {
+            return left.join(right);
+        } else if (right != null) {
+            return right.clone();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public BranchCoverage clone()
     {
         return new BranchCoverage(this.branchNum, this.result, this.truthDistance, this.falseDistance);
+    }
+
+    public BranchCoverage join(BranchCoverage other)
+    {
+        if (other == null) {
+            return this.clone();
+        }
+
+        int tempBranchNum;
+        Boolean tempResult;
+        double tempTruthDistance;
+        double tempFalseDistance;
+
+        if (this.branchNum != other.branchNum)
+        {
+            throw new UnsupportedOperationException("branchNum is not identical");
+        }
+        else
+        {
+            tempBranchNum = this.branchNum;
+        }
+
+        if (this.result.equals(other.result))
+        {
+            tempResult = this.result;
+        }
+        else
+        {
+            tempResult = null;
+        }
+
+        tempTruthDistance = Math.min(this.truthDistance, other.truthDistance);
+        tempFalseDistance = Math.min(this.falseDistance, other.falseDistance);
+
+        return new BranchCoverage(tempBranchNum, tempResult, tempTruthDistance, tempFalseDistance);
     }
 }

@@ -65,13 +65,21 @@ public class IfNode extends Tree
         return super.getIfNode(branchId);
     }
 
+    public IfNode replaceIfNode(int branchId, IfNode newNode)
+    {
+        if (branchId == this.branchId)
+        {
+            return this;
+        }
+
+        return super.replaceIfNode(branchId, newNode);
+    }
+
     public double getFitness()
     {
         if (branchCoverage != null)
         {
-            return normalise(branchCoverage.getResult() ?
-                    branchCoverage.getFalseDistance() :
-                    branchCoverage.getTruthDistance());
+            return normalise(branchCoverage.getFalseDistance() + branchCoverage.getTruthDistance());
         }
 
         return 1 + parentNode.getFitness();
@@ -94,6 +102,25 @@ public class IfNode extends Tree
         thenPath.forEach(child -> clonedNode.addThenChild(child.clone()));
         elsePath.forEach(child -> clonedNode.addElseChild(child.clone()));
         return clonedNode;
+    }
+
+    public IfNode join(Tree other)
+    {
+        IfNode otherNode = other.getIfNode(this.branchId);
+        IfNode cloneNode;
+        if (otherNode != null) {
+            cloneNode = new IfNode(
+                        null,
+                        BranchCoverage.join(this.branchCoverage, otherNode.branchCoverage),
+                        Math.min(distanceFromExecution, otherNode.distanceFromExecution),
+                        this.branchId
+                );
+                this.thenPath.forEach(child -> cloneNode.addThenChild(child.join(other)));
+                this.elsePath.forEach(child -> cloneNode.addElseChild(child.join(other)));
+                return cloneNode;
+        } else {
+            return this.clone();
+        }
     }
 }
 
