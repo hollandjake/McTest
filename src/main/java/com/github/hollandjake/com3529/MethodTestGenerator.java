@@ -40,8 +40,6 @@ public class MethodTestGenerator
         //Write file to the test location
         String fileLocation = String.format("../generatedTests/src/test/java/com/github/hollandjake/com3529/test/%s.java",testClassName);
         WriteToFile.writeToFile(fileLocation,cu.toString());
-
-        System.out.println(cu.toString());
     }
 
     private static MethodTestSuite generate(Method method) {
@@ -56,7 +54,7 @@ public class MethodTestGenerator
             population = NaturalSelection.overPopulation(population);
 
             //Termination condition
-            if (population.get(0).getFitness() < 10) {
+            if (population.get(0).getFitness() == 0) {
                 break;
             } else {
                 System.out.println(population.get(0).getFitness());
