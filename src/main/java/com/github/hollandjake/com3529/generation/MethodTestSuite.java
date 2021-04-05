@@ -1,9 +1,12 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.io.File;
 import java.util.Objects;
 import java.util.Set;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import lombok.Data;
 import lombok.ToString;
 
@@ -33,9 +36,15 @@ public class MethodTestSuite
         }
     }
 
-    public void writeToFile(File file)
+    public void build(ClassOrInterfaceDeclaration classDeclaration, String className, String methodName)
     {
-        tests.forEach(test -> test.writeToFile(file));
+        int testNumber = 0;
+        for (TestCase test : tests) {
+            MethodDeclaration methodDeclaration = classDeclaration.addMethod("test"+testNumber, Modifier.publicModifier().getKeyword());
+            methodDeclaration.addAnnotation(StaticJavaParser.parseAnnotation("@Test"));
+            test.build(methodDeclaration, className, methodName);
+            testNumber++;
+        }
     }
 
     public double getFitness()

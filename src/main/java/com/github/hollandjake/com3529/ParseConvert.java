@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.hollandjake.com3529.utils.ExpressionToString;
+import com.github.hollandjake.com3529.utils.WriteToFile;
 import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
@@ -45,6 +46,11 @@ public class ParseConvert
                 CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources")
         );
         CompilationUnit cu = sourceRoot.parse("", classToTest + ".java");
+
+        //Copies class to another location for Junit tests + POM
+        String fileLocation = String.format("../generatedTests/src/main/java/com/github/hollandjake/com3529/test/%s.java",classToTest);
+        WriteToFile.writeToFile(fileLocation,cu.toString());
+        WriteToFile.writePOMToFile("../generatedTests/pom.xml");
 
         AtomicReference<String> packageName = new AtomicReference<>("");
         cu.getPackageDeclaration().ifPresent(packageDeclaration -> packageName.set(
