@@ -8,9 +8,7 @@ import com.github.hollandjake.com3529.generation.solver.Breed;
 import com.github.hollandjake.com3529.generation.solver.InitialPopulationGenerator;
 import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelection;
 
-import com.github.hollandjake.com3529.utils.WriteToFile;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.hollandjake.com3529.utils.FileTools;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
@@ -22,24 +20,7 @@ public class MethodTestGenerator
     public static void forMethod(Method method)
     {
         MethodTestSuite testSuite = generate(method);
-
-        //Auto create JUnit tests
-        //Create test file with Java Parser
-        String className = method.getExecutableMethod().getDeclaringClass().getSimpleName();
-        String methodName = method.getExecutableMethod().getName();
-        String testClassName = className+methodName.substring(0, 1).toUpperCase() + methodName.substring(1)+"Tests";
-
-        CompilationUnit cu = new CompilationUnit();
-        cu.setPackageDeclaration("com.github.hollandjake.com3529.test");
-        cu.addImport("org.junit.Test");
-        cu.addImport("org.junit.Assert.assertEquals",true,false);
-        ClassOrInterfaceDeclaration classDeclaration = cu.addClass(testClassName);
-
-        testSuite.build(classDeclaration, className, methodName);
-
-        //Write file to the test location
-        String fileLocation = String.format("../generatedTests/src/test/java/com/github/hollandjake/com3529/test/%s.java",testClassName);
-        WriteToFile.writeToFile(fileLocation,cu.toString());
+        FileTools.generateJUnitTests(testSuite,method);
     }
 
     private static MethodTestSuite generate(Method method) {

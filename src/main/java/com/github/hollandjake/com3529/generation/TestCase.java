@@ -31,7 +31,7 @@ public class TestCase
     public void build(MethodDeclaration methodDeclaration, String className, String methodName)
     {
         String statement = String.format("assertEquals(\"%s\", String.valueOf(%s.%s(%s)));", output.toString(), className, methodName, StringUtils.join(inputs, ','));
-        methodDeclaration.setBody(new BlockStmt().addStatement(StaticJavaParser.parseStatement(statement)));
+        methodDeclaration.setBody(new BlockStmt().addStatement(statement));
     }
 
     public boolean execute() {
