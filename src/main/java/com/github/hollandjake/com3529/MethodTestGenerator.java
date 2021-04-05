@@ -8,6 +8,7 @@ import com.github.hollandjake.com3529.generation.solver.Breed;
 import com.github.hollandjake.com3529.generation.solver.InitialPopulationGenerator;
 import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelection;
 
+import com.github.hollandjake.com3529.utils.FileTools;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
@@ -19,8 +20,7 @@ public class MethodTestGenerator
     public static void forMethod(Method method)
     {
         MethodTestSuite testSuite = generate(method);
-        //TODO: Write to file
-        System.out.println(testSuite);
+        FileTools.generateJUnitTests(testSuite);
     }
 
     private static MethodTestSuite generate(Method method) {

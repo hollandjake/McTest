@@ -1,8 +1,10 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.io.File;
 import java.util.logging.Logger;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.apache.commons.lang3.ArrayUtils;
 
 import lombok.AccessLevel;
@@ -10,6 +12,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 @Setter(AccessLevel.PRIVATE)
@@ -25,7 +28,11 @@ public class TestCase
     private Object output;
     private CoverageReport coverageReport;
 
-    public void writeToFile(File file) {}
+    public void build(MethodDeclaration methodDeclaration, String className, String methodName)
+    {
+        String statement = String.format("assertEquals(\"%s\", String.valueOf(%s.%s(%s)));", output.toString(), className, methodName, StringUtils.join(inputs, ','));
+        methodDeclaration.setBody(new BlockStmt().addStatement(statement));
+    }
 
     public boolean execute() {
         if (!executed) {
