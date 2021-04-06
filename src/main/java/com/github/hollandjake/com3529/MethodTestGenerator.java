@@ -18,6 +18,7 @@ public class MethodTestGenerator
 {
     private static final int POPULATION_SIZE = ConfigFactory.load().getInt("Genetics.PopulationSize");
     private static final double TARGET_FITNESS = ConfigFactory.load().getDouble("Genetics.TargetFitness");
+    private static final double MAX_ITERATIONS = ConfigFactory.load().getDouble("Genetics.MaxIterations");
 
     @SneakyThrows
     public static void forMethod(Method method)
@@ -30,27 +31,21 @@ public class MethodTestGenerator
     {
         List<MethodTestSuite> population = InitialPopulationGenerator.generate(method, POPULATION_SIZE);
 
-        while (true)
-        {
-            //Evalute population
+        long iterations = 0;
+        do {
+            //Evaluate population
             population.forEach(MethodTestSuite::execute);
 
             //Select elites
             population = NaturalSelection.overPopulation(population);
 
-            //Termination condition
-            if (population.get(0).getFitness() <= TARGET_FITNESS)
-            {
-                break;
-            }
-            else
-            {
-                System.out.println(population.get(0).getFitness());
-            }
+            //Log fitness
+            System.out.println(population.get(0).getFitness());
 
             //Breed
             population = Breed.repopulate(method, population, POPULATION_SIZE);
-        }
+
+        } while (++iterations < MAX_ITERATIONS && population.get(0).getFitness() > TARGET_FITNESS);
 
         return population.get(0);
     }
