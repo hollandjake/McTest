@@ -88,16 +88,22 @@ public class Breed
         //Uniform mutation
         Set<TestCase> newTestCases = new HashSet<>();
         for (TestCase testCase : tests) {
+            boolean hasChanged = false;
             Object[] newInputs = new Object[testCase.getInputs().length];
             for (int z = 0; z < testCase.getInputs().length; z++) {
                 if (RANDOM.nextDouble() <= MUTATION_PROBABILITY)
                 {
                     newInputs[z] = InputGenerator.generate(testCase.getInputs()[z].getClass());
+                    hasChanged = true;
                 } else {
                     newInputs[z] = testCase.getInputs()[z];
                 }
             }
-            newTestCases.add(new TestCase(testCase.getMethod(), newInputs));
+            if (hasChanged) {
+                newTestCases.add(new TestCase(testCase.getMethod(), newInputs));
+            } else {
+                newTestCases.add(testCase);
+            }
         }
         return newTestCases;
     }

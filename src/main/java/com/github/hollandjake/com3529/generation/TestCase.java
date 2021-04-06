@@ -7,6 +7,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 import lombok.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Data
@@ -43,7 +44,7 @@ public class TestCase
                 CoverageReport coverage = new CoverageReport(method.getMethodTree());
                 Object result = method.getExecutableMethod().invoke(
                         method.getExecutableMethod().getDeclaringClass().newInstance(),
-                        ArrayUtils.add(inputs, coverage)
+                        ArrayUtils.add(SerializationUtils.clone(inputs), coverage)
                 );
                 executed = true;
                 output = result;
