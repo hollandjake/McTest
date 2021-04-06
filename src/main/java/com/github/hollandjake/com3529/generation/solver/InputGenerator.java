@@ -17,7 +17,7 @@ public class InputGenerator
     {
         if (type == Integer.class || type == int.class)
         {
-            return RANDOM.nextInt() % NUMBER_DISTRIBUTION.intValue();
+            return Math.abs(RANDOM.nextInt() % NUMBER_DISTRIBUTION.intValue());
         }
         else if (type == Float.class || type == float.class)
         {

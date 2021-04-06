@@ -18,6 +18,7 @@ public class Breed
 {
     private static final Random RANDOM = new Random(ConfigFactory.load().getInt("Genetics.Seed.Breed"));
     private static final double CROSSOVER_PROBABILITY = ConfigFactory.load().getDouble("Genetics.CrossoverProbability");
+    private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
     public static List<MethodTestSuite> repopulate(Method method,
             List<MethodTestSuite> oldPopulation,
@@ -45,7 +46,10 @@ public class Breed
 
     private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)
     {
-        int maxTests = Math.min(parentA.length, parentB.length);
+        //Uniform crossover
+        //TODO: merge sets then grab random subset
+
+        int maxTests = Math.max(parentA.length, parentB.length);
 
         Set<TestCase> testCases = new HashSet<>();
 
@@ -53,11 +57,27 @@ public class Breed
         {
             if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY)
             {
-                testCases.add(parentB[i]);
+                if (i < parentB.length) {
+                    testCases.add(parentB[i]);
+                }
+                //Chance to add both genes
+                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2) {
+                    if (i < parentA.length) {
+                        testCases.add(parentA[i]);
+                    }
+                }
             }
             else
             {
-                testCases.add(parentA[i]);
+                if (i < parentA.length) {
+                    testCases.add(parentA[i]);
+                }
+                //Chance to add both genes
+                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2) {
+                    if (i < parentB.length) {
+                        testCases.add(parentB[i]);
+                    }
+                }
             }
         }
         return testCases;
@@ -65,7 +85,20 @@ public class Breed
 
     private static Set<TestCase> mutate(Set<TestCase> tests)
     {
-        //TODO: Implement mutation
-        return tests;
+        //Uniform mutation
+        Set<TestCase> newTestCases = new HashSet<>();
+        for (TestCase testCase : tests) {
+            Object[] newInputs = new Object[testCase.getInputs().length];
+            for (int z = 0; z < testCase.getInputs().length; z++) {
+                if (RANDOM.nextDouble() <= MUTATION_PROBABILITY)
+                {
+                    newInputs[z] = InputGenerator.generate(testCase.getInputs()[z].getClass());
+                } else {
+                    newInputs[z] = testCase.getInputs()[z];
+                }
+            }
+            newTestCases.add(new TestCase(testCase.getMethod(), newInputs));
+        }
+        return newTestCases;
     }
 }

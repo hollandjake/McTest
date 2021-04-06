@@ -6,6 +6,8 @@ import com.typesafe.config.ConfigFactory;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class BranchCoverage implements Cloneable
 {
@@ -130,7 +132,7 @@ public class BranchCoverage implements Cloneable
             tempBranchNum = this.branchNum;
         }
 
-        if (this.result.equals(other.result))
+        if (Objects.equals(this.result, other.result))
         {
             tempResult = this.result;
         }
