@@ -40,6 +40,8 @@ public class ParseConvert
 {
     private final Map<Method, Tree> methodBranchTrees;
     private final Class<?> clazz;
+    private final File fileUnderTest;
+    private final String packageName;
 
     @SneakyThrows
     public static ParseConvert parse(String classToTest)
@@ -49,10 +51,12 @@ public class ParseConvert
         SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
 
+        AtomicReference<String> packageName = new AtomicReference<>("");
         AtomicReference<String> classPath = new AtomicReference<>("");
-        cu.getPackageDeclaration().ifPresent(packageDeclaration -> classPath.set(
-                String.format("%s.%s", packageDeclaration.getNameAsString(), fileToTest.getName().replace(".java", ""))
-        ));
+        cu.getPackageDeclaration().ifPresent(packageDeclaration -> {
+            packageName.set(packageDeclaration.getNameAsString());
+            classPath.set(String.format("%s.%s", packageName.get(), fileToTest.getName().replace(".java", "")));
+        });
 
         //Add import to class
         Set<Class<?>> imports = new HashSet<>();
@@ -135,7 +139,7 @@ public class ParseConvert
               .filter(method -> method.getDeclaringClass() == clazz)
               .forEach(method -> methodIterables.put(method, methodStringIterables.get(method.getName())));
 
-        return new ParseConvert(methodIterables, clazz);
+        return new ParseConvert(methodIterables, clazz, fileToTest, packageName.get());
     }
 
     public Tree getBranchTree(Method method)

@@ -45,7 +45,7 @@ public class InitialPopulationGenerator
 
     private static MethodTestSuite createSuite(Method method, List<Object[]> inputs)
     {
-        Set<TestCase> tests = inputs.stream()
+        Set<TestCase> tests = inputs.parallelStream()
                                     .map(inputSequence -> createTestCase(method, inputSequence))
                                     .collect(Collectors.toSet());
 

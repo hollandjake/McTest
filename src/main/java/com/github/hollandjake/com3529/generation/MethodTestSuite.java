@@ -25,7 +25,7 @@ public class MethodTestSuite
         {
             coverageReport = new CoverageReport(method.getMethodTree());
 
-            tests.stream()
+            tests.parallelStream()
                  .map(test -> {
                      test.execute();
                      return test.getCoverageReport();

@@ -1,12 +1,15 @@
 package com.github.hollandjake.com3529.generation;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.google.common.util.concurrent.AtomicDouble;
 import com.typesafe.config.ConfigFactory;
 
 import lombok.Data;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Data
 public class BranchCoverage implements Cloneable
@@ -31,8 +34,12 @@ public class BranchCoverage implements Cloneable
 
     private static BranchCoverage from(int branchNum, BinaryExpr expr)
     {
-        Double leftNum = evaluate(expr.getLeft());
-        Double rightNum = evaluate(expr.getRight());
+        Double leftNum = expr.getLeft().toDoubleLiteralExpr()
+                             .map(DoubleLiteralExpr::asDouble)
+                             .orElseGet(() -> evaluate(expr.getLeft()));
+        Double rightNum = expr.getRight().toDoubleLiteralExpr()
+                             .map(DoubleLiteralExpr::asDouble)
+                             .orElseGet(() -> evaluate(expr.getRight()));
 
         boolean result;
         double truthDistance;

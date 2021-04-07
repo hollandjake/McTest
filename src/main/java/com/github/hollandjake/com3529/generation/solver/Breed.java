@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
@@ -24,10 +26,7 @@ public class Breed
             List<MethodTestSuite> oldPopulation,
             int populationSize)
     {
-        List<MethodTestSuite> newPopulation = new ArrayList<>(oldPopulation);
-
-        for (int p = oldPopulation.size(); p < populationSize; p++)
-        {
+        return IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
             MethodTestSuite parentA = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
             MethodTestSuite parentB = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
 
@@ -36,12 +35,8 @@ public class Breed
 
             Set<TestCase> testCases = mutate(crossover(parentATests, parentBTests));
 
-            MethodTestSuite newSuite = new MethodTestSuite(method, testCases);
-
-            newPopulation.add(newSuite);
-        }
-
-        return newPopulation;
+            return new MethodTestSuite(method, testCases);
+        }).collect(Collectors.toList());
     }
 
     private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)

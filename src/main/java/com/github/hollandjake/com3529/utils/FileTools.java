@@ -1,76 +1,105 @@
 package com.github.hollandjake.com3529.utils;
 
-import com.github.hollandjake.com3529.generation.Method;
-import com.github.hollandjake.com3529.generation.MethodTestSuite;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class FileTools {
+import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
-    public static void generateJUnitTests(MethodTestSuite methodTestSuite)
+import org.apache.commons.io.FileUtils;
+
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@UtilityClass
+public class FileTools
+{
+    @SneakyThrows
+    public static void generateJUnitTests(MethodTestSuite methodTestSuite,
+            String packageName,
+            Path outputPath)
     {
+        outputPath = outputPath.toAbsolutePath();
         //Grab details about class
-        String className = methodTestSuite.getMethod().getExecutableMethod().getDeclaringClass().getSimpleName();
-        String methodName = methodTestSuite.getMethod().getExecutableMethod().getName();
-        String testClassName = className+methodName.substring(0, 1).toUpperCase() + methodName.substring(1)+"Tests";
-        String packageName = methodTestSuite.getMethod().getExecutableMethod().getDeclaringClass().getPackage().getName();
+        Method method = methodTestSuite.getMethod().getExecutableMethod();
+        String className = method.getDeclaringClass().getSimpleName();
+        String methodName = method.getName();
+        String testClassName = className + methodName.substring(0, 1).toUpperCase() + methodName.substring(1) + "Tests";
+
+        log.info("Tests generated for \"{}.{}.{}\"", packageName, className, methodName);
 
         //Create the JUnit tests
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration(packageName);
         cu.addImport("org.junit.Test");
-        cu.addImport("org.junit.Assert.assertEquals",true,false);
+        cu.addImport("org.junit.Assert.assertEquals", true, false);
         ClassOrInterfaceDeclaration classDeclaration = cu.addClass(testClassName);
         methodTestSuite.build(classDeclaration, className, methodName);
 
         //Create new maven project with JUnit tests
-        writeToFile(String.format("../generatedTests/src/test/java/%s/%s.java", StringUtils.join(packageName, '/'), testClassName), cu.toString());
-        String dest = String.format("../generatedTests/src/main/java/%s/%s.java", StringUtils.join(packageName, '/'), className);
-        String source = String.format("src/main/resources/%s.java", className);
-        copyFile(source, dest);
-        writePOMToFile("../generatedTests/pom.xml", packageName);
+        URI root = outputPath.toUri();
+        File rootFile = new File(root);
+        FileUtils.deleteDirectory(rootFile);
+        rootFile.mkdirs();
+        String packagePath = packageName.replace(".", "/") + '/';
+        URI mainJava = root.resolve("src/main/java/").resolve(packagePath);
+        URI testJava = root.resolve("src/test/java/").resolve(packagePath);
+
+        File mainFile = new File(mainJava.resolve(className + ".java"));
+        File testFile = new File(testJava.resolve(testClassName + ".java"));
+        File pomFile = new File(root.resolve("pom.xml"));
+
+        writeToFile(testFile, cu.toString());
+        copyFile(methodTestSuite.getMethod().getFileUnderTest(), mainFile);
+        writePOMToFile(pomFile, packageName);
+
+        log.info("Tests saved to {}", rootFile);
     }
 
-    public static void writeToFile(String path, String content)
+    public static void writeToFile(File file, String content)
     {
-        try {
-            File file = new File(path);
+        try
+        {
             new File(file.getParent()).mkdirs();
             file.createNewFile();
-            FileWriter fileWriter = new FileWriter(path);
+            FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(content);
             fileWriter.close();
-        } catch (IOException e) { e.printStackTrace(); }
+        }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
-    public static void copyFile(String source, String dest)
+    public static void copyFile(File source, File dest)
     {
-        File dirFrom = new File(source);
-        File dirTo = new File(dest);
-        try {
-            new File(dirTo.getParent()).mkdirs();
-            dirTo.createNewFile();
-            Files.copy(dirFrom.toPath(), dirTo.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) { e.printStackTrace(); }
+        try
+        {
+            new File(dest.getParent()).mkdirs();
+            dest.createNewFile();
+            Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
-    public static void writePOMToFile(String path, String packageName)
+    public static void writePOMToFile(File path, String packageName)
     {
         String content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
                 "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
+                +
                 "    <modelVersion>4.0.0</modelVersion>\n" +
                 "\n" +
                 "    <artifactId>GENERATED-TESTS</artifactId>\n" +
-                "    <groupId>"+packageName+"</groupId>\n" +
+                "    <groupId>" + packageName + "</groupId>\n" +
                 "    <version>1.0.0</version>\n" +
                 "\n" +
                 "    <properties>\n" +
