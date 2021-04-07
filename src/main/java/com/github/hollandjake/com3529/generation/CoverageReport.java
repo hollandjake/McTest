@@ -1,6 +1,8 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.utils.tree.IfNode;
@@ -45,13 +47,18 @@ public class CoverageReport
     {
         Set<String> branches = new HashSet<>();
         Iterator<IfNode> iterator = methodTree.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             IfNode node = iterator.next();
-            if (node.getBranchCoverage() != null) {
-                if (node.getBranchCoverage().getResult()) {
-                    branches.add(node.getBranchId()+"t");
-                } else {
-                    branches.add(node.getBranchId()+"f");
+            if (node.getBranchCoverage() != null)
+            {
+                if (node.getBranchCoverage().getResult())
+                {
+                    branches.add(node.getBranchId() + "t");
+                }
+                else
+                {
+                    branches.add(node.getBranchId() + "f");
                 }
             }
         }

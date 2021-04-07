@@ -1,6 +1,5 @@
 package com.github.hollandjake.com3529.generation.solver;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -18,7 +17,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Breed
 {
-    private static final Random RANDOM = new Random(ConfigFactory.load().getInt("Genetics.Seed.Breed"));
+    private static final Random RANDOM = new Random();
     private static final double CROSSOVER_PROBABILITY = ConfigFactory.load().getDouble("Genetics.CrossoverProbability");
     private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
@@ -52,24 +51,30 @@ public class Breed
         {
             if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY)
             {
-                if (i < parentB.length) {
+                if (i < parentB.length)
+                {
                     testCases.add(parentB[i]);
                 }
                 //Chance to add both genes
-                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2) {
-                    if (i < parentA.length) {
+                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2)
+                {
+                    if (i < parentA.length)
+                    {
                         testCases.add(parentA[i]);
                     }
                 }
             }
             else
             {
-                if (i < parentA.length) {
+                if (i < parentA.length)
+                {
                     testCases.add(parentA[i]);
                 }
                 //Chance to add both genes
-                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2) {
-                    if (i < parentB.length) {
+                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2)
+                {
+                    if (i < parentB.length)
+                    {
                         testCases.add(parentB[i]);
                     }
                 }
@@ -82,21 +87,28 @@ public class Breed
     {
         //Uniform mutation
         Set<TestCase> newTestCases = new HashSet<>();
-        for (TestCase testCase : tests) {
+        for (TestCase testCase : tests)
+        {
             boolean hasChanged = false;
             Object[] newInputs = new Object[testCase.getInputs().length];
-            for (int z = 0; z < testCase.getInputs().length; z++) {
+            for (int z = 0; z < testCase.getInputs().length; z++)
+            {
                 if (RANDOM.nextDouble() <= MUTATION_PROBABILITY)
                 {
                     newInputs[z] = InputGenerator.generate(testCase.getInputs()[z].getClass());
                     hasChanged = true;
-                } else {
+                }
+                else
+                {
                     newInputs[z] = testCase.getInputs()[z];
                 }
             }
-            if (hasChanged) {
+            if (hasChanged)
+            {
                 newTestCases.add(new TestCase(testCase.getMethod(), newInputs));
-            } else {
+            }
+            else
+            {
                 newTestCases.add(testCase);
             }
         }

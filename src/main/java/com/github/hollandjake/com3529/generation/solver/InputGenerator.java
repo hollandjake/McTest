@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class InputGenerator
 {
-    private static final Random RANDOM = new Random(ConfigFactory.load().getInt("Genetics.Seed.Input"));
+    private static final Random RANDOM = new Random();
     private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber(
             "Genetics.Initial.InputDistribution");
 

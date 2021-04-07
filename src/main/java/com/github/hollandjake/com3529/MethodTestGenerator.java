@@ -26,7 +26,10 @@ public class MethodTestGenerator
     @SneakyThrows
     public static void forMethod(Method method, String packageName, Path outputPath)
     {
-        log.info("Generating tests for \"{}.{}.{}\"", packageName, method.getExecutableMethod().getDeclaringClass().getSimpleName(), method.getExecutableMethod().getName());
+        log.info("Generating tests for \"{}.{}.{}\"",
+                 packageName,
+                 method.getExecutableMethod().getDeclaringClass().getSimpleName(),
+                 method.getExecutableMethod().getName());
         MethodTestSuite testSuite = generate(method);
         FileTools.generateJUnitTests(testSuite, packageName, outputPath);
     }
@@ -51,7 +54,7 @@ public class MethodTestGenerator
                 return population.get(0);
             }
             //Log fitness
-            log.debug("Best Fitness: "+ population.get(0).getFitness());
+            log.debug("Best Fitness: " + population.get(0).getFitness());
 
             //Breed
             population = Breed.repopulate(method, population, POPULATION_SIZE);
