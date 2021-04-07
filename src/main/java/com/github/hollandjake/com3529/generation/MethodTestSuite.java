@@ -34,13 +34,10 @@ public class MethodTestSuite
 
             Set<TestCase> minimisedTests = new HashSet<>();
             Set<String> branchesCovered = new HashSet<>();
-            int previousSize = branchesCovered.size();
             for (TestCase testCase : orderedTests) {
-                branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered());
-                if (previousSize != branchesCovered.size()) {
+                if (branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered())) {
                     //If it has increased the branches covered then add it
                     minimisedTests.add(testCase);
-                    previousSize = branchesCovered.size();
                 }
             }
             tests = minimisedTests;
