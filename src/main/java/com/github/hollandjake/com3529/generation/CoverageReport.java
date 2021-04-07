@@ -1,7 +1,9 @@
 package com.github.hollandjake.com3529.generation;
 
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.Expression;
 
@@ -37,5 +39,23 @@ public class CoverageReport
     public CoverageReport join(CoverageReport coverageReport)
     {
         return new CoverageReport(methodTree.join(coverageReport.getMethodTree()));
+    }
+
+    public Set<String> getBranchesCovered()
+    {
+        Set<String> branches = new HashSet<>();
+        Iterator<IfNode> iterator = methodTree.iterator();
+        while(iterator.hasNext()) {
+            IfNode node = iterator.next();
+            if (node.getBranchCoverage() != null) {
+                if (node.getBranchCoverage().getResult()) {
+                    branches.add(node.getBranchId()+"t");
+                } else {
+                    branches.add(node.getBranchId()+"f");
+                }
+            }
+        }
+
+        return branches;
     }
 }

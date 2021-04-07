@@ -1,13 +1,13 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Data
@@ -15,7 +15,8 @@ public class MethodTestSuite
 {
     @ToString.Exclude
     private final Method method;
-    private final Set<TestCase> tests;
+    @NonNull
+    private Set<TestCase> tests;
     private boolean executed = false;
     private CoverageReport coverageReport;
 
@@ -25,13 +26,29 @@ public class MethodTestSuite
         {
             coverageReport = new CoverageReport(method.getMethodTree());
 
-            tests.parallelStream()
-                 .map(test -> {
-                     test.execute();
-                     return test.getCoverageReport();
-                 })
-                 .filter(Objects::nonNull)
-                 .forEach(cr -> coverageReport = coverageReport.join(cr));
+            tests.parallelStream().forEach(TestCase::execute);
+
+            //Order testcases set by fitness
+            List<TestCase> orderedTests = new ArrayList<>(tests);
+            orderedTests.sort(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()));
+
+            Set<TestCase> minimisedTests = new HashSet<>();
+            Set<String> branchesCovered = new HashSet<>();
+            int previousSize = branchesCovered.size();
+            for (TestCase testCase : orderedTests) {
+                branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered());
+                if (previousSize != branchesCovered.size()) {
+                    //If it has increases the branches covered then add it
+                    minimisedTests.add(testCase);
+                    previousSize = branchesCovered.size();
+                }
+            }
+            tests = minimisedTests;
+
+
+            for (TestCase testCase : tests) {
+                coverageReport = coverageReport.join(testCase.getCoverageReport());
+            }
             executed = true;
         }
     }
