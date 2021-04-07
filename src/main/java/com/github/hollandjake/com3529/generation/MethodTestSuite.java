@@ -1,10 +1,10 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
@@ -31,28 +31,33 @@ public class MethodTestSuite
         {
             coverageReport = new CoverageReport(method.getMethodTree());
 
-            tests.parallelStream().forEach(TestCase::execute);
-
             //Order testcases set by fitness
-            List<TestCase> orderedTests = new ArrayList<>(tests);
-            orderedTests.sort(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()));
+            List<TestCase> orderedTests = tests
+                    .parallelStream()
+                    .filter(testCase -> {
+                        testCase.execute();
+                        return testCase.isExecuted();
+                    })
+                    .sorted(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()))
+                    .collect(Collectors.toList());
 
             Set<TestCase> minimisedTests = new HashSet<>();
             Set<String> branchesCovered = new HashSet<>();
-            for (TestCase testCase : orderedTests)
-            {
+            orderedTests.forEach(testCase -> {
                 if (branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered()))
                 {
                     //If it has increased the branches covered then add it
                     minimisedTests.add(testCase);
                 }
-            }
+            });
             tests = minimisedTests;
 
-            for (TestCase testCase : tests)
-            {
-                coverageReport = coverageReport.join(testCase.getCoverageReport());
-            }
+            coverageReport = tests
+                    .stream()
+                    .map(TestCase::getCoverageReport)
+                    .reduce(CoverageReport::join)
+                    .orElseGet(() -> new CoverageReport(method.getMethodTree()));
+
             executed = true;
         }
     }
