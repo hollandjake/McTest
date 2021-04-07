@@ -38,7 +38,7 @@ public class MethodTestSuite
             for (TestCase testCase : orderedTests) {
                 branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered());
                 if (previousSize != branchesCovered.size()) {
-                    //If it has increases the branches covered then add it
+                    //If it has increased the branches covered then add it
                     minimisedTests.add(testCase);
                     previousSize = branchesCovered.size();
                 }
