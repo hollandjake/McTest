@@ -2,6 +2,7 @@ package com.github.hollandjake.com3529.generation;
 
 import java.util.Objects;
 
+import com.github.hollandjake.com3529.generation.solver.fitness.FitnessMetric;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -12,17 +13,17 @@ import lombok.Data;
 @Data
 public class BranchCoverage implements Cloneable
 {
-    private static final int K = ConfigFactory.load().getInt("BranchCoverage.K");
+    public static final int K = ConfigFactory.load().getInt("BranchCoverage.K");
     private final int branchNum;
     private final Boolean result;
     private final Double truthDistance;
     private final Double falseDistance;
 
-    public static BranchCoverage from(int branchNum, Expression expr)
+    public static BranchCoverage from(int conditionId, Expression expr)
     {
         if (expr instanceof BinaryExpr)
         {
-            return from(branchNum, (BinaryExpr) expr);
+            return from(conditionId, (BinaryExpr) expr);
         }
         throw new UnsupportedOperationException(String.format(
                 "Expression of type \"%s\" not supported",
@@ -30,66 +31,57 @@ public class BranchCoverage implements Cloneable
         ));
     }
 
-    private static BranchCoverage from(int branchNum, BinaryExpr expr)
+    private static BranchCoverage from(int conditionId, BinaryExpr expr)
     {
+        BinaryExpr.Operator operator = expr.getOperator();
+        if (operator == BinaryExpr.Operator.AND)
+        {
+            BranchCoverage left = from(conditionId, expr.getLeft());
+            BranchCoverage right = from(conditionId, expr.getRight());
+            boolean result = left.result && right.result;
+            double falseDistance = Math.min(left.falseDistance, right.falseDistance);
+            double truthDistance = Math.max(left.truthDistance, right.truthDistance);
+            return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        }
+        else if (operator == BinaryExpr.Operator.OR)
+        {
+            BranchCoverage left = from(conditionId, expr.getLeft());
+            BranchCoverage right = from(conditionId, expr.getRight());
+            boolean result = left.result || right.result;
+            double falseDistance = left.falseDistance + right.falseDistance;
+            double truthDistance = left.truthDistance + right.truthDistance;
+            return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        }
+
         Double leftNum = expr.getLeft().toDoubleLiteralExpr()
                              .map(DoubleLiteralExpr::asDouble)
                              .orElseGet(() -> evaluate(expr.getLeft()));
         Double rightNum = expr.getRight().toDoubleLiteralExpr()
                               .map(DoubleLiteralExpr::asDouble)
                               .orElseGet(() -> evaluate(expr.getRight()));
+        FitnessMetric metric = FitnessMetric.getMetricFor(leftNum, rightNum);
 
-        boolean result;
-        double truthDistance;
-        double falseDistance;
 
-        switch (expr.getOperator())
+        switch (operator)
         {
             case EQUALS:
-                result = leftNum.equals(rightNum);
-                truthDistance = Math.abs(leftNum - rightNum);
-                falseDistance = truthDistance == 0 ? K : 0;
-                break;
+                return metric.equals(conditionId, leftNum, rightNum);
             case NOT_EQUALS:
-                result = !leftNum.equals(rightNum);
-                falseDistance = Math.abs(leftNum - rightNum);
-                truthDistance = falseDistance == 0 ? K : 0;
-                break;
+                return metric.notEquals(conditionId, leftNum, rightNum);
             case LESS:
-                result = leftNum < rightNum;
-                falseDistance = result ? rightNum - leftNum + K : 0;
-                truthDistance = result ? 0 : leftNum - rightNum + K;
-                break;
+                return metric.less(conditionId, leftNum, rightNum);
             case LESS_EQUALS:
-                result = leftNum <= rightNum;
-                falseDistance = result ? rightNum - leftNum + K : 0;
-                truthDistance = result ? 0 : leftNum - rightNum + K;
-                break;
+                return metric.lessEquals(conditionId, leftNum, rightNum);
             case GREATER:
-                result = leftNum > rightNum;
-                falseDistance = result ? leftNum - rightNum + K : 0;
-                truthDistance = result ? 0 : rightNum - leftNum + K;
-                break;
+                return metric.greater(conditionId, leftNum, rightNum);
             case GREATER_EQUALS:
-                result = leftNum >= rightNum;
-                falseDistance = result ? leftNum - rightNum + K : 0;
-                truthDistance = result ? 0 : rightNum - leftNum + K;
-                break;
-            case AND:
-                BranchCoverage left = from(branchNum, expr.getLeft());
-                BranchCoverage right = from(branchNum, expr.getRight());
-                result = left.result && right.result;
-                falseDistance = Math.min(left.falseDistance, right.falseDistance);
-                truthDistance = Math.max(left.truthDistance, right.truthDistance);
-                break;
+                return metric.greaterEquals(conditionId, leftNum, rightNum);
             default:
                 throw new UnsupportedOperationException(String.format(
                         "Operation \"%s\" not supported!",
                         expr.getOperator()
                 ));
         }
-
-        return new BranchCoverage(branchNum, result, truthDistance, falseDistance);
     }
 
     private static double evaluate(Expression expression)

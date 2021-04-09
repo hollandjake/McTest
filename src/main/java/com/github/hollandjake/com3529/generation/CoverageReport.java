@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 
 import lombok.Data;
