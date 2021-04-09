@@ -35,12 +35,26 @@ All a human tester would need to do is run our jar file on the class to be teste
   <ol>
     <li>
       <a href="#about-mctest">About McTest</a>
+      <ul>
+        <li><a href="#mctests-automation">Automation</a></li>
+      </ul
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#the-team">The Team</a>
+    </li>
+    <li>
+      <a href="#how-to-install-and-run-mctest">How to install and run McTest</a>
       <ul>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#usage">Usage</a></li>
+        <li><a href="#maven-dependencies">Maven Dependencies </a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#worked-examples-of-mctest">Worked Examples of McTest</a>
+      <ul>
+        <li><a href="#trianglejava">Triangle.java</a></li>
+        <li><a href="#bmicalculatorjava">BMICalculator.java</a></li>
       </ul>
     </li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
