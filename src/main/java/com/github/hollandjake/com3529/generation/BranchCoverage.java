@@ -75,6 +75,13 @@ public class BranchCoverage implements Cloneable
                 falseDistance = result ? leftNum - rightNum + K : 0;
                 truthDistance = result ? 0 : rightNum - leftNum + K;
                 break;
+            case AND:
+                BranchCoverage left = from(branchNum, expr.getLeft());
+                BranchCoverage right = from(branchNum, expr.getRight());
+                result = left.result && right.result;
+                falseDistance = Math.min(left.falseDistance, right.falseDistance);
+                truthDistance = Math.max(left.truthDistance, right.truthDistance);
+                break;
             default:
                 throw new UnsupportedOperationException(String.format(
                         "Operation \"%s\" not supported!",

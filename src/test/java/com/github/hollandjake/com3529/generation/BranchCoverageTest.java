@@ -156,6 +156,30 @@ public class BranchCoverageTest
     }
 
     @Test
+    public void testFromGreaterEqualsANDLessTrue()
+    {
+        double left = 6;
+        double middleLeft = 6;
+        double middleRight = 1;
+        double right = 6;
+        Expression expression = StaticJavaParser.parseExpression(String.format("%s >= %s && %s < %s", left, middleLeft, middleRight, right));
+        BranchCoverage expected = new BranchCoverage(0, true, 0d, 1d);
+        assertEquals(expected, BranchCoverage.from(0, expression));
+    }
+
+    @Test
+    public void testFromGreaterEqualsANDLessFalse()
+    {
+        double left = 6;
+        double middleLeft = 6;
+        double middleRight = 5;
+        double right = 1;
+        Expression expression = StaticJavaParser.parseExpression(String.format("%s >= %s && %s < %s", left, middleLeft, middleRight, right));
+        BranchCoverage expected = new BranchCoverage(0, false, 5d, 0d);
+        assertEquals(expected, BranchCoverage.from(0, expression));
+    }
+
+    @Test
     public void testJoinLeftAndRight()
     {
         BranchCoverage left = new BranchCoverage(0, true, 1d,0d);
