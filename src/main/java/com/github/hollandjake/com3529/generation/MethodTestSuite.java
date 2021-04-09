@@ -67,11 +67,15 @@ public class MethodTestSuite
         int testNumber = 0;
         for (TestCase test : tests)
         {
-            MethodDeclaration methodDeclaration = classDeclaration.addMethod("test" + testNumber,
-                                                                             Modifier.publicModifier().getKeyword());
-            methodDeclaration.addAnnotation(StaticJavaParser.parseAnnotation("@Test"));
-            test.build(methodDeclaration, className, methodName);
-            testNumber++;
+            if (test.getOutput() != null)
+            {
+                MethodDeclaration methodDeclaration = classDeclaration.addMethod("test" + testNumber,
+                                                                                 Modifier.publicModifier()
+                                                                                         .getKeyword());
+                methodDeclaration.addAnnotation(StaticJavaParser.parseAnnotation("@Test"));
+                test.build(methodDeclaration, className, methodName);
+                testNumber++;
+            }
         }
     }
 

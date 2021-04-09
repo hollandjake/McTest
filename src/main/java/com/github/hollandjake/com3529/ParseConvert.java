@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.github.hollandjake.com3529.generation.BranchCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.hollandjake.com3529.utils.ExpressionToString;
 import com.github.hollandjake.com3529.utils.tree.IfNode;
@@ -22,6 +23,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -66,7 +68,7 @@ public class ParseConvert
 
         cu = (CompilationUnit) cu.accept(new ModifierVisitor<Tree>()
         {
-            private final AtomicInteger branchNum = new AtomicInteger();
+            private final AtomicInteger conditionNum = new AtomicInteger();
             private final Deque<Boolean> truthPathStack = new ArrayDeque<>();
 
             @Override
@@ -78,7 +80,7 @@ public class ParseConvert
                             CoverageReport.class.getSimpleName() + " coverage"
                     );
                     n.addParameter(newParameter);
-                    branchNum.set(0);
+                    conditionNum.set(0);
                     truthPathStack.clear();
                     Tree root = new Tree();
                     Visitable newNode = super.visit(n, root);
@@ -92,15 +94,15 @@ public class ParseConvert
             public Visitable visit(IfStmt n, Tree parentNode)
             {
                 Expression expression = n.getCondition();
-                int branchId = this.branchNum.getAndIncrement();
+                int conditionId = this.conditionNum.getAndIncrement();
                 Expression newExpression = StaticJavaParser.parseExpression(String.format(
                         "coverage.cover(%d,%s)",
-                        branchId,
+                        conditionId,
                         ExpressionToString.toString(expression, imports)
                 ));
                 n.setCondition(newExpression);
 
-                IfNode self = new IfNode(parentNode, branchId);
+                IfNode self = new IfNode(parentNode, conditionId);
                 if (parentNode instanceof IfNode)
                 {
                     if (truthPathStack.peek() == Boolean.TRUE)
