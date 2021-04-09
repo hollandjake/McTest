@@ -24,5 +24,6 @@ jobs:
       - run: mvn --batch-mode --update-snapshots verify
       - uses: ncipollo/release-action@v1
         with:
+            allowUpdates: true
             artifact: "target/TestGenerator.jar"
             token: ${{ secrets.GITHUB_TOKEN }}
