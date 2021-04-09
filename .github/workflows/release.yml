@@ -1,9 +1,9 @@
 name: Java CI
 
 on:
-  pull_request:
-    branches:
-      - master
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -22,3 +22,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - run: mvn --batch-mode --update-snapshots verify
+      - uses: ncipollo/release-action@v1
+        with:
+            allowUpdates: true
+            artifacts: "target/TestGenerator.jar"
+            token: ${{ secrets.GITHUB_TOKEN }}
