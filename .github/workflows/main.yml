@@ -30,4 +30,3 @@ jobs:
         with:
           name: Package
           path: target/TestGenerator.jar
-          access-token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
