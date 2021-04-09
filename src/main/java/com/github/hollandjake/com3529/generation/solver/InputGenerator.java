@@ -21,11 +21,11 @@ public class InputGenerator
         }
         else if (type == Float.class || type == float.class)
         {
-            return RANDOM.nextFloat() % NUMBER_DISTRIBUTION.floatValue();
+            return RANDOM.nextFloat() * NUMBER_DISTRIBUTION.floatValue();
         }
         else if (type == Double.class || type == double.class)
         {
-            return RANDOM.nextDouble() % NUMBER_DISTRIBUTION.doubleValue();
+            return RANDOM.nextDouble() * NUMBER_DISTRIBUTION.doubleValue();
         }
         else if (type == Long.class || type == long.class)
         {
