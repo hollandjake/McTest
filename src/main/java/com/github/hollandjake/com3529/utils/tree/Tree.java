@@ -31,11 +31,11 @@ public class Tree implements Cloneable, Iterable<IfNode>
         child.setParentNode(this);
     }
 
-    public IfNode getIfNode(int branchId)
+    public ConditionNode getConditionNode(int conditionId)
     {
         for (IfNode child : getChildren())
         {
-            IfNode found = child.getIfNode(branchId);
+            ConditionNode found = child.getConditionNode(conditionId);
             if (found != null)
             {
                 return found;
@@ -44,11 +44,22 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return null;
     }
 
-    public IfNode replaceIfNode(int branchId, IfNode newNode)
+    public IfNode getIfNode(int ifId)
+    {
+        for (IfNode child : getChildren()) {
+            IfNode found = child.getIfNode(ifId);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
+    }
+
+    public IfNode replaceConditionNode(int conditionId, IfNode newNode)
     {
         AtomicReference<IfNode> replacement = new AtomicReference<>();
         children.replaceAll(child -> {
-            IfNode replaced = child.replaceIfNode(branchId, newNode);
+            IfNode replaced = child.replaceConditionNode(conditionId, newNode);
             if (replaced != null)
             {
                 replacement.set(replaced);
@@ -93,6 +104,10 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return 0d; //Skip this node
     }
 
+    public double getFitness(boolean truthy) {
+        return 0d;
+    }
+
     public Tree join(Tree other)
     {
         Tree cloneNode = new Tree();
@@ -100,5 +115,10 @@ public class Tree implements Cloneable, Iterable<IfNode>
         children.forEach(child -> cloneNode.addChild(child.join(other)));
 
         return cloneNode;
+    }
+
+    protected double getFitnessFor(IfNode ifNode)
+    {
+        return 0;
     }
 }

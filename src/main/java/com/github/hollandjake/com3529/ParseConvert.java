@@ -5,18 +5,21 @@ import java.lang.reflect.Method;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.github.hollandjake.com3529.generation.BranchCoverage;
+import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
-import com.github.hollandjake.com3529.utils.ExpressionToString;
+import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
@@ -68,8 +71,10 @@ public class ParseConvert
 
         cu = (CompilationUnit) cu.accept(new ModifierVisitor<Tree>()
         {
+            private final AtomicInteger ifNum = new AtomicInteger();
             private final AtomicInteger conditionNum = new AtomicInteger();
             private final Deque<Boolean> truthPathStack = new ArrayDeque<>();
+            private final AtomicBoolean insideIfCondition = new AtomicBoolean();
 
             @Override
             public Visitable visit(MethodDeclaration n, Tree treeParent)
@@ -80,6 +85,7 @@ public class ParseConvert
                             CoverageReport.class.getSimpleName() + " coverage"
                     );
                     n.addParameter(newParameter);
+                    ifNum.set(0);
                     conditionNum.set(0);
                     truthPathStack.clear();
                     Tree root = new Tree();
@@ -91,18 +97,51 @@ public class ParseConvert
             }
 
             @Override
+            public Visitable visit(BinaryExpr n, Tree ifNode) {
+                if (insideIfCondition.get())
+                {
+                    try
+                    {
+                        //Check operator is supported
+                        ConditionCoverage.from(0, 0d, 0d, n.getOperator());
+
+                        int conditionId = this.conditionNum.getAndIncrement();
+                        if (ifNode instanceof IfNode)
+                        {
+                            ((IfNode) ifNode).addCondition(new ConditionNode(conditionId));
+                        }
+
+                        imports.add(BinaryExpr.class);
+                        imports.add(BinaryExpr.Operator.class);
+                        return StaticJavaParser.parseExpression(String.format(
+                                "coverage.cover(%d, %s, %s, %s)",
+                                conditionId,
+                                n.getLeft().accept(this, ifNode),
+                                n.getRight().accept(this, ifNode),
+                                String.format("BinaryExpr.Operator.%s", n.getOperator().name())
+                        ));
+                    }
+                    catch (UnsupportedOperationException e)
+                    {
+                        Expression left = (Expression) n.getLeft().accept(this, ifNode);
+                        if (ifNode instanceof IfNode)
+                        {
+                            ((IfNode) ifNode).addConditionOperator(n.getOperator());
+                        }
+                        Expression right = (Expression) n.getRight().accept(this, ifNode);
+                        n.setLeft(left);
+                        n.setRight(right);
+                        return n;
+                    }
+                } else {
+                    return super.visit(n, ifNode);
+                }
+            }
+
+            @Override
             public Visitable visit(IfStmt n, Tree parentNode)
             {
-                Expression expression = n.getCondition();
-                int conditionId = this.conditionNum.getAndIncrement();
-                Expression newExpression = StaticJavaParser.parseExpression(String.format(
-                        "coverage.cover(%d,%s)",
-                        conditionId,
-                        ExpressionToString.toString(expression, imports)
-                ));
-                n.setCondition(newExpression);
-
-                IfNode self = new IfNode(parentNode, conditionId);
+                IfNode self = new IfNode(parentNode, ifNum.getAndIncrement());
                 if (parentNode instanceof IfNode)
                 {
                     if (truthPathStack.peek() == Boolean.TRUE)
@@ -118,6 +157,10 @@ public class ParseConvert
                 {
                     parentNode.addChild(self);
                 }
+
+                insideIfCondition.set(true);
+                n.setCondition((Expression) n.getCondition().accept(this, self));
+                insideIfCondition.set(false);
 
                 truthPathStack.push(true);
                 n.setThenStmt((Statement) n.getThenStmt().accept(this, self));

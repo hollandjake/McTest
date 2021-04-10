@@ -46,7 +46,7 @@ public class TestCase
         {
             try
             {
-                CoverageReport coverage = new CoverageReport(method.getMethodTree());
+                CoverageReport coverage = new CoverageReport(method.getMethodTree().clone());
                 Object result = method.getExecutableMethod().invoke(
                         method.getExecutableMethod().getDeclaringClass().newInstance(),
                         ArrayUtils.add(SerializationUtils.clone(inputs), coverage)
