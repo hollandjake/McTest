@@ -35,6 +35,8 @@ public interface FitnessMetric<T>
             return new BooleanFitnessMetric();
         } else if (leftVariable instanceof Character) {
             return new CharFitnessMetric();
+        } else if (leftVariable instanceof String) {
+            return new StringFitnessMetric();
         }
         else
         {

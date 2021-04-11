@@ -33,7 +33,7 @@ public class CoverageReport
     public double getFitness()
     {
         AtomicReference<Double> totalFitness = new AtomicReference<>((double) 0);
-        methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getFitness()));
+        methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getRawFitness()));
 
         return totalFitness.get();
     }

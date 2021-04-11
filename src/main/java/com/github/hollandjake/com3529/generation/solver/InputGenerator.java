@@ -35,8 +35,20 @@ public class InputGenerator
         {
             return RANDOM.nextBoolean();
         }
-        else if (type == Character.class || type == char.class) {
-            return (char)RANDOM.nextInt(65535);
+        else if (type == Character.class || type == char.class)
+        {
+            return (char) (32 + RANDOM.nextInt(128 - 32));
+        }
+        else if (type == String.class)
+        {
+            StringBuilder output = new StringBuilder();
+
+            for (int i = 0; i < RANDOM.nextInt(50); i++)
+            {
+                output.append(generate(Character.class));
+            }
+
+            return output.toString();
         }
         else
         {
@@ -44,15 +56,15 @@ public class InputGenerator
         }
     }
 
-    public static Object add(Object input, int offset)
+    public static Object add(Object input, double offset)
     {
         if (input instanceof Integer)
         {
-            return (Integer) input + offset;
+            return (Integer) input + (int) offset;
         }
         else if (input instanceof Float)
         {
-            return (Float) input + offset;
+            return (Float) input + (float) offset;
         }
         else if (input instanceof Double)
         {
@@ -60,14 +72,47 @@ public class InputGenerator
         }
         else if (input instanceof Long)
         {
-            return (Long) input + offset;
+            return (Long) input + (long) offset;
         }
         else if (input instanceof Boolean)
         {
             return ((Boolean) input ? 1 : 0) + offset % 2 != 0;
         }
-        else if (input instanceof Character) {
-            return Character.forDigit((Character.getNumericValue((Character) input) + offset) % 65535, Character.MAX_RADIX);
+        else if (input instanceof Character)
+        {
+            return (char) (((int)(Character) input + (int) offset) % 65535);
+        }
+        else if (input instanceof String)
+        {
+            StringBuilder newString = new StringBuilder();
+
+            for (char c : ((String) input).toCharArray())
+            {
+                double rand = RANDOM.nextDouble();
+                if (rand < 1 / 3d)
+                {
+                    newString.append(generate(Character.class));
+                }
+                else if (rand < 2 / 3d)
+                {
+                    newString.append(c);
+                }
+                else
+                {
+                    newString.append(add(c, RANDOM.nextGaussian()));
+                }
+            }
+
+            for (int i = 0; i < Math.max(0, offset % 10); i++)
+            {
+                double rand = RANDOM.nextDouble();
+                if (rand < 1 / 3d)
+                {
+                    newString.append(generate(Character.class));
+                }
+            }
+
+            return newString.toString();
         }
         else
         {

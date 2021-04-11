@@ -1,11 +1,11 @@
 package com.github.hollandjake.com3529.generation;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -47,14 +47,13 @@ public class TestCase
                                 Arrays.stream(inputs)
                                       .map(input -> {
                                           if (input instanceof Character) {
-                                              return "'"+input+"'";
+                                              return new CharLiteralExpr((Character) input);
                                           } else if (input instanceof String) {
-                                              return "\""+input+"\"";
+                                              return new StringLiteralExpr((String) input);
                                           } else {
-                                              return String.valueOf(input);
+                                              return (Expression) StaticJavaParser.parseExpression(String.valueOf(input));
                                           }
                                       })
-                                      .map(StaticJavaParser::parseExpression)
                                       .toArray(Expression[]::new)
                         )
                 )

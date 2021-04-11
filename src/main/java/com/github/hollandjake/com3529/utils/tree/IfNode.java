@@ -2,6 +2,7 @@ package com.github.hollandjake.com3529.utils.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -53,6 +54,13 @@ public class IfNode extends Tree
             return totalConditionCoverage.getNormalisedFitness();
         }
         return 1 + parentNode.getFitness();
+    }
+
+    public double getRawFitness()
+    {
+        AtomicReference<Double> total = new AtomicReference<>((double) 0);
+        conditions.forEach(conditionNode -> total.updateAndGet(v -> v + conditionNode.getFitness()));
+        return total.get();
     }
 
     public ConditionNode getConditionNode(int conditionId)
