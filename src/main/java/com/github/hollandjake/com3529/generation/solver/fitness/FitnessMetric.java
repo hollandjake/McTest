@@ -1,6 +1,7 @@
 package com.github.hollandjake.com3529.generation.solver.fitness;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
+import com.github.javaparser.ast.expr.BinaryExpr;
 
 public interface FitnessMetric<T>
 {
@@ -30,10 +31,21 @@ public interface FitnessMetric<T>
         if (leftVariable instanceof Number)
         {
             return new NumberFitnessMetric();
+        } else if (leftVariable instanceof Boolean) {
+            return new BooleanFitnessMetric();
+        } else if (leftVariable instanceof Character) {
+            return new CharFitnessMetric();
         }
         else
         {
             throw new UnsupportedOperationException("Class type <" + leftVariable + "> not supported");
         }
+    }
+
+    static UnsupportedOperationException unsupported(Class<?> type, BinaryExpr.Operator operator) {
+        return new UnsupportedOperationException(String.format(
+                "Cannot compare <%s> with <%s> using %s",
+                type,type,operator
+        ));
     }
 }

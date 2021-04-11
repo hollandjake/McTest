@@ -1,13 +1,18 @@
 package com.github.hollandjake.com3529.generation;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -32,12 +37,29 @@ public class TestCase
 
     public void build(MethodDeclaration methodDeclaration, String className, String methodName)
     {
-        String statement = String.format("assertEquals(\"%s\", String.valueOf(%s.%s(%s)));",
-                                         output.toString(),
-                                         className,
-                                         methodName,
-                                         StringUtils.join(inputs, ','));
-        methodDeclaration.setBody(new BlockStmt().addStatement(statement));
+        MethodCallExpr expr = new MethodCallExpr(
+                "assertEquals",
+                new StringLiteralExpr(output.toString()),
+                new MethodCallExpr(
+                        "String.valueOf",
+                        new MethodCallExpr(
+                                String.format("%s.%s", className, methodName),
+                                Arrays.stream(inputs)
+                                      .map(input -> {
+                                          if (input instanceof Character) {
+                                              return "'"+input+"'";
+                                          } else if (input instanceof String) {
+                                              return "\""+input+"\"";
+                                          } else {
+                                              return String.valueOf(input);
+                                          }
+                                      })
+                                      .map(StaticJavaParser::parseExpression)
+                                      .toArray(Expression[]::new)
+                        )
+                )
+        );
+        methodDeclaration.setBody(new BlockStmt().addStatement(expr));
     }
 
     public boolean execute()
