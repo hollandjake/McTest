@@ -26,7 +26,7 @@ All a human tester would need to do is run our jar file on the class to be teste
 - [x] Test data generation is fully automated with use of an evolutionary algorithm
 - [x] The test suite is written into JUnit Java code that can be compiled separately and run
 - [ ] Automatic multiple critia test requirement generation
-- [ ] Coverage level is automatically computed and reported
+- [x] Coverage level is automatically computed and reported
 
 
 <!-- TABLE OF CONTENTS -->
@@ -102,7 +102,7 @@ You can run Triangle.java and BMICalculator.java by executing the tests shouldGe
 these tests are located at "src/test/java/com/github/hollandjake/com3529/test/ClassTestGeneratorTest.java"
 
 After executing the tests, the console will let you know where the project is of the JUnit tests which were generated. The new project for the tests will look like the 
-following for the Triangle.java and BMICalculator.java respectively
+following for the Triangle.java and BMICalculator.java respectively. There will also be a coverage report PDF outlining the conditional coverage of the test suite.
 
 ### Triangle.java
 ![Triangle.java tests](.github/images/Triangletests.png)
