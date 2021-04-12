@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class ConditionCoverage implements Cloneable
 {
-    public static final int K = ConfigFactory.load().getInt("BranchCoverage.K");
+    public static final int K = ConfigFactory.load().getInt("ConditionCoverage.K");
     private final int conditionId;
     private final Boolean result;
     private final Double truthDistance;

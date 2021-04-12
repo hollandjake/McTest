@@ -57,7 +57,6 @@ All a human tester would need to do is run our jar file on the class to be teste
         <li><a href="#bmicalculatorjava">BMICalculator.java</a></li>
       </ul>
     </li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
@@ -72,18 +71,36 @@ Here you will find information on getting started with McTest
 On our [releases page](https://github.com/hollandjake/COM3529/releases/) you can download the TestGenerator.jar file, 
 alternatively you can download the project's source code and run the following to generate the TestGenerator.jar which will then be located inside the target folder.
 ```sh
-  mvn package
+mvn package
   ```
 
 ### Usage 
-Once you have the TestGenerator.jar you can run it with the following program arguments
+Once you have the McTest.jar you can run it with the following program arguments
 * -g (Path to Java class file you want to run McTest on)
 * -o (Path to the directory you want to output the JUnit tests to)
 
 For example
-```sh
-  java -jar "TestGenerator.jar" -g "Path to class" -o "Path to JUnit output directory"
+```shell
+java -jar McTest.jar -g "Path to class" -o "Path to JUnit output directory"
   ```
+
+You can also modify any of the config arguments by supplying them to the Java system properties e.g.
+```shell
+java -DGenetics.MaxIterations=10000 -jar McTest.jar -g "Path to class" -o "Path the JUnit output directory"
+```
+
+### Available properties
+| Property | Default | Description |
+| -------- | ------- | ----------- |
+| Genetics.MaxIterations | 1000 | Total iterations to try before aborting |
+| Genetics.TargetFitness | 0 | Target value for the fitness algorithm to target (0 meaning covering all conditions) |
+| Genetics.Initial.NumTests | 2 | Number of random tests the system should start with |
+| Genetics.Initial.InputDistribution | 100 | How varied the random inputs should be |
+| Genetics.PopulationSize | 100 | Size of the population each iteration |
+| Genetics.TopN | 10 | Number of individuals to be used as parents for the next iteration |
+| Genetics.CrossoverProbability | 0.75 | Chance to crossover two parents during breeding |
+| Genetics.MutationProbability | 0.1 | Change for a test to be mutated or created |
+| ConditionCoverage.K | 1 | Value of the Offset |
 
 ### Maven Dependencies 
 * [JavaParser](https://github.com/javaparser/javaparser "JavaParser's Github")
@@ -96,17 +113,18 @@ For example
 * [Simple Logging Facade](http://www.slf4j.org/ "Simple Logging Facade's Website")
 
 ## Worked Examples of McTest
-Supplied in the source code at "src/main/resources" are java files Triangle.java and BMICalculator.java which both can demonstrate McTest in action.
+Supplied in the source code at `src/main/resources` are java files Triangle.java and BMICalculator.java which both can demonstrate McTest in action.
 
-You can run Triangle.java and BMICalculator.java by executing the tests shouldGenerateTestsForTriangle() and shouldGenerateTestsForBMICalculator() respectively, 
-these tests are located at "src/test/java/com/github/hollandjake/com3529/test/ClassTestGeneratorTest.java"
+You can run `Triangle.java` and `BMICalculator.java` by executing the tests `shouldGenerateTestsForTriangle()` and `shouldGenerateTestsForBMICalculator()` respectively, 
+these tests are located in `src/test/java/com/github/hollandjake/com3529/test/ClassTestGeneratorTest.java`
 
 After executing the tests, the console will let you know where the project is of the JUnit tests which were generated. The new project for the tests will look like the 
-following for the Triangle.java and BMICalculator.java respectively. There will also be a coverage report PDF outlining the conditional coverage of the test suite.
+following for the `Triangle.java` and `BMICalculator.java` respectively. There will also be a coverage report PDF outlining the conditional coverage of the test suite located inside the project root.
 
 ### Triangle.java
 ![Triangle.java tests](.github/images/Triangletests.png)
 ### BMICalculator.java
 ![BMICalculator.java tests](.github/images/BMItests.png)
 
-## Acknowledgements
+There is also a string test file called `StringTest.java` which attempts to match an input string with the constant string "Yummy Cheese". This will use string generation to try and generate the two conditions for the test.
+Note that you may need to increase the number of iterations by providing the java system property `-DGenetics.MaxIterations=<some_number>`;
