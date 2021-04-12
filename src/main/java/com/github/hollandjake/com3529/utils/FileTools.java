@@ -111,11 +111,11 @@ public class FileTools
                 falsy = "Y";
                 truthy = "Y";
             } else if (!conditionNode.getConditionCoverage().getResult()) {
-                truthy = "Y";
-                failedTexts.add("Did not execute false on condition "+conditionNode.getConditionId());
-            } else {
                 falsy = "Y";
                 failedTexts.add("Did not execute true on condition "+conditionNode.getConditionId());
+            } else {
+                truthy = "Y";
+                failedTexts.add("Did not execute false on condition "+conditionNode.getConditionId());
             }
             PdfPCell conditionID = new PdfPCell(new Phrase(String.format("%d - Line %d (%s)",conditionNode.getConditionId(), conditionNode.getLineNumber(), conditionNode.getConditionString())));
             PdfPCell executedTrue = new PdfPCell(new Phrase(truthy));
