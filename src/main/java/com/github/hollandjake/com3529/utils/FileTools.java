@@ -1,18 +1,29 @@
 package com.github.hollandjake.com3529.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.commons.io.FileUtils;
 
 import lombok.SneakyThrows;
@@ -63,6 +74,111 @@ public class FileTools
         writePOMToFile(pomFile, packageName);
 
         log.info("Tests saved to {}", rootFile);
+    }
+
+    @SneakyThrows
+    public static void generateCoverageReport(MethodTestSuite methodTestSuite, Path outputPath)
+    {
+        List<ConditionNode> conditionNodeList = methodTestSuite.getCoverageReport().getConditionNodes();
+
+        Document document = new Document();
+        Path filePath = new File(outputPath.toString() + "/CoverageReport.pdf").toPath().toAbsolutePath();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath.toFile()));
+        document.open();
+
+        //Fonts
+        Font font = FontFactory.getFont(FontFactory.HELVETICA, 25, BaseColor.BLACK);
+
+        //Logo
+        Path path = Paths.get(ClassLoader.getSystemResource("logo.png").toURI());
+        Image img = Image.getInstance(path.toAbsolutePath().toString());
+        img.setAlignment(Element.ALIGN_CENTER);
+        document.add(img);
+
+        //Title
+        Paragraph title = new Paragraph("McTest"+"\n\n");
+        title.setFont(font);
+        title.setAlignment(Element.ALIGN_CENTER);
+        document.add(title);
+
+        //Coverage Report Table
+        List<String> failedTexts = new ArrayList<>();
+        PdfPTable table = new PdfPTable(new float[]{15,20,30,15,15});
+        addTableHeader(table);
+        for (ConditionNode conditionNode : conditionNodeList) {
+            String falsy = "-";
+            String truthy = "-";
+            if (conditionNode.getConditionCoverage().getResult() == null) {
+                falsy = "Y";
+                truthy = "Y";
+            } else if (!conditionNode.getConditionCoverage().getResult()) {
+                falsy = "Y";
+                failedTexts.add("Did not execute true on condition "+conditionNode.getConditionId());
+            } else {
+                truthy = "Y";
+                failedTexts.add("Did not execute false on condition "+conditionNode.getConditionId());
+            }
+            PdfPCell conditionID = new PdfPCell(new Phrase(String.format("#%s", conditionNode.getConditionId())));
+            PdfPCell conditionLocation = new PdfPCell(new Phrase(String.valueOf(conditionNode.getLineRange() != null ? conditionNode.getLineRange().begin : "")));
+            PdfPCell conditionExpression = new PdfPCell(new Phrase(String.format("(%s)", conditionNode.getConditionString().replace(" ", "\u00A0"))));
+            PdfPCell executedTrue = new PdfPCell(new Phrase(truthy));
+            PdfPCell executedFalse = new PdfPCell(new Phrase(falsy));
+            conditionID.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionID.setPadding(5);
+            conditionLocation.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionLocation.setPadding(5);
+            conditionExpression.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionExpression.setPadding(5);
+            executedTrue.setHorizontalAlignment(Element.ALIGN_CENTER);
+            executedTrue.setPadding(5);
+            executedFalse.setHorizontalAlignment(Element.ALIGN_CENTER);
+            executedFalse.setPadding(5);
+            table.addCell(conditionID);
+            table.addCell(conditionLocation);
+            table.addCell(conditionExpression);
+            table.addCell(executedTrue);
+            table.addCell(executedFalse);
+        }
+        table.setWidthPercentage(100);
+        document.add(table);
+
+        //Coverage Percentage
+        float conditionCoveragePercent = (1 - (float) failedTexts.size() / ((float) conditionNodeList.size()*2)) * 100;
+        Paragraph percentage = new Paragraph(String.format("Condition Coverage: %.00f%%", conditionCoveragePercent));
+        percentage.setFont(font);
+        document.add(percentage);
+
+        //Coverage did not execute...
+        if (!failedTexts.isEmpty()) {
+            Paragraph para = new Paragraph("The following conditions did not execute");
+            para.setFont(font);
+            document.add(para);
+            com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
+            for (String failedText : failedTexts) {
+                ListItem item = new ListItem(failedText);
+                item.setAlignment(Element.ALIGN_JUSTIFIED);
+                list.add(item);
+            }
+            document.add(list);
+        }
+
+        document.close();
+
+        log.info("Coverage report saved to {}", filePath);
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        Stream.of("Condition", "Location", "Expression", "Executed True", "Executed False")
+                .forEach(columnTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setPadding(5);
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    header.setVerticalAlignment(Element.ALIGN_CENTER);
+                    header.setBorderWidth(1);
+                    header.setPhrase(new Phrase(columnTitle));
+                    table.addCell(header);
+                });
     }
 
     public static void writeToFile(File file, String content)
