@@ -63,9 +63,7 @@ public class CoverageReport
 
     public List<ConditionNode> getConditionNodes() {
         List<ConditionNode> conditionNodeList = new ArrayList<>();
-        methodTree.forEach(node -> node.getConditions().forEach(conditionNode -> {
-            conditionNodeList.add(conditionNode);
-        }));
+        methodTree.forEach(node -> conditionNodeList.addAll(node.getConditions()));
         return conditionNodeList;
     }
 }

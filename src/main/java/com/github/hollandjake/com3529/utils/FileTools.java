@@ -82,7 +82,8 @@ public class FileTools
         List<ConditionNode> conditionNodeList = methodTestSuite.getCoverageReport().getConditionNodes();
 
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(outputPath.toString()+"/CoverageReport.pdf"));
+        Path filePath = new File(outputPath.toString() + "/CoverageReport.pdf").toPath().toAbsolutePath();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath.toFile()));
         document.open();
 
         //Fonts
@@ -102,11 +103,11 @@ public class FileTools
 
         //Coverage Report Table
         List<String> failedTexts = new ArrayList<>();
-        PdfPTable table = new PdfPTable(3);
+        PdfPTable table = new PdfPTable(new float[]{15,20,30,15,15});
         addTableHeader(table);
         for (ConditionNode conditionNode : conditionNodeList) {
-            String falsy = "X";
-            String truthy = "X";
+            String falsy = "-";
+            String truthy = "-";
             if (conditionNode.getConditionCoverage().getResult() == null) {
                 falsy = "Y";
                 truthy = "Y";
@@ -117,16 +118,28 @@ public class FileTools
                 truthy = "Y";
                 failedTexts.add("Did not execute false on condition "+conditionNode.getConditionId());
             }
-            PdfPCell conditionID = new PdfPCell(new Phrase(String.format("%d - Line %d (%s)",conditionNode.getConditionId(), conditionNode.getLineNumber(), conditionNode.getConditionString())));
+            PdfPCell conditionID = new PdfPCell(new Phrase(String.format("#%s", conditionNode.getConditionId())));
+            PdfPCell conditionLocation = new PdfPCell(new Phrase(String.valueOf(conditionNode.getLineRange() != null ? conditionNode.getLineRange().begin : "")));
+            PdfPCell conditionExpression = new PdfPCell(new Phrase(String.format("(%s)", conditionNode.getConditionString().replace(" ", "\u00A0"))));
             PdfPCell executedTrue = new PdfPCell(new Phrase(truthy));
             PdfPCell executedFalse = new PdfPCell(new Phrase(falsy));
-            conditionID.setHorizontalAlignment(Element.ALIGN_LEFT);
+            conditionID.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionID.setPadding(5);
+            conditionLocation.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionLocation.setPadding(5);
+            conditionExpression.setHorizontalAlignment(Element.ALIGN_CENTER);
+            conditionExpression.setPadding(5);
             executedTrue.setHorizontalAlignment(Element.ALIGN_CENTER);
+            executedTrue.setPadding(5);
             executedFalse.setHorizontalAlignment(Element.ALIGN_CENTER);
+            executedFalse.setPadding(5);
             table.addCell(conditionID);
+            table.addCell(conditionLocation);
+            table.addCell(conditionExpression);
             table.addCell(executedTrue);
             table.addCell(executedFalse);
         }
+        table.setWidthPercentage(100);
         document.add(table);
 
         //Coverage Percentage
@@ -136,7 +149,7 @@ public class FileTools
         document.add(percentage);
 
         //Coverage did not execute...
-        if (failedTexts.size() > 0) {
+        if (!failedTexts.isEmpty()) {
             Paragraph para = new Paragraph("The following conditions did not execute");
             para.setFont(font);
             document.add(para);
@@ -150,14 +163,19 @@ public class FileTools
         }
 
         document.close();
+
+        log.info("Coverage report saved to {}", filePath);
     }
 
     private void addTableHeader(PdfPTable table) {
-        Stream.of("Condition", "Executed True", "Executed False")
+        Stream.of("Condition", "Location", "Expression", "Executed True", "Executed False")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
+                    header.setPadding(5);
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
+                    header.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    header.setVerticalAlignment(Element.ALIGN_CENTER);
+                    header.setBorderWidth(1);
                     header.setPhrase(new Phrase(columnTitle));
                     table.addCell(header);
                 });

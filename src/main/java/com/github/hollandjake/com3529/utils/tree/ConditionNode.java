@@ -1,6 +1,7 @@
 package com.github.hollandjake.com3529.utils.tree;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
+import com.github.javaparser.Range;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class ConditionNode implements Cloneable
     private final int conditionId;
     private ConditionCoverage conditionCoverage;
     private final String conditionString;
-    private final int lineNumber;
+    private final Range lineRange;
 
     public void setConditionCoverage(ConditionCoverage conditionCoverage)
     {
@@ -39,7 +40,7 @@ public class ConditionNode implements Cloneable
                 conditionId,
                 conditionCoverage != null ? conditionCoverage.clone() : null,
                 conditionString,
-                lineNumber
+                lineRange
         );
     }
 
@@ -48,7 +49,7 @@ public class ConditionNode implements Cloneable
         ConditionNode otherNode = other.getConditionNode(conditionId);
         if (otherNode != null)
         {
-            ConditionNode cloneNode = new ConditionNode(this.conditionId, conditionString, lineNumber);
+            ConditionNode cloneNode = new ConditionNode(this.conditionId, conditionString, lineRange);
             cloneNode.setConditionCoverage(ConditionCoverage.join(conditionCoverage, otherNode.getConditionCoverage()));
             cloneNode.setParent(parent);
 
