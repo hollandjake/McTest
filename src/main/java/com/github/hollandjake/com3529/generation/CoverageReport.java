@@ -1,11 +1,9 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.github.hollandjake.com3529.utils.tree.IfNode;
+import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
@@ -61,5 +59,13 @@ public class CoverageReport
         }));
 
         return branches;
+    }
+
+    public List<ConditionNode> getConditionNodes() {
+        List<ConditionNode> conditionNodeList = new ArrayList<>();
+        methodTree.forEach(node -> node.getConditions().forEach(conditionNode -> {
+            conditionNodeList.add(conditionNode);
+        }));
+        return conditionNodeList;
     }
 }

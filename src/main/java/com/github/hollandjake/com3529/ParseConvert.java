@@ -108,7 +108,7 @@ public class ParseConvert
                         int conditionId = this.conditionNum.getAndIncrement();
                         if (ifNode instanceof IfNode)
                         {
-                            ((IfNode) ifNode).addCondition(new ConditionNode(conditionId));
+                            ((IfNode) ifNode).addCondition(new ConditionNode(conditionId, n.toString(), n.getRange().get().begin.line));
                         }
 
                         imports.add(BinaryExpr.class);

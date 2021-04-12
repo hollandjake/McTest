@@ -16,6 +16,8 @@ public class ConditionNode implements Cloneable
     private IfNode parent;
     private final int conditionId;
     private ConditionCoverage conditionCoverage;
+    private final String conditionString;
+    private final int lineNumber;
 
     public void setConditionCoverage(ConditionCoverage conditionCoverage)
     {
@@ -35,7 +37,9 @@ public class ConditionNode implements Cloneable
         return new ConditionNode(
                 null,
                 conditionId,
-                conditionCoverage != null ? conditionCoverage.clone() : null
+                conditionCoverage != null ? conditionCoverage.clone() : null,
+                conditionString,
+                lineNumber
         );
     }
 
@@ -44,7 +48,7 @@ public class ConditionNode implements Cloneable
         ConditionNode otherNode = other.getConditionNode(conditionId);
         if (otherNode != null)
         {
-            ConditionNode cloneNode = new ConditionNode(this.conditionId);
+            ConditionNode cloneNode = new ConditionNode(this.conditionId, conditionString, lineNumber);
             cloneNode.setConditionCoverage(ConditionCoverage.join(conditionCoverage, otherNode.getConditionCoverage()));
             cloneNode.setParent(parent);
 

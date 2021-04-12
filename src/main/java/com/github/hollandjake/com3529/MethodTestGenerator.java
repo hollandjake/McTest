@@ -32,6 +32,7 @@ public class MethodTestGenerator
                  method.getExecutableMethod().getName());
         MethodTestSuite testSuite = generate(method);
         FileTools.generateJUnitTests(testSuite, packageName, outputPath);
+        FileTools.generateCoverageReport(testSuite, outputPath);
     }
 
     private static MethodTestSuite generate(Method method)
