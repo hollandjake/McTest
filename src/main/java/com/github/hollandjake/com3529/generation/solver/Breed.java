@@ -41,8 +41,6 @@ public class Breed
     private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)
     {
         //Uniform crossover
-        //TODO: merge sets then grab random subset
-
         int maxTests = Math.max(parentA.length, parentB.length);
 
         Set<TestCase> testCases = new HashSet<>();
@@ -93,14 +91,30 @@ public class Breed
             Object[] newInputs = new Object[testCase.getInputs().length];
             for (int z = 0; z < testCase.getInputs().length; z++)
             {
+                Object input = testCase.getInputs()[z];
                 if (RANDOM.nextDouble() <= MUTATION_PROBABILITY)
                 {
-                    newInputs[z] = InputGenerator.generate(testCase.getInputs()[z].getClass());
+                    double rand = RANDOM.nextDouble();
+                    Object newInput;
+                    double offset = RANDOM.nextGaussian();
+                    if (rand < 1 / 3d)
+                    {
+                        newInput = InputGenerator.add(input, offset);
+                    }
+                    else if (rand < 2 / 3d)
+                    {
+                        newInput = InputGenerator.add(input, -offset);
+                    }
+                    else
+                    {
+                        newInput = InputGenerator.generate(input.getClass());
+                    }
+                    newInputs[z] = newInput;
                     hasChanged = true;
                 }
                 else
                 {
-                    newInputs[z] = testCase.getInputs()[z];
+                    newInputs[z] = input;
                 }
             }
             if (hasChanged)

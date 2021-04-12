@@ -52,6 +52,8 @@ public class MethodTestGenerator
             {
                 log.debug("Execution time: " + (System.currentTimeMillis() - start));
                 return population.get(0);
+            } else if (i == MAX_ITERATIONS-1) {
+                break;
             }
             //Log fitness
             log.debug("Best Fitness: " + population.get(0).getFitness());

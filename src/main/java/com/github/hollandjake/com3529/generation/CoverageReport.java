@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.github.hollandjake.com3529.utils.tree.IfNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.Expression;
 
 import lombok.Data;
 import lombok.ToString;
@@ -24,17 +23,17 @@ public class CoverageReport
         this.methodTree = methodTree.clone();
     }
 
-    public boolean cover(int branchNumber, Expression expr)
+    public boolean cover(int conditionId, Object left, Object right, BinaryExpr.Operator operator)
     {
-        BranchCoverage branchCoverage = BranchCoverage.from(branchNumber, expr);
-        methodTree.getIfNode(branchNumber).setBranchCoverage(branchCoverage);
-        return branchCoverage.getResult();
+        ConditionCoverage conditionCoverage = ConditionCoverage.from(conditionId, left, right, operator);
+        methodTree.getConditionNode(conditionId).setConditionCoverage(conditionCoverage);
+        return conditionCoverage.getResult();
     }
 
     public double getFitness()
     {
         AtomicReference<Double> totalFitness = new AtomicReference<>((double) 0);
-        methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getFitness()));
+        methodTree.forEach(node -> totalFitness.updateAndGet(v -> v + node.getRawFitness()));
 
         return totalFitness.get();
     }
@@ -47,22 +46,19 @@ public class CoverageReport
     public Set<String> getBranchesCovered()
     {
         Set<String> branches = new HashSet<>();
-        Iterator<IfNode> iterator = methodTree.iterator();
-        while (iterator.hasNext())
-        {
-            IfNode node = iterator.next();
-            if (node.getBranchCoverage() != null)
-            {
-                if (node.getBranchCoverage().getResult())
-                {
-                    branches.add(node.getBranchId() + "t");
-                }
-                else
-                {
-                    branches.add(node.getBranchId() + "f");
+        methodTree.forEach(node -> node.getConditions().forEach(conditionNode -> {
+            ConditionCoverage coverage = conditionNode.getConditionCoverage();
+            if (coverage != null) {
+                if (coverage.getResult()) {
+                    branches.add(conditionNode.getConditionId() + "t");
+                } else if (!coverage.getResult()) {
+                    branches.add(conditionNode.getConditionId() + "f");
+                } else {
+                    branches.add(conditionNode.getConditionId() + "t");
+                    branches.add(conditionNode.getConditionId() + "f");
                 }
             }
-        }
+        }));
 
         return branches;
     }

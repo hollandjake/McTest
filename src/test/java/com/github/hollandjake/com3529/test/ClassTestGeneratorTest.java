@@ -17,4 +17,10 @@ public class ClassTestGeneratorTest
     {
         ClassTestGenerator.forClass("BMICalculator.java");
     }
+
+    @Test
+    public void shouldGenerateTestsForStringTest()
+    {
+        ClassTestGenerator.forClass("StringTest.java");
+    }
 }

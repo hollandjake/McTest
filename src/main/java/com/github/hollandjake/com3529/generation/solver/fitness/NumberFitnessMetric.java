@@ -2,63 +2,63 @@ package com.github.hollandjake.com3529.generation.solver.fitness;
 
 import java.util.Objects;
 
-import com.github.hollandjake.com3529.generation.BranchCoverage;
+import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
-import static com.github.hollandjake.com3529.generation.BranchCoverage.K;
+import static com.github.hollandjake.com3529.generation.ConditionCoverage.K;
 
-public class NumberFitnessMetric implements FitnessMetric<Double>
+public class NumberFitnessMetric implements FitnessMetric<Number>
 {
     @Override
-    public BranchCoverage equals(int conditionId, Double left, Double right)
+    public ConditionCoverage equals(int conditionId, Number left, Number right)
     {
         boolean result = Objects.equals(left, right);
-        double truthDistance = Math.abs(left - right);
+        double truthDistance = Math.abs(left.doubleValue() - right.doubleValue());
         double falseDistance = truthDistance == 0 ? K : 0;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
     @Override
-    public BranchCoverage notEquals(int conditionId, Double left, Double right)
+    public ConditionCoverage notEquals(int conditionId, Number left, Number right)
     {
         boolean result = !Objects.equals(left, right);
-        double falseDistance = Math.abs(left - right);
+        double falseDistance = Math.abs(left.doubleValue() - right.doubleValue());
         double truthDistance = falseDistance == 0 ? K : 0;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
     @Override
-    public BranchCoverage less(int conditionId, Double left, Double right)
+    public ConditionCoverage less(int conditionId, Number left, Number right)
     {
-        boolean result = left < right;
-        double falseDistance = result ? right - left + K : 0;
-        double truthDistance = result ? 0 : left - right + K;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        boolean result = left.doubleValue() < right.doubleValue();
+        double falseDistance = result ? right.doubleValue() - left.doubleValue() + K : 0;
+        double truthDistance = result ? 0 : left.doubleValue() - right.doubleValue() + K;
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
     @Override
-    public BranchCoverage lessEquals(int conditionId, Double left, Double right)
+    public ConditionCoverage lessEquals(int conditionId, Number left, Number right)
     {
-        boolean result = left <= right;
-        double falseDistance = result ? right - left + K : 0;
-        double truthDistance = result ? 0 : left - right + K;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        boolean result = left.doubleValue() <= right.doubleValue();
+        double falseDistance = result ? right.doubleValue() - left.doubleValue() + K : 0;
+        double truthDistance = result ? 0 : left.doubleValue() - right.doubleValue() + K;
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
     @Override
-    public BranchCoverage greater(int conditionId, Double left, Double right)
+    public ConditionCoverage greater(int conditionId, Number left, Number right)
     {
-        boolean result = left > right;
-        double falseDistance = result ? left - right + K : 0;
-        double truthDistance = result ? 0 : right - left + K;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        boolean result = left.doubleValue() > right.doubleValue();
+        double falseDistance = result ? left.doubleValue() - right.doubleValue() + K : 0;
+        double truthDistance = result ? 0 : right.doubleValue() - left.doubleValue() + K;
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
     @Override
-    public BranchCoverage greaterEquals(int conditionId, Double left, Double right)
+    public ConditionCoverage greaterEquals(int conditionId, Number left, Number right)
     {
-        boolean result = left >= right;
-        double falseDistance = result ? left - right + K : 0;
-        double truthDistance = result ? 0 : right - left + K;
-        return new BranchCoverage(conditionId, result, truthDistance, falseDistance);
+        boolean result = left.doubleValue() >= right.doubleValue();
+        double falseDistance = result ? left.doubleValue() - right.doubleValue() + K : 0;
+        double truthDistance = result ? 0 : right.doubleValue() - left.doubleValue() + K;
+        return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 }

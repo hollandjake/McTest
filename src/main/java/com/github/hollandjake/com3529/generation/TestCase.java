@@ -1,13 +1,18 @@
 package com.github.hollandjake.com3529.generation;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -32,12 +37,28 @@ public class TestCase
 
     public void build(MethodDeclaration methodDeclaration, String className, String methodName)
     {
-        String statement = String.format("assertEquals(\"%s\", String.valueOf(%s.%s(%s)));",
-                                         output.toString(),
-                                         className,
-                                         methodName,
-                                         StringUtils.join(inputs, ','));
-        methodDeclaration.setBody(new BlockStmt().addStatement(statement));
+        MethodCallExpr expr = new MethodCallExpr(
+                "assertEquals",
+                new StringLiteralExpr(output.toString()),
+                new MethodCallExpr(
+                        "String.valueOf",
+                        new MethodCallExpr(
+                                String.format("%s.%s", className, methodName),
+                                Arrays.stream(inputs)
+                                      .map(input -> {
+                                          if (input instanceof Character) {
+                                              return new CharLiteralExpr((Character) input);
+                                          } else if (input instanceof String) {
+                                              return new StringLiteralExpr((String) input);
+                                          } else {
+                                              return (Expression) StaticJavaParser.parseExpression(String.valueOf(input));
+                                          }
+                                      })
+                                      .toArray(Expression[]::new)
+                        )
+                )
+        );
+        methodDeclaration.setBody(new BlockStmt().addStatement(expr));
     }
 
     public boolean execute()
@@ -46,7 +67,7 @@ public class TestCase
         {
             try
             {
-                CoverageReport coverage = new CoverageReport(method.getMethodTree());
+                CoverageReport coverage = new CoverageReport(method.getMethodTree().clone());
                 Object result = method.getExecutableMethod().invoke(
                         method.getExecutableMethod().getDeclaringClass().newInstance(),
                         ArrayUtils.add(SerializationUtils.clone(inputs), coverage)
