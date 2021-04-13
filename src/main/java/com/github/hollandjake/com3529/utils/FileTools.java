@@ -1,30 +1,36 @@
 package com.github.hollandjake.com3529.utils;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-
-import com.itextpdf.text.*;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import org.apache.commons.io.FileUtils;
 
 import lombok.SneakyThrows;
@@ -169,13 +175,13 @@ public class FileTools
     }
 
     private void addTableHeader(PdfPTable table) {
-        Stream.of("Condition", "Location", "Expression", "Executed True", "Executed False")
+        Stream.of("Condition Number", "Location", "Expression", "Executed True", "Executed False")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setPadding(5);
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
                     header.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    header.setVerticalAlignment(Element.ALIGN_CENTER);
+                    header.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     header.setBorderWidth(1);
                     header.setPhrase(new Phrase(columnTitle));
                     table.addCell(header);
@@ -187,10 +193,10 @@ public class FileTools
         try
         {
             new File(file.getParent()).mkdirs();
-            file.createNewFile();
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(content);
-            fileWriter.close();
+            try (FileWriter fileWriter = new FileWriter(file))
+            {
+                fileWriter.write(content);
+            }
         }
         catch (IOException e) { e.printStackTrace(); }
     }
@@ -200,7 +206,6 @@ public class FileTools
         try
         {
             new File(dest.getParent()).mkdirs();
-            dest.createNewFile();
             Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         catch (IOException e) { e.printStackTrace(); }

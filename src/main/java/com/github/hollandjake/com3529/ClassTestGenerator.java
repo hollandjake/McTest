@@ -25,7 +25,8 @@ public class ClassTestGenerator
 
     public static void forClass(ParseConvert mappedClass, Path outputPath)
     {
-        if (!outputPath.toFile().exists())
+        File outputFile = outputPath.toFile();
+        if (!outputFile.exists() && !outputFile.mkdirs())
         {
             throw new InvalidPathException("Invalid path provided", outputPath.toString());
         }

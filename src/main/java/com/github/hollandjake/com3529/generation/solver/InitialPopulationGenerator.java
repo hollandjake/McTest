@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
+import com.github.hollandjake.com3529.generation.solver.mutation.InputMutator;
 import com.typesafe.config.ConfigFactory;
 
 import lombok.experimental.UtilityClass;
@@ -33,7 +34,7 @@ public class InitialPopulationGenerator
                 Object[] testInputs = new Object[numInputs];
                 for (int j = 0; j < numInputs; j++)
                 {
-                    testInputs[j] = InputGenerator.generate(methodParameterTypes[j]);
+                    testInputs[j] = InputMutator.generate(methodParameterTypes[j]);
                 }
                 suiteInputs.add(testInputs);
             }

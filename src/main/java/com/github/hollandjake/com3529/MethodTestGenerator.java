@@ -41,7 +41,7 @@ public class MethodTestGenerator
 
         long start = System.currentTimeMillis();
 
-        for (long i = 0; i < MAX_ITERATIONS; i++)
+        for (long i = 1; i < MAX_ITERATIONS + 1; i++)
         {
             //Evaluate population
             population.parallelStream().forEach(MethodTestSuite::execute);
@@ -49,22 +49,27 @@ public class MethodTestGenerator
             //Select elites
             population = NaturalSelection.overPopulation(population);
 
-            if (population.get(0).getFitness() <= TARGET_FITNESS)
+            double bestFitness = population.get(0).getFitness();
+
+            //Log fitness
+            log.debug("[Iteration: {}/{}] Best Fitness: {}", i, MAX_ITERATIONS, bestFitness);
+
+            if (bestFitness <= TARGET_FITNESS)
             {
-                log.debug("Execution time: " + (System.currentTimeMillis() - start));
+                log.debug("Execution time: {}ms", System.currentTimeMillis() - start);
                 return population.get(0);
-            } else if (i == MAX_ITERATIONS-1) {
+            }
+            else if (i == MAX_ITERATIONS)
+            {
                 break;
             }
-            //Log fitness
-            log.debug("Best Fitness: " + population.get(0).getFitness());
 
             //Breed
             population = Breed.repopulate(method, population, POPULATION_SIZE);
         }
-        log.info("Failed to find a test suite matching the required fitness. Generating best found");
+        log.info("Failed to find a test suite matching the required fitness ({}). Generating best found", TARGET_FITNESS);
 
-        log.debug("Execution time: " + (System.currentTimeMillis() - start));
+        log.debug("Execution time: {}ms", System.currentTimeMillis() - start);
         return population.get(0);
     }
 }

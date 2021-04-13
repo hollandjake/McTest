@@ -86,7 +86,12 @@ java -jar McTest.jar -g "Path to class" -o "Path to JUnit output directory"
 
 You can also modify any of the config arguments by supplying them to the Java system properties e.g.
 ```shell
-java -DGenetics.MaxIterations=10000 -jar McTest.jar -g "Path to class" -o "Path the JUnit output directory"
+-DGenetics.MaxIterations=10000
+```
+
+To enable debug outputs you can pass the following system property
+```shell
+-Dorg.slf4j.simpleLogger.defaultLogLevel=debug
 ```
 
 ### Available properties
@@ -98,7 +103,7 @@ java -DGenetics.MaxIterations=10000 -jar McTest.jar -g "Path to class" -o "Path 
 | Genetics.Initial.InputDistribution | 100 | How varied the random inputs should be |
 | Genetics.PopulationSize | 100 | Size of the population each iteration |
 | Genetics.TopN | 10 | Number of individuals to be used as parents for the next iteration |
-| Genetics.CrossoverProbability | 0.75 | Chance to crossover two parents during breeding |
+| Genetics.CrossoverSelectionProbability | 0.5 | Chance to crossover two parents during breeding |
 | Genetics.MutationProbability | 0.1 | Change for a test to be mutated or created |
 | ConditionCoverage.K | 1 | Value of the Offset |
 

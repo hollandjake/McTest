@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
+import com.github.hollandjake.com3529.generation.solver.mutation.InputMutator;
 import com.typesafe.config.ConfigFactory;
 
 import lombok.experimental.UtilityClass;
@@ -18,7 +19,7 @@ import lombok.experimental.UtilityClass;
 public class Breed
 {
     private static final Random RANDOM = new Random();
-    private static final double CROSSOVER_PROBABILITY = ConfigFactory.load().getDouble("Genetics.CrossoverProbability");
+    private static final double CROSSOVER_SELECTION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.CrossoverSelectionProbability");
     private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
     public static List<MethodTestSuite> repopulate(Method method,
@@ -41,41 +42,22 @@ public class Breed
     private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)
     {
         //Uniform crossover
-        int maxTests = Math.max(parentA.length, parentB.length);
+        int parentALength = parentA.length;
+        int parentBLength = parentB.length;
+        int maxTests = Math.max(parentALength, parentBLength);
 
         Set<TestCase> testCases = new HashSet<>();
 
         for (int i = 0; i < maxTests; i++)
         {
-            if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY)
+            if (i < parentALength && RANDOM.nextDouble() <= CROSSOVER_SELECTION_PROBABILITY)
             {
-                if (i < parentB.length)
-                {
-                    testCases.add(parentB[i]);
-                }
-                //Chance to add both genes
-                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2)
-                {
-                    if (i < parentA.length)
-                    {
-                        testCases.add(parentA[i]);
-                    }
-                }
+                testCases.add(parentA[i]);
             }
-            else
+
+            if (i < parentBLength && RANDOM.nextDouble() <= CROSSOVER_SELECTION_PROBABILITY)
             {
-                if (i < parentA.length)
-                {
-                    testCases.add(parentA[i]);
-                }
-                //Chance to add both genes
-                if (RANDOM.nextDouble() <= CROSSOVER_PROBABILITY / 2)
-                {
-                    if (i < parentB.length)
-                    {
-                        testCases.add(parentB[i]);
-                    }
-                }
+                testCases.add(parentB[i]);
             }
         }
         return testCases;
@@ -97,17 +79,14 @@ public class Breed
                     double rand = RANDOM.nextDouble();
                     Object newInput;
                     double offset = RANDOM.nextGaussian();
-                    if (rand < 1 / 3d)
+                    if (rand < 2 / 3d)
                     {
-                        newInput = InputGenerator.add(input, offset);
-                    }
-                    else if (rand < 2 / 3d)
-                    {
-                        newInput = InputGenerator.add(input, -offset);
+                        //offset can be negative so it handles both +offset and -offset
+                        newInput = InputMutator.add(input, offset);
                     }
                     else
                     {
-                        newInput = InputGenerator.generate(input.getClass());
+                        newInput = InputMutator.generate(input.getClass());
                     }
                     newInputs[z] = newInput;
                     hasChanged = true;

@@ -49,7 +49,7 @@ public class TestCase
                                           if (input instanceof Character) {
                                               return new CharLiteralExpr((Character) input);
                                           } else if (input instanceof String) {
-                                              return new StringLiteralExpr((String) input);
+                                              return new StringLiteralExpr(((String) input).replace("\"", "\\\""));
                                           } else {
                                               return (Expression) StaticJavaParser.parseExpression(String.valueOf(input));
                                           }
