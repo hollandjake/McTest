@@ -25,7 +25,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
             allowUpdates: true
-            artifacts: "target/TestGenerator.jar"
+            artifacts: "target/McTest.jar"
             token: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
