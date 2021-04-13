@@ -113,7 +113,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>TestGenerator</finalName>
+                            <finalName>McTest</finalName>
                             <minimizeJar>true</minimizeJar>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <transformers>

@@ -1,5 +1,6 @@
 package com.github.hollandjake.com3529.utils;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,8 +91,8 @@ public class FileTools
         Font font = FontFactory.getFont(FontFactory.HELVETICA, 25, BaseColor.BLACK);
 
         //Logo
-        Path path = Paths.get(ClassLoader.getSystemResource("logo.png").toURI());
-        Image img = Image.getInstance(path.toAbsolutePath().toString());
+        URL systemResource = ClassLoader.getSystemResource("logo.png");
+        Image img = Image.getInstance(systemResource);
         img.setAlignment(Element.ALIGN_CENTER);
         document.add(img);
 
@@ -113,10 +114,10 @@ public class FileTools
                 truthy = "Y";
             } else if (!conditionNode.getConditionCoverage().getResult()) {
                 falsy = "Y";
-                failedTexts.add("Did not execute true on condition "+conditionNode.getConditionId());
+                failedTexts.add("Did not execute true on condition #"+conditionNode.getConditionId());
             } else {
                 truthy = "Y";
-                failedTexts.add("Did not execute false on condition "+conditionNode.getConditionId());
+                failedTexts.add("Did not execute false on condition #"+conditionNode.getConditionId());
             }
             PdfPCell conditionID = new PdfPCell(new Phrase(String.format("#%s", conditionNode.getConditionId())));
             PdfPCell conditionLocation = new PdfPCell(new Phrase(String.valueOf(conditionNode.getLineRange() != null ? conditionNode.getLineRange().begin : "")));
