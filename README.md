@@ -111,7 +111,6 @@ To enable debug outputs you can pass the following system property
 * [JavaParser](https://github.com/javaparser/javaparser "JavaParser's Github")
 * [JUnit4](https://github.com/junit-team/junit4 "JUnit4's Github")
 * [Project Lombok](https://projectlombok.org/ "Project Lombok's Website")
-* [Math Parser](http://mathparser.org/ "Math Parser's Website")
 * [Reflections](https://github.com/ronmamo/reflections "Reflections's Github")
 * [Apache Commons](https://github.com/apache/commons-lang "Apache Commons Github")
 * [OpenHFT Compiler](https://mvnrepository.com/artifact/net.openhft/compiler "OpenHFT's Website")
