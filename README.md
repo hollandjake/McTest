@@ -25,7 +25,7 @@ All a human tester would need to do is run our jar file on the class to be teste
 - [x] The method's conditions are automatically parsed and intrumented
 - [x] Test data generation is fully automated with use of an evolutionary algorithm
 - [x] The test suite is written into JUnit Java code that can be compiled separately and run
-- [ ] Automatic multiple critia test requirement generation
+- [x] Automatic coverage critia test requirement generation
 - [x] Coverage level is automatically computed and reported
 
 
@@ -61,8 +61,20 @@ All a human tester would need to do is run our jar file on the class to be teste
 </details>
 
 ## The Team
-* Jake Holland (jholland2@sheffield.ac.uk)
-* Thomas Boyd (tlboyd1@sheffield.ac.uk)
+* Jake Holland (jholland2@sheffield.ac.uk), work contributed:
+    * Evolutionary algorithm
+    * Handling of different input types
+    * Atomatically parsing and intrumenting methods
+    * Command arguments to run on McTest.jar
+    * Coverage level logic
+    * JUnit tests for McTest
+* Thomas Boyd (tlboyd1@sheffield.ac.uk), work contributed:
+    * Coverage level computed and reported in a PDF
+    * Automatic JUnit tests
+    * Test case minimisation
+    * Mutation and crossover
+    * Assisted with atomatically parsing and intrumenting methods with JavaParser
+    * README.md
 
 ## How to install and run McTest
 Here you will find information on getting started with McTest
