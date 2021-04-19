@@ -13,6 +13,8 @@ public interface InputMutator<T>
     FloatInputMutator floatInputMutator = new FloatInputMutator();
     DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
     LongInputMutator longInputMutator = new LongInputMutator();
+    ByteInputMutator byteInputMutator = new ByteInputMutator();
+    ShortInputMutator shortInputMutator = new ShortInputMutator();
     BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
     CharacterInputMutator characterInputMutator = new CharacterInputMutator();
     StringInputMutator stringInputMutator = new StringInputMutator();
@@ -38,6 +40,14 @@ public interface InputMutator<T>
         else if (type == Long.class || type == long.class)
         {
             return longInputMutator.generate();
+        }
+        else if (type == Byte.class || type == byte.class)
+        {
+            return byteInputMutator.generate();
+        }
+        else if (type == Short.class || type == short.class)
+        {
+            return shortInputMutator.generate();
         }
         else if (type == Boolean.class || type == boolean.class)
         {
@@ -74,6 +84,14 @@ public interface InputMutator<T>
         else if (input instanceof Long)
         {
             return longInputMutator.modify((Long) input, offset);
+        }
+        else if (input instanceof Byte)
+        {
+            return byteInputMutator.modify((byte) input, offset);
+        }
+        else if (input instanceof Short)
+        {
+            return shortInputMutator.modify((Short) input, offset);
         }
         else if (input instanceof Boolean)
         {

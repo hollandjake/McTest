@@ -20,7 +20,7 @@ public class NaturalSelection
     {
         return population
                 .stream()
-                .sorted(Comparator.comparingDouble(MethodTestSuite::getFitness).reversed())
+                .sorted(Comparator.comparingDouble(MethodTestSuite::getFitness))
                 .limit(TOP_N)
                 .collect(Collectors.toList());
     }

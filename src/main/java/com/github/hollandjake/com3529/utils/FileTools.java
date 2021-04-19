@@ -113,6 +113,9 @@ public class FileTools
         PdfPTable table = new PdfPTable(new float[]{15,20,30,15,15});
         addTableHeader(table);
         for (ConditionNode conditionNode : conditionNodeList) {
+            if (conditionNode == null || conditionNode.getConditionCoverage() == null) {
+                continue;
+            }
             String falsy = "-";
             String truthy = "-";
             if (conditionNode.getConditionCoverage().getResult() == null) {

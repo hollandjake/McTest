@@ -6,8 +6,6 @@ import com.github.hollandjake.com3529.generation.MethodTestSuite;
 
 import org.junit.Test;
 
-import lombok.SneakyThrows;
-
 import static com.github.hollandjake.com3529.testutils.TestUtils.setFinalStatic;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -16,7 +14,6 @@ import static org.mockito.Mockito.when;
 public class NaturalSelectionTest
 {
     @Test
-    @SneakyThrows
     public void testOverPopulation()
     {
         setFinalStatic(NaturalSelection.class,"TOP_N", 2);
@@ -29,8 +26,8 @@ public class NaturalSelectionTest
         when(testSuite3.getFitness()).thenReturn(3d);
 
         assertEquals(
-                Arrays.asList(testSuite3,testSuite2),
-                NaturalSelection.overPopulation(Arrays.asList(testSuite1, testSuite2, testSuite3))
+                Arrays.asList(testSuite1,testSuite2),
+                NaturalSelection.overPopulation(Arrays.asList(testSuite3, testSuite2, testSuite1))
         );
     }
 }

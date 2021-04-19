@@ -12,7 +12,7 @@ public class CharacterInputMutator implements InputMutator<Character>
     @Override
     public Character modify(Character value, double offset)
     {
-        //Any unicode character
+        //Any ascii character
         return (char) (32 + ((int) value - 32 + (int) offset) % (95));
     }
 }

@@ -23,4 +23,22 @@ public class ClassTestGeneratorTest
     {
         ClassTestGenerator.forClass("StringTest.java");
     }
+
+    @Test
+    public void shouldGenerateTestsForShortTest()
+    {
+        ClassTestGenerator.forClass("ShortTest.java");
+    }
+
+    @Test
+    public void shouldGenerateTestsForLoopTest()
+    {
+        ClassTestGenerator.forClass("LoopTest.java");
+    }
+
+    @Test
+    public void shouldGenerateTestsForLongTest()
+    {
+        ClassTestGenerator.forClass("LongTest.java");
+    }
 }

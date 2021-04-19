@@ -1,5 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +27,7 @@ public class Breed
             List<MethodTestSuite> oldPopulation,
             int populationSize)
     {
-        return IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
+        List<MethodTestSuite> tests = IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
             MethodTestSuite parentA = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
             MethodTestSuite parentB = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
 
@@ -37,6 +38,10 @@ public class Breed
 
             return new MethodTestSuite(method, testCases);
         }).collect(Collectors.toList());
+
+        tests.addAll(oldPopulation);
+
+        return tests;
     }
 
     private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)

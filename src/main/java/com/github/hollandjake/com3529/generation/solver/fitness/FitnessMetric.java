@@ -19,15 +19,19 @@ public interface FitnessMetric<T>
 
     static FitnessMetric getMetricFor(Object leftVariable, Object rightVariable)
     {
-        if (leftVariable instanceof Number) {
-            if (!(rightVariable instanceof Number)) {
+        if (leftVariable instanceof Number)
+        {
+            if (!(rightVariable instanceof Number))
+            {
                 throw new UnsupportedOperationException(String.format(
                         "Class type mismatch <%s>, <%s>",
                         leftVariable.getClass(),
                         rightVariable.getClass()
                 ));
             }
-        } else if (leftVariable.getClass() != rightVariable.getClass()) {
+        }
+        else if (leftVariable.getClass() != rightVariable.getClass())
+        {
             throw new UnsupportedOperationException(String.format(
                     "Class type mismatch <%s>, <%s>",
                     leftVariable.getClass(),
@@ -38,11 +42,17 @@ public interface FitnessMetric<T>
         if (leftVariable instanceof Number)
         {
             return new NumberFitnessMetric();
-        } else if (leftVariable instanceof Boolean) {
+        }
+        else if (leftVariable instanceof Boolean)
+        {
             return new BooleanFitnessMetric();
-        } else if (leftVariable instanceof Character) {
+        }
+        else if (leftVariable instanceof Character)
+        {
             return new CharacterFitnessMetric();
-        } else if (leftVariable instanceof String) {
+        }
+        else if (leftVariable instanceof String)
+        {
             return new StringFitnessMetric();
         }
         else
@@ -51,10 +61,11 @@ public interface FitnessMetric<T>
         }
     }
 
-    static UnsupportedOperationException unsupported(Class<?> type, BinaryExpr.Operator operator) {
+    static UnsupportedOperationException unsupported(Class<?> type, BinaryExpr.Operator operator)
+    {
         return new UnsupportedOperationException(String.format(
                 "Cannot compare <%s> with <%s> using %s",
-                type,type,operator
+                type, type, operator
         ));
     }
 }

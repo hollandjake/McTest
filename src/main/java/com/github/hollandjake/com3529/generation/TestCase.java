@@ -5,11 +5,16 @@ import java.util.logging.Logger;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.Type;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -46,11 +51,24 @@ public class TestCase
                                 String.format("%s.%s", className, methodName),
                                 Arrays.stream(inputs)
                                       .map(input -> {
-                                          if (input instanceof Character) {
+                                          if (input instanceof Character)
+                                          {
                                               return new CharLiteralExpr((Character) input);
-                                          } else if (input instanceof String) {
+                                          }
+                                          else if (input instanceof String)
+                                          {
                                               return new StringLiteralExpr(((String) input).replace("\"", "\\\""));
-                                          } else {
+                                          }
+                                          else if (input instanceof Short)
+                                          {
+                                              return new CastExpr(PrimitiveType.shortType(), new IntegerLiteralExpr(String.valueOf(input)));
+                                          }
+                                          else if (input instanceof Byte)
+                                          {
+                                              return new CastExpr(PrimitiveType.byteType(), new IntegerLiteralExpr(String.valueOf(input)));
+                                          }
+                                          else
+                                          {
                                               return (Expression) StaticJavaParser.parseExpression(String.valueOf(input));
                                           }
                                       })
