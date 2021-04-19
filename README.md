@@ -64,7 +64,7 @@ All a human tester would need to do is run our jar file on the class to be teste
 * Jake Holland (jholland2@sheffield.ac.uk), work contributed:
     * Evolutionary algorithm
     * Handling of different input types
-    * Atomatically parsing and intrumenting methods
+    * Automatically parsing and intrumenting methods
     * Command arguments to run on McTest.jar
     * Coverage level logic
     * JUnit tests for McTest
@@ -73,7 +73,7 @@ All a human tester would need to do is run our jar file on the class to be teste
     * Automatic JUnit tests
     * Test case minimisation
     * Mutation and crossover
-    * Assisted with atomatically parsing and intrumenting methods with JavaParser
+    * Assisted with automatically parsing and intrumenting methods with JavaParser
     * README.md
 
 ## How to install and run McTest
