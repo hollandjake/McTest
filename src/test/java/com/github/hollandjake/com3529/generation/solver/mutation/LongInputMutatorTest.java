@@ -1,25 +1,34 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 
-import static com.github.hollandjake.com3529.testutils.TestUtils.setFinalStatic;
+import static com.github.hollandjake.com3529.testutils.TestUtils.mockInputMutator;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class LongInputMutatorTest
 {
+    private MockedStatic<InputMutator> inputMutator;
     private LongInputMutator mutator;
 
     @Before
     public void setUp()
     {
-        setFinalStatic(InputMutator.class, "NUMBER_DISTRIBUTION", 100);
+        inputMutator = mockInputMutator();
         mutator = new LongInputMutator();
+    }
+
+    @After
+    public void teardown()
+    {
+        inputMutator.close();
     }
 
     @Test
@@ -27,7 +36,7 @@ public class LongInputMutatorTest
     {
         Long generated = mutator.generate();
         assertThat(generated, instanceOf(Long.class));
-        assertThat(generated, allOf(greaterThan(-100L),lessThan(100L)));
+        assertThat(generated, allOf(greaterThanOrEqualTo(-100L),lessThanOrEqualTo(100L)));
     }
 
     @Test

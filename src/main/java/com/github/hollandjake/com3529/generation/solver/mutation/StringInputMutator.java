@@ -11,7 +11,7 @@ public class StringInputMutator implements InputMutator<String>
         CharacterInputMutator charBuilder = new CharacterInputMutator();
         StringBuilder output = new StringBuilder();
 
-        for (int i = 0; i < RANDOM.nextInt(50); i++)
+        for (int i = 0; i < InputMutator.RANDOM().nextInt(50); i++)
         {
             output.append(charBuilder.generate());
         }
@@ -40,20 +40,20 @@ public class StringInputMutator implements InputMutator<String>
             }
             else
             {
-                double rand = RANDOM.nextDouble();
+                double rand = InputMutator.RANDOM().nextDouble();
                 if (rand < 2 / 5d)
                 {
                     //Do character incrementing
-                    int charIndex = RANDOM.nextInt(newString.size());
+                    int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.set(charIndex,
                                   charBuilder.modify(newString.get(charIndex),
-                                                     RANDOM.nextGaussian() * newString.size()));
+                                                     InputMutator.RANDOM().nextGaussian() * newString.size()));
                 }
                 else if (rand < 3 / 5d)
                 {
                     //inject
                     Character newChar = charBuilder.generate();
-                    int charIndex = RANDOM.nextInt(newString.size());
+                    int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.add(charIndex, newChar);
                 }
                 else if (rand < 4 / 5d)
@@ -64,7 +64,7 @@ public class StringInputMutator implements InputMutator<String>
                 else
                 {
                     //Remove character
-                    int charIndex = RANDOM.nextInt(newString.size());
+                    int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.remove(charIndex);
                 }
             }

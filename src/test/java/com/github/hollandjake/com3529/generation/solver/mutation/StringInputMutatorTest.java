@@ -1,29 +1,32 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-import java.util.Random;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 
-import static com.github.hollandjake.com3529.testutils.TestUtils.setFinalStatic;
-import static org.hamcrest.CoreMatchers.allOf;
+import static com.github.hollandjake.com3529.testutils.TestUtils.mockInputMutator;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class StringInputMutatorTest
 {
+    private MockedStatic<InputMutator> inputMutator;
     private StringInputMutator mutator;
 
     @Before
     public void setUp()
     {
-        setFinalStatic(InputMutator.class, "RANDOM", new Random(1));
+        inputMutator = mockInputMutator();
         mutator = new StringInputMutator();
+    }
+
+    @After
+    public void teardown()
+    {
+        inputMutator.close();
     }
 
     @Test
@@ -31,7 +34,7 @@ public class StringInputMutatorTest
     {
         String generated = mutator.generate();
         assertThat(generated, instanceOf(String.class));
-        assertThat(generated.length(), lessThan(50));
+        assertThat(generated.length(), lessThanOrEqualTo(50));
     }
 
     @Test

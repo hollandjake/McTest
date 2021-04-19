@@ -9,6 +9,16 @@ public interface InputMutator<T>
     Random RANDOM = new Random();
     Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber("Genetics.Initial.InputDistribution");
 
+    static Random RANDOM()
+    {
+        return RANDOM;
+    }
+
+    static Number NUMBER_DISTRIBUTION()
+    {
+        return NUMBER_DISTRIBUTION;
+    }
+
     IntegerInputMutator integerInputMutator = new IntegerInputMutator();
     FloatInputMutator floatInputMutator = new FloatInputMutator();
     DoubleInputMutator doubleInputMutator = new DoubleInputMutator();

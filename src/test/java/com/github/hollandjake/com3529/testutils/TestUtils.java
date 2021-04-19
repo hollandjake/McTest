@@ -1,21 +1,29 @@
 package com.github.hollandjake.com3529.testutils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.Random;
 
-import lombok.SneakyThrows;
+import com.github.hollandjake.com3529.generation.solver.mutation.InputMutator;
+
+import org.mockito.MockedStatic;
+
 import lombok.experimental.UtilityClass;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.mockStatic;
 
 @UtilityClass
 public class TestUtils
 {
-    @SneakyThrows
-    public static void setFinalStatic(Class<?> clazz, String fieldName, Object newValue) {
-        Field field = clazz.getDeclaredField(fieldName);
-        field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(null, newValue);
+    public static MockedStatic<InputMutator> mockInputMutator()
+    {
+        MockedStatic<InputMutator> inputMutator = mockStatic(InputMutator.class);
+        Random random = new Random(1);
+        inputMutator.when(InputMutator::RANDOM).thenReturn(random);
+        inputMutator.when(InputMutator::NUMBER_DISTRIBUTION).thenReturn(100);
+        inputMutator.when(() -> InputMutator.add(any(), anyDouble())).thenCallRealMethod();
+        inputMutator.when(() -> InputMutator.generate(any())).thenCallRealMethod();
+
+        return inputMutator;
     }
 }

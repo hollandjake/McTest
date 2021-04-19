@@ -5,7 +5,7 @@ public class ByteInputMutator implements InputMutator<Byte>
     @Override
     public Byte generate()
     {
-        return (byte) (RANDOM.nextInt() % NUMBER_DISTRIBUTION.byteValue());
+        return (byte) (InputMutator.RANDOM().nextInt() % InputMutator.NUMBER_DISTRIBUTION().byteValue());
     }
 
     @Override

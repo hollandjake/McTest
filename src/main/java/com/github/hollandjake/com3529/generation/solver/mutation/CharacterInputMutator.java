@@ -6,7 +6,7 @@ public class CharacterInputMutator implements InputMutator<Character>
     public Character generate()
     {
         //Any ascii character
-        return (char) (32 + RANDOM.nextInt(95));
+        return (char) (32 + InputMutator.RANDOM().nextInt(95));
     }
 
     @Override

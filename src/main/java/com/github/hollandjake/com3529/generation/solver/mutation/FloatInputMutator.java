@@ -5,7 +5,7 @@ public class FloatInputMutator implements InputMutator<Float>
     @Override
     public Float generate()
     {
-        return RANDOM.nextFloat() * NUMBER_DISTRIBUTION.floatValue();
+        return InputMutator.RANDOM().nextFloat() * InputMutator.NUMBER_DISTRIBUTION().floatValue();
     }
 
     @Override

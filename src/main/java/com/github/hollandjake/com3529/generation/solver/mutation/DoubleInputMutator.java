@@ -5,7 +5,7 @@ public class DoubleInputMutator implements InputMutator<Double>
     @Override
     public Double generate()
     {
-        return RANDOM.nextDouble() * NUMBER_DISTRIBUTION.doubleValue();
+        return InputMutator.RANDOM().nextDouble() * InputMutator.NUMBER_DISTRIBUTION().doubleValue();
     }
 
     @Override

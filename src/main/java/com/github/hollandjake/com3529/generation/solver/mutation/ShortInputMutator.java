@@ -5,7 +5,7 @@ public class ShortInputMutator implements InputMutator<Short>
     @Override
     public Short generate()
     {
-        return (short) (RANDOM.nextInt() % NUMBER_DISTRIBUTION.shortValue());
+        return (short) (InputMutator.RANDOM().nextInt() % InputMutator.NUMBER_DISTRIBUTION().shortValue());
     }
 
     @Override

@@ -5,7 +5,7 @@ public class BooleanInputMutator implements InputMutator<Boolean>
     @Override
     public Boolean generate()
     {
-        return RANDOM.nextBoolean();
+        return InputMutator.RANDOM().nextBoolean();
     }
 
     @Override

@@ -7,8 +7,8 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class CharacterInputMutatorTest
 {
@@ -25,7 +25,7 @@ public class CharacterInputMutatorTest
     {
         Character generated = mutator.generate();
         assertThat(generated, instanceOf(Character.class));
-        assertThat((int) generated, allOf(greaterThan(32),lessThan(128)));
+        assertThat((int) generated, allOf(greaterThanOrEqualTo(32),lessThanOrEqualTo(128)));
     }
 
     @Test

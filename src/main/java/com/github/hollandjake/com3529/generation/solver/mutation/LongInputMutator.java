@@ -5,7 +5,7 @@ public class LongInputMutator implements InputMutator<Long>
     @Override
     public Long generate()
     {
-        return RANDOM.nextLong() % NUMBER_DISTRIBUTION.longValue();
+        return InputMutator.RANDOM().nextLong() % InputMutator.NUMBER_DISTRIBUTION().longValue();
     }
 
     @Override

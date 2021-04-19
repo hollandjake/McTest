@@ -5,7 +5,7 @@ public class IntegerInputMutator implements InputMutator<Integer>
     @Override
     public Integer generate()
     {
-        return RANDOM.nextInt() % NUMBER_DISTRIBUTION.intValue();
+        return InputMutator.RANDOM().nextInt() % InputMutator.NUMBER_DISTRIBUTION().intValue();
     }
 
     @Override
