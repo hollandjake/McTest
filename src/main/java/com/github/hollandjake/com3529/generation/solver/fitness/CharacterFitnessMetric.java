@@ -6,7 +6,7 @@ import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
 import static com.github.hollandjake.com3529.generation.ConditionCoverage.K;
 
-public class CharFitnessMetric implements FitnessMetric<Character>
+public class CharacterFitnessMetric implements FitnessMetric<Character>
 {
     @Override
     public ConditionCoverage equals(int conditionId, Character left, Character right)

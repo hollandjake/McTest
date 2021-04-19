@@ -19,12 +19,19 @@ public interface FitnessMetric<T>
 
     static FitnessMetric getMetricFor(Object leftVariable, Object rightVariable)
     {
-        if ((leftVariable instanceof Number) ^ (rightVariable instanceof Number))
-        {
+        if (leftVariable instanceof Number) {
+            if (!(rightVariable instanceof Number)) {
+                throw new UnsupportedOperationException(String.format(
+                        "Class type mismatch <%s>, <%s>",
+                        leftVariable.getClass(),
+                        rightVariable.getClass()
+                ));
+            }
+        } else if (leftVariable.getClass() != rightVariable.getClass()) {
             throw new UnsupportedOperationException(String.format(
                     "Class type mismatch <%s>, <%s>",
-                    leftVariable,
-                    rightVariable
+                    leftVariable.getClass(),
+                    rightVariable.getClass()
             ));
         }
 
@@ -34,7 +41,7 @@ public interface FitnessMetric<T>
         } else if (leftVariable instanceof Boolean) {
             return new BooleanFitnessMetric();
         } else if (leftVariable instanceof Character) {
-            return new CharFitnessMetric();
+            return new CharacterFitnessMetric();
         } else if (leftVariable instanceof String) {
             return new StringFitnessMetric();
         }
