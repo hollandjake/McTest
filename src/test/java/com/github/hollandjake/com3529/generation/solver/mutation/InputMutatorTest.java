@@ -10,13 +10,21 @@ public class InputMutatorTest
     @Test
     public void testGenerate()
     {
+        assertThat(InputMutator.generate(int.class), instanceOf(int.class));
         assertThat(InputMutator.generate(Integer.class), instanceOf(Integer.class));
+        assertThat(InputMutator.generate(float.class), instanceOf(float.class));
         assertThat(InputMutator.generate(Float.class), instanceOf(Float.class));
+        assertThat(InputMutator.generate(double.class), instanceOf(double.class));
         assertThat(InputMutator.generate(Double.class), instanceOf(Double.class));
+        assertThat(InputMutator.generate(long.class), instanceOf(long.class));
         assertThat(InputMutator.generate(Long.class), instanceOf(Long.class));
+        assertThat(InputMutator.generate(byte.class), instanceOf(byte.class));
         assertThat(InputMutator.generate(Byte.class), instanceOf(Byte.class));
+        assertThat(InputMutator.generate(short.class), instanceOf(short.class));
         assertThat(InputMutator.generate(Short.class), instanceOf(Short.class));
+        assertThat(InputMutator.generate(boolean.class), instanceOf(boolean.class));
         assertThat(InputMutator.generate(Boolean.class), instanceOf(Boolean.class));
+        assertThat(InputMutator.generate(char.class), instanceOf(char.class));
         assertThat(InputMutator.generate(Character.class), instanceOf(Character.class));
         assertThat(InputMutator.generate(String.class), instanceOf(String.class));
     }
