@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.typesafe.config.ConfigFactory;
 
+import lombok.Generated;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -18,7 +20,7 @@ public class NaturalSelection
     {
         return population
                 .stream()
-                .sorted(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()))
+                .sorted(Comparator.comparingDouble(MethodTestSuite::getFitness).reversed())
                 .limit(TOP_N)
                 .collect(Collectors.toList());
     }
