@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class BooleanInputMutator implements InputMutator<Boolean>
+public class BooleanInputMutator extends InputMutator<Boolean>
 {
     @Override
     public Boolean generate()

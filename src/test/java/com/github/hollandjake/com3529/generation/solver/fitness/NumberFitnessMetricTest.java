@@ -2,16 +2,16 @@ package com.github.hollandjake.com3529.generation.solver.fitness;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class NumberFitnessMetricTest
 {
     private NumberFitnessMetric fitnessMetric;
 
-    @Before
+    @BeforeMethod
     public void setUp()
     {
         fitnessMetric = new NumberFitnessMetric();

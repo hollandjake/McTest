@@ -1,6 +1,9 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
@@ -46,12 +49,22 @@ public class CoverageReport
         Set<String> branches = new HashSet<>();
         methodTree.forEach(node -> node.getConditions().forEach(conditionNode -> {
             ConditionCoverage coverage = conditionNode.getConditionCoverage();
-            if (coverage != null) {
-                if (coverage.getResult()) {
-                    branches.add(conditionNode.getConditionId() + "t");
-                } else if (!coverage.getResult()) {
-                    branches.add(conditionNode.getConditionId() + "f");
-                } else {
+            if (coverage != null)
+            {
+                Boolean result = coverage.getResult();
+                if (result != null)
+                {
+                    if (result)
+                    {
+                        branches.add(conditionNode.getConditionId() + "t");
+                    }
+                    else
+                    {
+                        branches.add(conditionNode.getConditionId() + "f");
+                    }
+                }
+                else
+                {
                     branches.add(conditionNode.getConditionId() + "t");
                     branches.add(conditionNode.getConditionId() + "f");
                 }
@@ -61,7 +74,8 @@ public class CoverageReport
         return branches;
     }
 
-    public List<ConditionNode> getConditionNodes() {
+    public List<ConditionNode> getConditionNodes()
+    {
         List<ConditionNode> conditionNodeList = new ArrayList<>();
         methodTree.forEach(node -> conditionNodeList.addAll(node.getConditions()));
         return conditionNodeList;

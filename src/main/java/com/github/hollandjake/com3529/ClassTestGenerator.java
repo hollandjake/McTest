@@ -2,44 +2,46 @@ package com.github.hollandjake.com3529;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.hollandjake.com3529.generation.Method;
+import com.github.hollandjake.com3529.generation.MethodTestSuite;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ClassTestGenerator
 {
-    public static void forClass(String className)
+    public static List<MethodTestSuite> forClass(String className)
     {
-        forClass(className, "../generatedTests");
+        return forClass(className, "../generatedTests");
     }
 
-    public static void forClass(String className, String outputDirectory)
+    public static List<MethodTestSuite> forClass(String className, String outputDirectory)
     {
         File outputFile = new File(outputDirectory);
-        forClass(ParseConvert.parse(className), outputFile.toPath());
+        return forClass(ParseConvert.parse(className), outputFile);
     }
 
-    public static void forClass(ParseConvert mappedClass, Path outputPath)
+    public static List<MethodTestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
     {
-        File outputFile = outputPath.toFile();
-        if (!outputFile.exists() && !outputFile.mkdirs())
+        if (!outputDirectory.exists() && !outputDirectory.mkdirs())
         {
-            throw new InvalidPathException("Invalid path provided", outputPath.toString());
+            throw new InvalidPathException("Invalid path provided", outputDirectory.toString());
         }
         Class<?> clazz = mappedClass.getClazz();
 
-        Arrays.stream(clazz.getMethods())
+        return Arrays.stream(clazz.getMethods())
               .parallel()
               .filter(method -> method.getDeclaringClass() == clazz)
-              .forEach(method -> MethodTestGenerator.forMethod(
+              .map(method -> MethodTestGenerator.forMethod(
                       new Method(mappedClass.getFileUnderTest(), method, mappedClass.getBranchTree(method)),
                       mappedClass.getPackageName(),
-                      outputPath
-              ));
+                      outputDirectory
+              ))
+              .collect(Collectors.toList());
     }
 
     public static void main(String[] args)

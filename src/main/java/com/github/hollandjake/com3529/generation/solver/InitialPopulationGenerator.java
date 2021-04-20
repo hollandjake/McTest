@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
@@ -11,25 +12,28 @@ import com.github.hollandjake.com3529.generation.TestCase;
 import com.github.hollandjake.com3529.generation.solver.mutation.InputMutator;
 import com.typesafe.config.ConfigFactory;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class InitialPopulationGenerator
 {
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final int INITIAL_NUM_TESTS = ConfigFactory.load().getInt("Genetics.Initial.NumTests");
 
     public static List<MethodTestSuite> generate(Method method, int populationSize)
     {
-        List<MethodTestSuite> population = new ArrayList<>();
         Class<?>[] methodParameterTypes = method.getExecutableMethod().getParameterTypes();
 
         //Skip last one as that is the CoverageReport object
         int numInputs = methodParameterTypes.length - 1;
 
-        for (int p = 0; p < populationSize; p++)
-        {
+        return IntStream.range(0, populationSize).parallel().mapToObj(p -> {
             List<Object[]> suiteInputs = new ArrayList<>();
-            for (int t = 0; t < INITIAL_NUM_TESTS; t++)
+            for (int t = 0; t < INITIAL_NUM_TESTS(); t++)
             {
                 Object[] testInputs = new Object[numInputs];
                 for (int j = 0; j < numInputs; j++)
@@ -38,10 +42,8 @@ public class InitialPopulationGenerator
                 }
                 suiteInputs.add(testInputs);
             }
-            population.add(createSuite(method, suiteInputs));
-        }
-
-        return population;
+            return createSuite(method, suiteInputs);
+        }).collect(Collectors.toList());
     }
 
     private static MethodTestSuite createSuite(Method method, List<Object[]> inputs)

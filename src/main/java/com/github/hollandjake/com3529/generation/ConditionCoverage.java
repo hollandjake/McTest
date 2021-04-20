@@ -6,12 +6,17 @@ import com.github.hollandjake.com3529.generation.solver.fitness.FitnessMetric;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.typesafe.config.ConfigFactory;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 @Data
 public class ConditionCoverage implements Cloneable
 {
-    public static final int K = ConfigFactory.load().getInt("ConditionCoverage.K");
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC)
+    private static final int K = ConfigFactory.load().getInt("ConditionCoverage.K");
     private final int conditionId;
     private final Boolean result;
     private final Double truthDistance;
@@ -19,7 +24,7 @@ public class ConditionCoverage implements Cloneable
 
     public static ConditionCoverage from(int conditionId, Object leftNum, Object rightNum, BinaryExpr.Operator operator)
     {
-        FitnessMetric metric = FitnessMetric.getMetricFor(leftNum, rightNum);
+        FitnessMetric<Object> metric = FitnessMetric.getMetricFor(leftNum, rightNum);
 
         switch (operator)
         {

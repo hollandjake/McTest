@@ -1,5 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,61 +15,76 @@ import com.github.hollandjake.com3529.generation.TestCase;
 import com.github.hollandjake.com3529.generation.solver.mutation.InputMutator;
 import com.typesafe.config.ConfigFactory;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Breed
 {
-    private static final Random RANDOM = new Random();
-    private static final double CROSSOVER_SELECTION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.CrossoverSelectionProbability");
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PACKAGE,
+            lazy = true)
+    private static final Random RANDOM = new SecureRandom();
+
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PACKAGE,
+            lazy = true)
+    private static final double CROSSOVER_SELECTION_PROBABILITY = ConfigFactory.load().getDouble(
+            "Genetics.CrossoverSelectionProbability");
+
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PACKAGE,
+            lazy = true)
     private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
     public static List<MethodTestSuite> repopulate(Method method,
             List<MethodTestSuite> oldPopulation,
             int populationSize)
     {
-        List<MethodTestSuite> tests = IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
-            MethodTestSuite parentA = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
-            MethodTestSuite parentB = oldPopulation.get(RANDOM.nextInt(oldPopulation.size()));
+        List<MethodTestSuite> tests = new ArrayList<>(oldPopulation);
 
-            TestCase[] parentATests = parentA.getTests().toArray(new TestCase[0]);
-            TestCase[] parentBTests = parentB.getTests().toArray(new TestCase[0]);
+        tests.addAll(IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
+            MethodTestSuite parentA = oldPopulation.get(RANDOM().nextInt(oldPopulation.size()));
+            MethodTestSuite parentB = oldPopulation.get(RANDOM().nextInt(oldPopulation.size()));
 
-            Set<TestCase> testCases = mutate(crossover(parentATests, parentBTests));
+            Set<TestCase> testCases = mutate(crossover(parentA.getTests(), parentB.getTests()));
 
             return new MethodTestSuite(method, testCases);
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList()));
 
-        tests.addAll(oldPopulation);
-
-        return tests;
+        return tests.stream().limit(populationSize).collect(Collectors.toList());
     }
 
-    private static Set<TestCase> crossover(TestCase[] parentA, TestCase[] parentB)
+    static Set<TestCase> crossover(Set<TestCase> parentA, Set<TestCase> parentB)
     {
         //Uniform crossover
-        int parentALength = parentA.length;
-        int parentBLength = parentB.length;
+        List<TestCase> parentATests = new ArrayList<>(parentA);
+        List<TestCase> parentBTests = new ArrayList<>(parentB);
+
+        int parentALength = parentA.size();
+        int parentBLength = parentB.size();
         int maxTests = Math.max(parentALength, parentBLength);
 
         Set<TestCase> testCases = new HashSet<>();
 
         for (int i = 0; i < maxTests; i++)
         {
-            if (i < parentALength && RANDOM.nextDouble() <= CROSSOVER_SELECTION_PROBABILITY)
+            if (i < parentALength && RANDOM().nextDouble() <= CROSSOVER_SELECTION_PROBABILITY())
             {
-                testCases.add(parentA[i]);
+                testCases.add(parentATests.get(i));
             }
 
-            if (i < parentBLength && RANDOM.nextDouble() <= CROSSOVER_SELECTION_PROBABILITY)
+            if (i < parentBLength && RANDOM().nextDouble() <= CROSSOVER_SELECTION_PROBABILITY())
             {
-                testCases.add(parentB[i]);
+                testCases.add(parentBTests.get(i));
             }
         }
         return testCases;
     }
 
-    private static Set<TestCase> mutate(Set<TestCase> tests)
+    static Set<TestCase> mutate(Set<TestCase> tests)
     {
         //Uniform mutation
         Set<TestCase> newTestCases = new HashSet<>();
@@ -79,11 +95,11 @@ public class Breed
             for (int z = 0; z < testCase.getInputs().length; z++)
             {
                 Object input = testCase.getInputs()[z];
-                if (RANDOM.nextDouble() <= MUTATION_PROBABILITY)
+                if (RANDOM().nextDouble() <= MUTATION_PROBABILITY())
                 {
-                    double rand = RANDOM.nextDouble();
+                    double rand = RANDOM().nextDouble();
                     Object newInput;
-                    double offset = RANDOM.nextGaussian();
+                    double offset = RANDOM().nextGaussian();
                     if (rand < 2 / 3d)
                     {
                         //offset can be negative so it handles both +offset and -offset

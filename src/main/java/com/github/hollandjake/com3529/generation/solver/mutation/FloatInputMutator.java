@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class FloatInputMutator implements InputMutator<Float>
+public class FloatInputMutator extends InputMutator<Float>
 {
     @Override
     public Float generate()

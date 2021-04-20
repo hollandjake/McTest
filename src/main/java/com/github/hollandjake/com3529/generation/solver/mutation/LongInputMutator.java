@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class LongInputMutator implements InputMutator<Long>
+public class LongInputMutator extends InputMutator<Long>
 {
     @Override
     public Long generate()

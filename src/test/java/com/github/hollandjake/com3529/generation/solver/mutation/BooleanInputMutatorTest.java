@@ -1,17 +1,18 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class BooleanInputMutatorTest
 {
     private BooleanInputMutator mutator;
 
-    @Before
+    @BeforeMethod
     public void setUp()
     {
         mutator = new BooleanInputMutator();
@@ -26,9 +27,9 @@ public class BooleanInputMutatorTest
     @Test
     public void testModify()
     {
-        assertEquals(false, mutator.modify(true, 1));
-        assertEquals(true, mutator.modify(false, 1));
-        assertEquals(false, mutator.modify(false, 2));
-        assertEquals(true, mutator.modify(true, 2));
+        assertFalse(mutator.modify(true, 1));
+        assertTrue(mutator.modify(false, 1));
+        assertFalse(mutator.modify(false, 2));
+        assertTrue(mutator.modify(true, 2));
     }
 }

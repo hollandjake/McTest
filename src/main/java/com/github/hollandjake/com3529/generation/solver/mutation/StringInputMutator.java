@@ -3,7 +3,7 @@ package com.github.hollandjake.com3529.generation.solver.mutation;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StringInputMutator implements InputMutator<String>
+public class StringInputMutator extends InputMutator<String>
 {
     @Override
     public String generate()
@@ -30,7 +30,7 @@ public class StringInputMutator implements InputMutator<String>
         }
 
         List<Character> newString = value.chars().mapToObj(e -> (char) e).collect(Collectors.toList());
-        CharacterInputMutator charBuilder = InputMutator.characterInputMutator;
+        CharacterInputMutator charBuilder = InputMutator.getCharacterInputMutator();
 
         for (int i = 0; i < remainingOffset; i++)
         {

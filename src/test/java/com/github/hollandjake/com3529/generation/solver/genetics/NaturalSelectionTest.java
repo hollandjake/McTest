@@ -4,22 +4,22 @@ import java.util.Arrays;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class NaturalSelectionTest
 {
     MockedStatic<NaturalSelection> naturalSelection;
-    @Before
+
+    @BeforeMethod
     public void setUp()
     {
         naturalSelection = mockStatic(NaturalSelection.class);
@@ -27,8 +27,8 @@ public class NaturalSelectionTest
         naturalSelection.when(NaturalSelection::TOP_N).thenReturn(2);
     }
 
-    @After
-    public void teardown()
+    @AfterMethod
+    public void tearDown()
     {
         naturalSelection.close();
     }

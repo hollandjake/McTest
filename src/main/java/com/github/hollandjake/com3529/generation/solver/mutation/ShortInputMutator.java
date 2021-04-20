@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class ShortInputMutator implements InputMutator<Short>
+public class ShortInputMutator extends InputMutator<Short>
 {
     @Override
     public Short generate()

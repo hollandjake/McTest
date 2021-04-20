@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class ByteInputMutator implements InputMutator<Byte>
+public class ByteInputMutator extends InputMutator<Byte>
 {
     @Override
     public Byte generate()

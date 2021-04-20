@@ -1,7 +1,7 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,7 +14,7 @@ public class CharacterInputMutatorTest
 {
     private CharacterInputMutator mutator;
 
-    @Before
+    @BeforeMethod
     public void setUp()
     {
         mutator = new CharacterInputMutator();

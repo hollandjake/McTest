@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class IntegerInputMutator implements InputMutator<Integer>
+public class IntegerInputMutator extends InputMutator<Integer>
 {
     @Override
     public Integer generate()

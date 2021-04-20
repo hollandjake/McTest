@@ -3,21 +3,21 @@ package com.github.hollandjake.com3529.generation.solver.fitness;
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
-public interface FitnessMetric<T>
+public abstract class FitnessMetric<T>
 {
-    ConditionCoverage equals(int conditionId, T left, T right);
+    public abstract ConditionCoverage equals(int conditionId, T left, T right);
 
-    ConditionCoverage notEquals(int conditionId, T left, T right);
+    public abstract ConditionCoverage notEquals(int conditionId, T left, T right);
 
-    ConditionCoverage less(int conditionId, T left, T right);
+    public abstract ConditionCoverage less(int conditionId, T left, T right);
 
-    ConditionCoverage lessEquals(int conditionId, T left, T right);
+    public abstract ConditionCoverage lessEquals(int conditionId, T left, T right);
 
-    ConditionCoverage greater(int conditionId, T left, T right);
+    public abstract ConditionCoverage greater(int conditionId, T left, T right);
 
-    ConditionCoverage greaterEquals(int conditionId, T left, T right);
+    public abstract ConditionCoverage greaterEquals(int conditionId, T left, T right);
 
-    static FitnessMetric getMetricFor(Object leftVariable, Object rightVariable)
+    public static FitnessMetric<Object> getMetricFor(Object leftVariable, Object rightVariable)
     {
         if (leftVariable instanceof Number)
         {
@@ -41,19 +41,19 @@ public interface FitnessMetric<T>
 
         if (leftVariable instanceof Number)
         {
-            return new NumberFitnessMetric();
+            return (FitnessMetric) new NumberFitnessMetric();
         }
         else if (leftVariable instanceof Boolean)
         {
-            return new BooleanFitnessMetric();
+            return (FitnessMetric) new BooleanFitnessMetric();
         }
         else if (leftVariable instanceof Character)
         {
-            return new CharacterFitnessMetric();
+            return (FitnessMetric) new CharacterFitnessMetric();
         }
         else if (leftVariable instanceof String)
         {
-            return new StringFitnessMetric();
+            return (FitnessMetric) new StringFitnessMetric();
         }
         else
         {

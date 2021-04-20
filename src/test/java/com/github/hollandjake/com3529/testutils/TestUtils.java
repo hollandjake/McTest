@@ -23,6 +23,7 @@ public class TestUtils
         inputMutator.when(InputMutator::NUMBER_DISTRIBUTION).thenReturn(100);
         inputMutator.when(() -> InputMutator.add(any(), anyDouble())).thenCallRealMethod();
         inputMutator.when(() -> InputMutator.generate(any())).thenCallRealMethod();
+        inputMutator.when(InputMutator::getCharacterInputMutator).thenCallRealMethod();
 
         return inputMutator;
     }

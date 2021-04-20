@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class DoubleInputMutator implements InputMutator<Double>
+public class DoubleInputMutator extends InputMutator<Double>
 {
     @Override
     public Double generate()

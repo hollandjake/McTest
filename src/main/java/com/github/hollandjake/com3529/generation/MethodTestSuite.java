@@ -2,9 +2,8 @@ package com.github.hollandjake.com3529.generation;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
@@ -31,32 +30,30 @@ public class MethodTestSuite
         {
             coverageReport = new CoverageReport(method.getMethodTree());
 
-            //Order testcases set by fitness
-            List<TestCase> orderedTests = tests
-                    .parallelStream()
-                    .filter(testCase -> {
-                        testCase.execute();
-                        return testCase.isExecuted();
-                    })
-                    .sorted(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()))
-                    .collect(Collectors.toList());
-
             Set<TestCase> minimisedTests = new HashSet<>();
             Set<String> branchesCovered = new HashSet<>();
-            orderedTests.forEach(testCase -> {
-                if (branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered()))
-                {
-                    //If it has increased the branches covered then add it
-                    minimisedTests.add(testCase);
-                }
-            });
+
+            //Order testcases set by fitness
+            tests.parallelStream()
+                 .filter(testCase -> {
+                     testCase.execute();
+                     return testCase.isExecuted();
+                 })
+                 .sorted(Comparator.comparingDouble(left -> left.getCoverageReport().getFitness()))
+                 .forEachOrdered(testCase -> {
+                     if (branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered()))
+                     {
+                         //If it has increased the branches covered then add it
+                         minimisedTests.add(testCase);
+                     }
+                 });
+
             tests = minimisedTests;
 
-            coverageReport = tests
-                    .stream()
-                    .map(TestCase::getCoverageReport)
-                    .reduce(CoverageReport::join)
-                    .orElseGet(() -> new CoverageReport(method.getMethodTree()));
+            tests.stream()
+                 .map(TestCase::getCoverageReport)
+                 .reduce(CoverageReport::join)
+                 .ifPresent(x -> coverageReport = x);
 
             executed = true;
         }
@@ -81,6 +78,6 @@ public class MethodTestSuite
 
     public double getFitness()
     {
-        return this.coverageReport.getFitness();
+        return Objects.requireNonNull(this.coverageReport).getFitness();
     }
 }

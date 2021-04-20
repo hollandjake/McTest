@@ -12,22 +12,19 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Data
-@Setter(AccessLevel.PRIVATE)
-
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class TestCase
 {
@@ -83,20 +80,19 @@ public class TestCase
     {
         if (!executed)
         {
+            coverageReport = new CoverageReport(method.getMethodTree());
             try
             {
-                CoverageReport coverage = new CoverageReport(method.getMethodTree().clone());
-                Object result = method.getExecutableMethod().invoke(
+                output = method.getExecutableMethod().invoke(
                         method.getExecutableMethod().getDeclaringClass().newInstance(),
-                        ArrayUtils.add(SerializationUtils.clone(inputs), coverage)
+                        ArrayUtils.add(SerializationUtils.clone(inputs), coverageReport)
                 );
                 executed = true;
-                output = result;
-                coverageReport = coverage;
                 return true;
             }
             catch (Exception e)
             {
+                output = e.toString();
                 Logger.getLogger(TestCase.class.getName()).warning(e.toString());
             }
         }

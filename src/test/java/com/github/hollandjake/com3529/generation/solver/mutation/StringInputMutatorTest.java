@@ -1,9 +1,9 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.MockedStatic;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static com.github.hollandjake.com3529.testutils.TestUtils.mockInputMutator;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -16,15 +16,15 @@ public class StringInputMutatorTest
     private MockedStatic<InputMutator> inputMutator;
     private StringInputMutator mutator;
 
-    @Before
+    @BeforeMethod
     public void setUp()
     {
         inputMutator = mockInputMutator();
         mutator = new StringInputMutator();
     }
 
-    @After
-    public void teardown()
+    @AfterMethod
+    public void tearDown()
     {
         inputMutator.close();
     }

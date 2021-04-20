@@ -1,10 +1,10 @@
 package com.github.hollandjake.com3529.generation.solver.fitness;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.testng.Assert.assertThrows;
 
 public class FitnessMetricTest
 {
@@ -25,7 +25,7 @@ public class FitnessMetricTest
         assertThrows(UnsupportedOperationException.class, () -> FitnessMetric.getMetricFor(1, 'a'));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testGetMetricForUnsupportedTypes()
     {
         FitnessMetric.getMetricFor(new Object(), new Object());

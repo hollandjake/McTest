@@ -44,9 +44,8 @@ public class FileTools
     @SneakyThrows
     public static void generateJUnitTests(MethodTestSuite methodTestSuite,
             String packageName,
-            Path outputPath)
+            File outputDirectory)
     {
-        outputPath = outputPath.toAbsolutePath();
         //Grab details about class
         Method method = methodTestSuite.getMethod().getExecutableMethod();
         String className = method.getDeclaringClass().getSimpleName();
@@ -64,7 +63,7 @@ public class FileTools
         methodTestSuite.build(classDeclaration, className, methodName);
 
         //Create new maven project with JUnit tests
-        URI root = outputPath.toUri();
+        URI root = outputDirectory.toURI();
         File rootFile = new File(root);
         FileUtils.deleteDirectory(rootFile);
         rootFile.mkdirs();
@@ -84,12 +83,12 @@ public class FileTools
     }
 
     @SneakyThrows
-    public static void generateCoverageReport(MethodTestSuite methodTestSuite, Path outputPath)
+    public static void generateCoverageReport(MethodTestSuite methodTestSuite, File outputDirectory)
     {
         List<ConditionNode> conditionNodeList = methodTestSuite.getCoverageReport().getConditionNodes();
 
         Document document = new Document();
-        Path filePath = new File(outputPath.toString() + "/CoverageReport.pdf").toPath().toAbsolutePath();
+        Path filePath = new File(outputDirectory + "/CoverageReport.pdf").toPath().toAbsolutePath();
         PdfWriter.getInstance(document, new FileOutputStream(filePath.toFile()));
         document.open();
 

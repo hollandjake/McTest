@@ -4,9 +4,7 @@ import java.util.Objects;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
-import static com.github.hollandjake.com3529.generation.ConditionCoverage.K;
-
-public class CharacterFitnessMetric implements FitnessMetric<Character>
+public class CharacterFitnessMetric extends FitnessMetric<Character>
 {
     @Override
     public ConditionCoverage equals(int conditionId, Character left, Character right)
@@ -15,7 +13,7 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         int leftNum = (int) left;
         int rightNum = (int) right;
         double truthDistance = Math.abs(leftNum - rightNum);
-        double falseDistance = truthDistance == 0 ? K : 0;
+        double falseDistance = truthDistance == 0 ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -26,7 +24,7 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         int leftNum = (int) left;
         int rightNum = (int) right;
         double falseDistance = Math.abs(leftNum - rightNum);
-        double truthDistance = falseDistance == 0 ? K : 0;
+        double truthDistance = falseDistance == 0 ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -36,8 +34,8 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         boolean result = left < right;
         int leftNum = (int) left;
         int rightNum = (int) right;
-        double falseDistance = result ? rightNum - leftNum + K : 0;
-        double truthDistance = result ? 0 : leftNum - rightNum + K;
+        double falseDistance = result ? rightNum - leftNum + ConditionCoverage.K() : 0;
+        double truthDistance = result ? 0 : leftNum - rightNum + ConditionCoverage.K();
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -47,8 +45,8 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         boolean result = left <= right;
         int leftNum = (int) left;
         int rightNum = (int) right;
-        double falseDistance = result ? rightNum - leftNum + K : 0;
-        double truthDistance = result ? 0 : leftNum - rightNum + K;
+        double falseDistance = result ? rightNum - leftNum + ConditionCoverage.K() : 0;
+        double truthDistance = result ? 0 : leftNum - rightNum + ConditionCoverage.K();
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -58,8 +56,8 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         boolean result = left > right;
         int leftNum = (int) left;
         int rightNum = (int) right;
-        double falseDistance = result ? leftNum - rightNum + K : 0;
-        double truthDistance = result ? 0 : rightNum - leftNum + K;
+        double falseDistance = result ? leftNum - rightNum + ConditionCoverage.K() : 0;
+        double truthDistance = result ? 0 : rightNum - leftNum + ConditionCoverage.K();
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -69,8 +67,8 @@ public class CharacterFitnessMetric implements FitnessMetric<Character>
         boolean result = left >= right;
         int leftNum = (int) left;
         int rightNum = (int) right;
-        double falseDistance = result ? leftNum - rightNum + K : 0;
-        double truthDistance = result ? 0 : rightNum - leftNum + K;
+        double falseDistance = result ? leftNum - rightNum + ConditionCoverage.K() : 0;
+        double truthDistance = result ? 0 : rightNum - leftNum + ConditionCoverage.K();
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 }

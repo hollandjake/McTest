@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-public class CharacterInputMutator implements InputMutator<Character>
+public class CharacterInputMutator extends InputMutator<Character>
 {
     @Override
     public Character generate()

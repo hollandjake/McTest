@@ -1,39 +1,38 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import com.typesafe.config.ConfigFactory;
 
-public interface InputMutator<T>
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+public abstract class InputMutator<T>
 {
-    Random RANDOM = new Random();
-    Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber("Genetics.Initial.InputDistribution");
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC)
+    private static final Random RANDOM = new SecureRandom();
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC)
+    private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber("Genetics.Initial.InputDistribution");
 
-    static Random RANDOM()
-    {
-        return RANDOM;
-    }
+    private static final IntegerInputMutator integerInputMutator = new IntegerInputMutator();
+    private static final FloatInputMutator floatInputMutator = new FloatInputMutator();
+    private static final DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
+    private static final LongInputMutator longInputMutator = new LongInputMutator();
+    private static final ByteInputMutator byteInputMutator = new ByteInputMutator();
+    private static final ShortInputMutator shortInputMutator = new ShortInputMutator();
+    private static final BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
+    @Getter(value = AccessLevel.PUBLIC) private static final CharacterInputMutator characterInputMutator = new CharacterInputMutator();
+    private static final StringInputMutator stringInputMutator = new StringInputMutator();
 
-    static Number NUMBER_DISTRIBUTION()
-    {
-        return NUMBER_DISTRIBUTION;
-    }
+    public abstract T generate();
 
-    IntegerInputMutator integerInputMutator = new IntegerInputMutator();
-    FloatInputMutator floatInputMutator = new FloatInputMutator();
-    DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
-    LongInputMutator longInputMutator = new LongInputMutator();
-    ByteInputMutator byteInputMutator = new ByteInputMutator();
-    ShortInputMutator shortInputMutator = new ShortInputMutator();
-    BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
-    CharacterInputMutator characterInputMutator = new CharacterInputMutator();
-    StringInputMutator stringInputMutator = new StringInputMutator();
+    public abstract T modify(T value, double offset);
 
-    T generate();
-
-    T modify(T value, double offset);
-
-    static Object generate(Class<?> type)
+    public static Object generate(Class<?> type)
     {
         if (type == Integer.class || type == int.class)
         {
@@ -77,7 +76,7 @@ public interface InputMutator<T>
         }
     }
 
-    static Object add(Object input, double offset)
+    public static Object add(Object input, double offset)
     {
         if (input instanceof Integer)
         {

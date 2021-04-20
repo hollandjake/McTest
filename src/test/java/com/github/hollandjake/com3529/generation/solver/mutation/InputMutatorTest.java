@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529.generation.solver.mutation;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +29,7 @@ public class InputMutatorTest
         assertThat(InputMutator.generate(String.class), instanceOf(String.class));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testGenerateThrowsException()
     {
         InputMutator.generate(Object.class);
@@ -53,7 +53,7 @@ public class InputMutatorTest
         assertThat(InputMutator.add("hello", 1), instanceOf(String.class));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testAddThrowsException()
     {
         InputMutator.add(new Object(), 1);

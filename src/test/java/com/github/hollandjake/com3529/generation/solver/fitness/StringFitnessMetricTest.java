@@ -2,16 +2,16 @@ package com.github.hollandjake.com3529.generation.solver.fitness;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class StringFitnessMetricTest
 {
     private StringFitnessMetric fitnessMetric;
 
-    @Before
+    @BeforeMethod
     public void setUp()
     {
         fitnessMetric = new StringFitnessMetric();
@@ -43,25 +43,25 @@ public class StringFitnessMetricTest
         assertEquals(expectedTrueDifferentLength, fitnessMetric.notEquals(0, "hello", "hello there"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testLess()
     {
         fitnessMetric.less(0, "hello", "hello");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testLessEquals()
     {
         fitnessMetric.lessEquals(0, "hello", "hello");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testGreater()
     {
         fitnessMetric.greater(0, "hello", "hello");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testGreaterEquals()
     {
         fitnessMetric.greaterEquals(0, "hello", "hello");

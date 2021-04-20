@@ -5,9 +5,7 @@ import java.util.Objects;
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
-import static com.github.hollandjake.com3529.generation.ConditionCoverage.K;
-
-public class StringFitnessMetric implements FitnessMetric<String>
+public class StringFitnessMetric extends FitnessMetric<String>
 {
     @Override
     public ConditionCoverage equals(int conditionId, String left, String right)
@@ -15,7 +13,7 @@ public class StringFitnessMetric implements FitnessMetric<String>
         boolean result = Objects.equals(left, right);
         long distance = distance(left, right);
         double truthDistance = distance;
-        double falseDistance = truthDistance == 0 ? K : 0;
+        double falseDistance = truthDistance == 0 ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -25,7 +23,7 @@ public class StringFitnessMetric implements FitnessMetric<String>
         boolean result = !Objects.equals(left, right);
         long distance = distance(left, right);
         double falseDistance = distance;
-        double truthDistance = falseDistance == 0 ? K : 0;
+        double truthDistance = falseDistance == 0 ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -53,7 +51,8 @@ public class StringFitnessMetric implements FitnessMetric<String>
         throw FitnessMetric.unsupported(Boolean.class, BinaryExpr.Operator.GREATER_EQUALS);
     }
 
-    private long distance(String left, String right) {
+    private long distance(String left, String right)
+    {
         long totalDist = 0;
 
         //Add string length difference

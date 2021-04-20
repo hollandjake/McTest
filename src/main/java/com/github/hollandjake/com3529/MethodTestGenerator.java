@@ -1,6 +1,6 @@
 package com.github.hollandjake.com3529;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.List;
 
 import com.github.hollandjake.com3529.generation.Method;
@@ -11,7 +11,10 @@ import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelectio
 import com.github.hollandjake.com3529.utils.FileTools;
 import com.typesafe.config.ConfigFactory;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,55 +22,72 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class MethodTestGenerator
 {
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC,
+            lazy = true)
     private static final int POPULATION_SIZE = ConfigFactory.load().getInt("Genetics.PopulationSize");
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC,
+            lazy = true)
     private static final double TARGET_FITNESS = ConfigFactory.load().getDouble("Genetics.TargetFitness");
+    @Accessors(fluent = true)
+    @Getter(value = AccessLevel.PUBLIC,
+            lazy = true)
     private static final long MAX_ITERATIONS = ConfigFactory.load().getLong("Genetics.MaxIterations");
 
     @SneakyThrows
-    public static void forMethod(Method method, String packageName, Path outputPath)
+    public static MethodTestSuite forMethod(Method method, String packageName, File outputDirectory)
     {
         log.info("Generating tests for \"{}.{}.{}\"",
                  packageName,
                  method.getExecutableMethod().getDeclaringClass().getSimpleName(),
                  method.getExecutableMethod().getName());
         MethodTestSuite testSuite = generate(method);
-        FileTools.generateJUnitTests(testSuite, packageName, outputPath);
-        FileTools.generateCoverageReport(testSuite, outputPath);
+
+        if (outputDirectory != null)
+        {
+            FileTools.generateJUnitTests(testSuite, packageName, outputDirectory);
+            FileTools.generateCoverageReport(testSuite, outputDirectory);
+        }
+        return testSuite;
     }
 
     private static MethodTestSuite generate(Method method)
     {
-        List<MethodTestSuite> population = InitialPopulationGenerator.generate(method, POPULATION_SIZE);
+        List<MethodTestSuite> population = InitialPopulationGenerator.generate(method, POPULATION_SIZE());
 
         long start = System.currentTimeMillis();
 
-        for (long i = 1; i < MAX_ITERATIONS + 1; i++)
+        for (long i = 1; i < MAX_ITERATIONS() + 1; i++)
         {
             //Evaluate population
-            population.parallelStream().forEach(MethodTestSuite::execute);
+            population.forEach(MethodTestSuite::execute);
 
             //Select elites
             population = NaturalSelection.overPopulation(population);
 
-            double bestFitness = population.get(0).getFitness();
+            double bestFitness = population.isEmpty() ? Double.MAX_VALUE : population.get(0).getFitness();
 
             //Log fitness
-            log.debug("[Iteration: {}/{}] Best Fitness: {}", i, MAX_ITERATIONS, bestFitness);
+            log.debug("[Iteration: {}/{}] Best Fitness: {}", i, MAX_ITERATIONS(), bestFitness);
 
-            if (bestFitness <= TARGET_FITNESS)
+            if (bestFitness <= TARGET_FITNESS())
             {
                 log.debug("Execution time: {}ms", System.currentTimeMillis() - start);
                 return population.get(0);
             }
-            else if (i == MAX_ITERATIONS)
+            else if (i == MAX_ITERATIONS())
             {
                 break;
             }
 
             //Breed
-            population = Breed.repopulate(method, population, POPULATION_SIZE);
+            population = Breed.repopulate(method, population, POPULATION_SIZE());
         }
-        log.info("Failed to find a test suite matching the required fitness ({}). Generating best found", TARGET_FITNESS);
+        log.info(
+                "Failed to find a test suite matching the required fitness ({}). Generating best found",
+                TARGET_FITNESS()
+        );
 
         log.debug("Execution time: {}ms", System.currentTimeMillis() - start);
         return population.get(0);

@@ -5,16 +5,14 @@ import java.util.Objects;
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
-import static com.github.hollandjake.com3529.generation.ConditionCoverage.K;
-
-public class BooleanFitnessMetric implements FitnessMetric<Boolean>
+public class BooleanFitnessMetric extends FitnessMetric<Boolean>
 {
     @Override
     public ConditionCoverage equals(int conditionId, Boolean left, Boolean right)
     {
         boolean result = Objects.equals(left, right);
-        double truthDistance = result ? 0 : K;
-        double falseDistance = result ? K : 0;
+        double truthDistance = result ? 0 : ConditionCoverage.K();
+        double falseDistance = result ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -22,8 +20,8 @@ public class BooleanFitnessMetric implements FitnessMetric<Boolean>
     public ConditionCoverage notEquals(int conditionId, Boolean left, Boolean right)
     {
         boolean result = !Objects.equals(left, right);
-        double truthDistance = result ? 0 : K;
-        double falseDistance = result ? K : 0;
+        double truthDistance = result ? 0 : ConditionCoverage.K();
+        double falseDistance = result ? ConditionCoverage.K() : 0;
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
@@ -48,6 +46,6 @@ public class BooleanFitnessMetric implements FitnessMetric<Boolean>
     @Override
     public ConditionCoverage greaterEquals(int conditionId, Boolean left, Boolean right)
     {
-       throw FitnessMetric.unsupported(Boolean.class, BinaryExpr.Operator.GREATER_EQUALS);
+        throw FitnessMetric.unsupported(Boolean.class, BinaryExpr.Operator.GREATER_EQUALS);
     }
 }
