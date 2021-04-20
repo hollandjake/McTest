@@ -59,25 +59,6 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return null;
     }
 
-    public IfNode replaceConditionNode(int conditionId, IfNode newNode)
-    {
-        AtomicReference<IfNode> replacement = new AtomicReference<>();
-        children.replaceAll(child -> {
-            IfNode replaced = child.replaceConditionNode(conditionId, newNode);
-            if (replaced != null)
-            {
-                replacement.set(replaced);
-                return replaced;
-            }
-            else
-            {
-                return child;
-            }
-        });
-
-        return replacement.get();
-    }
-
     public List<IfNode> getAllChildren()
     {
         List<IfNode> allChildren = new ArrayList<>();
@@ -96,7 +77,6 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return clone;
     }
 
-    @NotNull
     @Override
     public Iterator<IfNode> iterator()
     {
