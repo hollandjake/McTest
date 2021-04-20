@@ -20,11 +20,6 @@ public class ConditionNode implements Cloneable
     private final String conditionString;
     private final Range lineRange;
 
-    public void setConditionCoverage(ConditionCoverage conditionCoverage)
-    {
-        this.conditionCoverage = conditionCoverage;
-    }
-
     public double getFitness()
     {
         if (conditionCoverage != null) {
@@ -55,7 +50,9 @@ public class ConditionNode implements Cloneable
 
             return cloneNode;
         } else {
-            return this.clone();
+            ConditionNode clone = this.clone();
+            clone.setParent(parent);
+            return clone;
         }
     }
 }

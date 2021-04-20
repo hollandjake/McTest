@@ -2,16 +2,17 @@ package com.github.hollandjake.com3529.utils.tree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class IfNode extends Tree
 {
@@ -58,9 +59,7 @@ public class IfNode extends Tree
 
     public double getRawFitness()
     {
-        AtomicReference<Double> total = new AtomicReference<>((double) 0);
-        conditions.forEach(conditionNode -> total.updateAndGet(v -> v + conditionNode.getFitness()));
-        return total.get();
+        return conditions.stream().mapToDouble(ConditionNode::getFitness).sum();
     }
 
     public ConditionNode getConditionNode(int conditionId)
@@ -74,7 +73,7 @@ public class IfNode extends Tree
     @Override
     public IfNode clone()
     {
-        IfNode clonedNode = new IfNode(null, this.ifId);
+        IfNode clonedNode = new IfNode(null, ifId);
         conditions.forEach(conditionNode -> clonedNode.addCondition(conditionNode.clone()));
         conditionOperators.forEach(clonedNode::addConditionOperator); //Operator doesnt need cloning since its an enum
         thenPath.forEach(child -> clonedNode.addThenChild(child.clone()));
@@ -149,7 +148,8 @@ public class IfNode extends Tree
 
     public IfNode getIfNode(int ifId)
     {
-        if (this.ifId == ifId) {
+        if (this.ifId == ifId)
+        {
             return this;
         }
         return super.getIfNode(ifId);
@@ -157,14 +157,9 @@ public class IfNode extends Tree
 
     public IfNode join(Tree other)
     {
-        IfNode otherNode = other.getIfNode(this.ifId);
-        IfNode cloneNode;
-        if (otherNode != null)
+        if (other != null && other.getIfNode(this.ifId) != null)
         {
-            cloneNode = new IfNode(
-                    null,
-                    ifId
-            );
+            IfNode cloneNode = new IfNode(null, ifId);
             this.conditions.forEach(conditionNode -> cloneNode.addCondition(conditionNode.join(other)));
             this.conditionOperators.forEach(cloneNode::addConditionOperator);
             this.thenPath.forEach(child -> cloneNode.addThenChild(child.join(other)));

@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.NotNull;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Tree implements Cloneable, Iterable<IfNode>
 {
     @ToString.Exclude
@@ -46,9 +48,11 @@ public class Tree implements Cloneable, Iterable<IfNode>
 
     public IfNode getIfNode(int ifId)
     {
-        for (IfNode child : getChildren()) {
+        for (IfNode child : getChildren())
+        {
             IfNode found = child.getIfNode(ifId);
-            if (found != null) {
+            if (found != null)
+            {
                 return found;
             }
         }
@@ -104,8 +108,9 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return 0d; //Skip this node
     }
 
-    public double getFitness(boolean truthy) {
-        return 0d;
+    public double getFitness(boolean truthy)
+    {
+        return 0d; //Skip this node
     }
 
     public Tree join(Tree other)
@@ -115,10 +120,5 @@ public class Tree implements Cloneable, Iterable<IfNode>
         children.forEach(child -> cloneNode.addChild(child.join(other)));
 
         return cloneNode;
-    }
-
-    protected double getFitnessFor(IfNode ifNode)
-    {
-        return 0;
     }
 }
