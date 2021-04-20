@@ -2,6 +2,7 @@ package com.github.hollandjake.com3529.utils.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
