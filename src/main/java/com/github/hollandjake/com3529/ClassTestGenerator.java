@@ -27,7 +27,7 @@ public class ClassTestGenerator
 
     public static List<MethodTestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
     {
-        if (!outputDirectory.exists() && !outputDirectory.mkdirs())
+        if (outputDirectory != null && !outputDirectory.exists() && !outputDirectory.mkdirs())
         {
             throw new InvalidPathException("Invalid path provided", outputDirectory.toString());
         }

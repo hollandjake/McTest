@@ -52,7 +52,7 @@ public class FileTools
         String methodName = method.getName();
         String testClassName = className + methodName.substring(0, 1).toUpperCase() + methodName.substring(1) + "Tests";
 
-        log.info("Tests generated for \"{}.{}.{}\"", packageName, className, methodName);
+        log.info("Writing generated tests for \"{}.{}.{}\"", packageName, className, methodName);
 
         //Create the JUnit tests
         CompilationUnit cu = new CompilationUnit();
@@ -64,9 +64,8 @@ public class FileTools
 
         //Create new maven project with JUnit tests
         URI root = outputDirectory.toURI();
-        File rootFile = new File(root);
-        FileUtils.deleteDirectory(rootFile);
-        rootFile.mkdirs();
+        FileUtils.deleteDirectory(outputDirectory);
+        outputDirectory.mkdirs();
         String packagePath = packageName.replace(".", "/") + '/';
         URI mainJava = root.resolve("src/main/java/").resolve(packagePath);
         URI testJava = root.resolve("src/test/java/").resolve(packagePath);
@@ -79,7 +78,7 @@ public class FileTools
         copyFile(methodTestSuite.getMethod().getFileUnderTest(), mainFile);
         writePOMToFile(pomFile, packageName);
 
-        log.info("Tests saved to {}", rootFile);
+        log.info("Tests saved to {}", outputDirectory);
     }
 
     @SneakyThrows
@@ -102,34 +101,45 @@ public class FileTools
         document.add(img);
 
         //Title
-        Paragraph title = new Paragraph("McTest"+"\n\n");
+        Paragraph title = new Paragraph("McTest" + "\n\n");
         title.setFont(font);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
 
         //Coverage Report Table
         List<String> failedTexts = new ArrayList<>();
-        PdfPTable table = new PdfPTable(new float[]{15,20,30,15,15});
+        PdfPTable table = new PdfPTable(new float[] { 15, 20, 30, 15, 15 });
         addTableHeader(table);
-        for (ConditionNode conditionNode : conditionNodeList) {
-            if (conditionNode == null || conditionNode.getConditionCoverage() == null) {
+        for (ConditionNode conditionNode : conditionNodeList)
+        {
+            if (conditionNode == null || conditionNode.getConditionCoverage() == null)
+            {
                 continue;
             }
             String falsy = "-";
             String truthy = "-";
-            if (conditionNode.getConditionCoverage().getResult() == null) {
+            if (conditionNode.getConditionCoverage().getResult() == null)
+            {
                 falsy = "Y";
                 truthy = "Y";
-            } else if (!conditionNode.getConditionCoverage().getResult()) {
+            }
+            else if (!conditionNode.getConditionCoverage().getResult())
+            {
                 falsy = "Y";
-                failedTexts.add("Did not execute true on condition #"+conditionNode.getConditionId());
-            } else {
+                failedTexts.add("Did not execute true on condition #" + conditionNode.getConditionId());
+            }
+            else
+            {
                 truthy = "Y";
-                failedTexts.add("Did not execute false on condition #"+conditionNode.getConditionId());
+                failedTexts.add("Did not execute false on condition #" + conditionNode.getConditionId());
             }
             PdfPCell conditionID = new PdfPCell(new Phrase(String.format("#%s", conditionNode.getConditionId())));
-            PdfPCell conditionLocation = new PdfPCell(new Phrase(String.valueOf(conditionNode.getLineRange() != null ? conditionNode.getLineRange().begin : "")));
-            PdfPCell conditionExpression = new PdfPCell(new Phrase(String.format("(%s)", conditionNode.getConditionString().replace(" ", "\u00A0"))));
+            PdfPCell conditionLocation = new PdfPCell(new Phrase(String.valueOf(
+                    conditionNode.getLineRange() != null ? conditionNode.getLineRange().begin : "")));
+            PdfPCell conditionExpression = new PdfPCell(new Phrase(String.format("(%s)",
+                                                                                 conditionNode.getConditionString()
+                                                                                              .replace(" ",
+                                                                                                       "\u00A0"))));
             PdfPCell executedTrue = new PdfPCell(new Phrase(truthy));
             PdfPCell executedFalse = new PdfPCell(new Phrase(falsy));
             conditionID.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -152,18 +162,21 @@ public class FileTools
         document.add(table);
 
         //Coverage Percentage
-        float conditionCoveragePercent = (1 - (float) failedTexts.size() / ((float) conditionNodeList.size()*2)) * 100;
+        float conditionCoveragePercent = (1 - (float) failedTexts.size() / ((float) conditionNodeList.size() * 2))
+                * 100;
         Paragraph percentage = new Paragraph(String.format("Condition Coverage: %.00f%%", conditionCoveragePercent));
         percentage.setFont(font);
         document.add(percentage);
 
         //Coverage did not execute...
-        if (!failedTexts.isEmpty()) {
+        if (!failedTexts.isEmpty())
+        {
             Paragraph para = new Paragraph("The following conditions did not execute");
             para.setFont(font);
             document.add(para);
             com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
-            for (String failedText : failedTexts) {
+            for (String failedText : failedTexts)
+            {
                 ListItem item = new ListItem(failedText);
                 item.setAlignment(Element.ALIGN_JUSTIFIED);
                 list.add(item);
@@ -176,18 +189,19 @@ public class FileTools
         log.info("Coverage report saved to {}", filePath);
     }
 
-    private void addTableHeader(PdfPTable table) {
+    private void addTableHeader(PdfPTable table)
+    {
         Stream.of("Condition Number", "Location", "Expression", "Executed True", "Executed False")
-                .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setPadding(5);
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    header.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    header.setBorderWidth(1);
-                    header.setPhrase(new Phrase(columnTitle));
-                    table.addCell(header);
-                });
+              .forEach(columnTitle -> {
+                  PdfPCell header = new PdfPCell();
+                  header.setPadding(5);
+                  header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                  header.setHorizontalAlignment(Element.ALIGN_CENTER);
+                  header.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                  header.setBorderWidth(1);
+                  header.setPhrase(new Phrase(columnTitle));
+                  table.addCell(header);
+              });
     }
 
     public static void writeToFile(File file, String content)
@@ -200,7 +214,10 @@ public class FileTools
                 fileWriter.write(content);
             }
         }
-        catch (IOException e) { e.printStackTrace(); }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void copyFile(File source, File dest)
@@ -210,7 +227,10 @@ public class FileTools
             new File(dest.getParent()).mkdirs();
             Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-        catch (IOException e) { e.printStackTrace(); }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void writePOMToFile(File path, String packageName)
