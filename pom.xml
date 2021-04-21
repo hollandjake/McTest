@@ -134,6 +134,8 @@
                 <configuration>
                     <parallel>all</parallel>
                     <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <excludedGroups>${testng.excludeGroups}</excludedGroups>
+                    <groups>${testng.includeGroups}</groups>
                 </configuration>
             </plugin>
             <plugin>
@@ -157,5 +159,30 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>all-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <testng.includeGroups/>
+                <testng.excludeGroups/>
+            </properties>
+        </profile>
+        <profile>
+            <id>unit-tests</id>
+            <properties>
+                <testng.includeGroups/>
+                <testng.excludeGroups>E2E</testng.excludeGroups>
+            </properties>
+        </profile>
+        <profile>
+            <id>end-to-end</id>
+            <properties>
+                <testng.includeGroups>E2E</testng.includeGroups>
+                <testng.excludeGroups/>
+            </properties>
+        </profile>
+    </profiles>
 </project>

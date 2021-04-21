@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mockStatic;
 
+@Test(groups = "E2E")
 public class ClassTestGeneratorTest
 {
     private MockedStatic<MethodTestGenerator> methodTestGenerator;
@@ -20,7 +21,7 @@ public class ClassTestGeneratorTest
         methodTestGenerator = mockStatic(MethodTestGenerator.class);
         methodTestGenerator.when(MethodTestGenerator::POPULATION_SIZE).thenReturn(100);
         methodTestGenerator.when(MethodTestGenerator::TARGET_FITNESS).thenReturn(0d);
-        methodTestGenerator.when(MethodTestGenerator::MAX_ITERATIONS).thenReturn(100L);
+        methodTestGenerator.when(MethodTestGenerator::MAX_ITERATIONS).thenReturn(1000L);
     }
 
     @AfterMethod
@@ -44,7 +45,6 @@ public class ClassTestGeneratorTest
     @Test
     public void shouldGenerateTestsForStringTest()
     {
-
         ClassTestGenerator.forClass("StringTest.java");
     }
 
