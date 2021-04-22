@@ -3,7 +3,6 @@ package com.github.hollandjake.com3529.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -189,7 +188,7 @@ public class FileTools
         log.info("Coverage report saved to {}", filePath);
     }
 
-    private void addTableHeader(PdfPTable table)
+    static void addTableHeader(PdfPTable table)
     {
         Stream.of("Condition Number", "Location", "Expression", "Executed True", "Executed False")
               .forEach(columnTitle -> {
@@ -204,33 +203,21 @@ public class FileTools
               });
     }
 
-    public static void writeToFile(File file, String content)
+    @SneakyThrows
+    static void writeToFile(File file, String content)
     {
-        try
+        new File(file.getParent()).mkdirs();
+        try (FileWriter fileWriter = new FileWriter(file))
         {
-            new File(file.getParent()).mkdirs();
-            try (FileWriter fileWriter = new FileWriter(file))
-            {
-                fileWriter.write(content);
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+            fileWriter.write(content);
         }
     }
 
-    public static void copyFile(File source, File dest)
+    @SneakyThrows
+    static void copyFile(File source, File dest)
     {
-        try
-        {
-            new File(dest.getParent()).mkdirs();
-            Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        new File(dest.getParent()).mkdirs();
+        Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     public static void writePOMToFile(File path, String packageName)

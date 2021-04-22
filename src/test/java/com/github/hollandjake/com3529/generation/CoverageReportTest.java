@@ -106,10 +106,11 @@ public class CoverageReportTest
         ConditionNode mockConditionNode1 = mock(ConditionNode.class);
         ConditionNode mockConditionNode2 = mock(ConditionNode.class);
         ConditionNode mockConditionNode3 = mock(ConditionNode.class);
+        ConditionNode mockConditionNode4 = mock(ConditionNode.class);
 
         when(treeMock.getAllChildren()).thenReturn(Arrays.asList(mockNode1, mockNode2));
         when(mockNode1.getConditions()).thenReturn(Arrays.asList(mockConditionNode1, mockConditionNode2));
-        when(mockNode2.getConditions()).thenReturn(Collections.singletonList(mockConditionNode3));
+        when(mockNode2.getConditions()).thenReturn(Arrays.asList(mockConditionNode3, mockConditionNode4));
 
         when(mockConditionNode1.getConditionCoverage()).thenReturn(coverage1);
         when(mockConditionNode1.getConditionId()).thenReturn(0);
@@ -117,6 +118,7 @@ public class CoverageReportTest
         when(mockConditionNode2.getConditionId()).thenReturn(0);
         when(mockConditionNode3.getConditionCoverage()).thenReturn(coverage3);
         when(mockConditionNode3.getConditionId()).thenReturn(1);
+        when(mockConditionNode4.getConditionCoverage()).thenReturn(null);
 
         Set<String> result = report.getBranchesCovered();
         assertEquals(new HashSet<>(Arrays.asList("0t", "0f", "1t", "1f")), result);

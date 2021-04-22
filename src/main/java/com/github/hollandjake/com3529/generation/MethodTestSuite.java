@@ -10,8 +10,10 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
 
 @Data
@@ -21,6 +23,7 @@ public class MethodTestSuite
     private final Method method;
     @NonNull
     private Set<TestCase> tests;
+    @Setter(AccessLevel.PACKAGE)
     private boolean executed = false;
     private CoverageReport coverageReport;
 

@@ -24,7 +24,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - run: mvn --batch-mode --update-snapshots verify
+      - run: mvn --batch-mode --update-snapshots verify -Punit-tests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

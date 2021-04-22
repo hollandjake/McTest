@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertSame;
 
@@ -80,5 +81,14 @@ public class TestCaseTest
         testCase.execute();
         assertFalse(testCase.isExecuted());
         assertEquals(testCase.getOutput(), "java.lang.UnsupportedOperationException: "+failureMessage);
+    }
+
+    @Test
+    public void testExecuteSkipRunningIfAlreadyExecuted()
+    {
+        TestCase testCase = new TestCase(methodMock, new Object[] { 'c', "str", (short) 3, (byte) 4, 5 }, true, null, null);
+        testCase.execute();
+        assertTrue(testCase.isExecuted());
+        assertNull(testCase.getOutput());
     }
 }

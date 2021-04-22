@@ -43,7 +43,7 @@ public class InitialPopulationGeneratorTest
         Method method = mock(Method.class);
         java.lang.reflect.Method executableMethod = mock(java.lang.reflect.Method.class);
         when(method.getExecutableMethod()).thenReturn(executableMethod);
-        when(executableMethod.getParameterTypes()).thenReturn(new Class<?>[]{int.class});
+        when(executableMethod.getParameterTypes()).thenReturn(new Class<?>[]{int.class, int.class});
 
         List<MethodTestSuite> output = InitialPopulationGenerator.generate(method, populationSize);
 

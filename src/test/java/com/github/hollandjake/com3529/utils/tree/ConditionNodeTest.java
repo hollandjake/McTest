@@ -60,6 +60,13 @@ public class ConditionNodeTest
         clone.setParent(mockParent);
         assertEquals(clone, conditionNode);
         assertNotSame(clone, conditionNode);
+
+        conditionNode = new ConditionNode(mockParent, 1, null, "testConditionString", mockRange);
+
+        clone = conditionNode.clone();
+        clone.setParent(mockParent);
+        assertEquals(clone, conditionNode);
+        assertNotSame(clone, conditionNode);
     }
 
     @Test

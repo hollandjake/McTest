@@ -1,17 +1,16 @@
 package com.github.hollandjake.com3529.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -36,11 +35,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
@@ -85,7 +83,7 @@ public class FileToolsTest
         filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any()))
                               .thenAnswer((Answer<Void>) invocation -> null);
         filesToolsMockedStatic.when(() -> FileTools.writePOMToFile(any(), anyString()))
-                              .thenAnswer((Answer<Void>) invocation -> null);
+                              .thenCallRealMethod();
 
         when(mockTestSuite.getMethod()).thenReturn(mockMethod);
         when(mockMethod.getExecutableMethod()).thenReturn(mockMethodExecutable);
@@ -104,15 +102,12 @@ public class FileToolsTest
         when(mockUri.getQuery()).thenReturn(null);
         when(mockUri.getPath()).thenReturn("mockPath");
 
-        try (MockedConstruction<File> fileMockedConstruction = mockConstruction(File.class, (mock, context) -> {
-            when(mock.mkdirs()).thenReturn(false);
-            when(mock.exists()).thenReturn(false);
-        }))
+        try (MockedConstruction<File> fileMockedConstruction = mockConstruction(File.class))
         {
             FileTools.generateJUnitTests(mockTestSuite, "com.github.hollandjake.com3529.test", mockOutput);
         }
 
-        filesToolsMockedStatic.verify(times(1), () -> FileTools.writeToFile(any(), anyString()));
+        filesToolsMockedStatic.verify(times(2), () -> FileTools.writeToFile(any(), anyString()));
         filesToolsMockedStatic.verify(times(1), () -> FileTools.copyFile(any(), any()));
         filesToolsMockedStatic.verify(times(1), () -> FileTools.writePOMToFile(any(), anyString()));
     }
@@ -133,13 +128,7 @@ public class FileToolsTest
         when(mockMethodExecutable.getDeclaringClass()).thenReturn((Class) String.class);
         when(mockMethodExecutable.getName()).thenReturn("testMethod");
 
-        try (MockedConstruction<File> fileMockedConstruction = mockConstruction(File.class, (mock, context) -> {
-            when(mock.mkdirs()).thenReturn(false);
-            when(mock.exists()).thenReturn(false);
-        }))
-        {
-            FileTools.generateJUnitTests(mockTestSuite, "com.github.hollandjake.com3529.test", mockOutput);
-        }
+        FileTools.generateJUnitTests(mockTestSuite, "com.github.hollandjake.com3529.test", mockOutput);
     }
 
     @Test
@@ -206,6 +195,50 @@ public class FileToolsTest
         }
     }
 
+    @Test
+    public void testGenerateCoverageReportWithoutFailedTests()
+    {
+        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
+        CoverageReport mockCoverage = mock(CoverageReport.class);
+        ConditionNode mockCondition1 = mock(ConditionNode.class);
+        File mockOutput = mock(File.class);
+
+        filesToolsMockedStatic.when(() -> FileTools.writeToFile(any(), anyString())).thenAnswer(invocation -> null);
+        filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any())).thenAnswer(invocation -> null);
+        filesToolsMockedStatic.when(() -> FileTools.addTableHeader(any())).thenCallRealMethod();
+
+        when(mockTestSuite.getCoverageReport()).thenReturn(mockCoverage);
+        when(mockCoverage.getConditionNodes()).thenReturn(Collections.singletonList(mockCondition1));
+
+        when(mockCondition1.getConditionCoverage()).thenReturn(new ConditionCoverage(0, null, 0d, 0d));
+        when(mockCondition1.getConditionId()).thenReturn(0);
+        when(mockCondition1.getLineRange()).thenReturn(null);
+        when(mockCondition1.getConditionString()).thenReturn("condition1");
+
+        try (
+                MockedConstruction<FileOutputStream> mockOutputStream = mockConstruction(FileOutputStream.class);
+                MockedStatic<Image> imageMockedStatic = mockStatic(Image.class);
+                MockedStatic<PdfWriter> pdfWriterMockedStatic = mockStatic(PdfWriter.class);
+        )
+        {
+            Image mockImage = mock(Image.class);
+
+            imageMockedStatic.when(() -> Image.getInstance(any(URL.class))).thenReturn(mockImage);
+            PdfDocument mockDocument = mock(PdfDocument.class);
+            pdfWriterMockedStatic.when(() -> PdfWriter.getInstance(any(), any())).thenAnswer(invocation -> {
+                invocation.getArgument(0, Document.class).addDocListener(mockDocument);
+                return null;
+            });
+
+            when(mockImage.isContent()).thenReturn(true);
+            when(mockImage.type()).thenReturn(Element.JPEG);
+
+            FileTools.generateCoverageReport(mockTestSuite, mockOutput);
+
+            verify(mockDocument, times(1)).close();
+        }
+    }
+
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testGenerateCoverageReportThrowsException()
     {
@@ -220,11 +253,26 @@ public class FileToolsTest
     }
 
     @Test
+    public void testWriteToFile()
+    {
+        filesToolsMockedStatic.when(() -> FileTools.writeToFile(any(), anyString())).thenCallRealMethod();
+        File mockFile = mock(File.class);
+        when(mockFile.getParent()).thenReturn("");
+        try (
+                MockedConstruction<FileWriter> writerMockedConstruction = mockConstruction(
+                        FileWriter.class,
+                        (mock, context) -> doNothing().when(mock).close()
+                );
+                MockedConstruction<File> fileMockedConstruction = mockConstruction(File.class)
+        )
+        {
+            FileTools.writeToFile(mockFile, "");
+        }
+    }
+
+    @Test(expectedExceptions = IOException.class)
     public void testWriteToFileThrowsException()
     {
-        PrintStream originalOut = System.err;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(outContent));
         filesToolsMockedStatic.when(() -> FileTools.writeToFile(any(), anyString())).thenCallRealMethod();
         File mockFile = mock(File.class);
         when(mockFile.getParent()).thenReturn("");
@@ -238,16 +286,30 @@ public class FileToolsTest
         {
             FileTools.writeToFile(mockFile, "");
         }
-        assertThat(outContent.toString(), containsString("java.io.IOException"));
-        System.setErr(originalOut);
     }
 
     @Test
-    public void testCopyFileHandlesException()
+    public void testCopyFile()
     {
-        PrintStream originalOut = System.err;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(outContent));
+        filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any())).thenCallRealMethod();
+        File mockFile = mock(File.class);
+        when(mockFile.getParent()).thenReturn("");
+        Path mockPath = mock(Path.class);
+        when(mockFile.toPath()).thenReturn(mockPath);
+        MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
+        filesMockedStatic.when(() -> Files.copy(any(Path.class), any(Path.class), any(CopyOption.class)))
+                         .thenReturn(null);
+        try (MockedConstruction<File> fileMockedConstruction = mockConstruction(File.class))
+        {
+            FileTools.copyFile(mockFile, mockFile);
+        }
+        filesMockedStatic.verify(times(1), () -> Files.copy(any(Path.class), any(Path.class), eq(StandardCopyOption.REPLACE_EXISTING)));
+        filesMockedStatic.close();
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void testCopyFileThrowsException()
+    {
         filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any())).thenCallRealMethod();
         File mockFile = mock(File.class);
         when(mockFile.getParent()).thenReturn("");
@@ -261,7 +323,5 @@ public class FileToolsTest
             FileTools.copyFile(mockFile, mockFile);
         }
         filesMockedStatic.close();
-        assertThat(outContent.toString(), containsString("java.io.IOException"));
-        System.setErr(originalOut);
     }
 }

@@ -64,8 +64,29 @@ public class BreedTest
         TestCase testCase2 = mock(TestCase.class);
         TestCase testCase3 = mock(TestCase.class);
         TestCase testCase4 = mock(TestCase.class);
+        Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3,testCase4));
+        Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3));
+
+        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.5);
+
+        Set<TestCase> outputs = Breed.crossover(parentATests, parentBTests);
+        assertThat(outputs, hasItem(oneOf(testCase1, testCase2, testCase3, testCase4)));
+
+        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(1d);
+
+        outputs = Breed.crossover(parentATests, parentBTests);
+        assertThat(outputs, equalTo(new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4))));
+    }
+
+    @Test
+    public void testCrossoverParentAShorter()
+    {
+        TestCase testCase1 = mock(TestCase.class);
+        TestCase testCase2 = mock(TestCase.class);
+        TestCase testCase3 = mock(TestCase.class);
+        TestCase testCase4 = mock(TestCase.class);
         Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3));
-        Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase3, testCase4));
+        Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4));
 
         breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.5);
 

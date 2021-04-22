@@ -28,6 +28,7 @@ public class MethodTestSuiteTest
     private Method mockMethod;
     private TestCase mockTest;
     private TestCase mockTest2;
+    private TestCase mockTest3;
     private Set<TestCase> mockTests;
     private MethodTestSuite methodTestSuite;
 
@@ -37,9 +38,11 @@ public class MethodTestSuiteTest
         mockMethod = mock(Method.class);
         mockTest = mock(TestCase.class);
         mockTest2 = mock(TestCase.class);
-        mockTests = new HashSet<>(Arrays.asList(mockTest, mockTest2));
+        mockTest3 = mock(TestCase.class);
+        mockTests = new HashSet<>(Arrays.asList(mockTest, mockTest2, mockTest3));
         methodTestSuite = new MethodTestSuite(mockMethod, mockTests);
     }
+
     @Test
     public void testExecute()
     {
@@ -48,14 +51,26 @@ public class MethodTestSuiteTest
 
         when(mockMethod.getMethodTree()).thenReturn(treeMock);
         when(mockTest.isExecuted()).thenReturn(true);
+        when(mockTest2.isExecuted()).thenReturn(true);
+        when(mockTest3.isExecuted()).thenReturn(false);
         when(mockTest.getCoverageReport()).thenReturn(mockCoverageReport);
-        when(mockCoverageReport.getFitness()).thenReturn(1d);
+        when(mockTest2.getCoverageReport()).thenReturn(mockCoverageReport);
+        when(mockCoverageReport.getFitness()).thenReturn(1d, 2d);
         when(mockCoverageReport.getBranchesCovered()).thenReturn(Collections.singleton("0f"));
 
         when(mockCoverageReport.join(any())).thenReturn(mockCoverageReport);
 
         methodTestSuite.execute();
         assertTrue(methodTestSuite.isExecuted());
+    }
+
+    @Test
+    public void testExecuteNoExecuteWhenAlreadyExecuted()
+    {
+        methodTestSuite.setExecuted(true);
+        methodTestSuite.execute();
+        assertTrue(methodTestSuite.isExecuted());
+        assertNull(methodTestSuite.getCoverageReport());
     }
 
     @Test
