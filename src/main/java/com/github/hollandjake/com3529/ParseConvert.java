@@ -53,7 +53,7 @@ public class ParseConvert
         File fileToTest = parseFile(classFilePath);
         System.out.println("ParseConvert 54");
         System.out.println(fileToTest);
-        Path root = fileToTest.getParentFile().toPath().toAbsolutePath();
+        Path root = fileToTest.getParentFile().toPath();
         System.out.println(root);
         System.out.println(Files.isDirectory(root));
         SourceRoot sourceRoot = new SourceRoot(root);
