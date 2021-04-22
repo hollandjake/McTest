@@ -2,6 +2,7 @@ package com.github.hollandjake.com3529;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
@@ -49,10 +50,13 @@ public class ParseConvert
     @SneakyThrows
     public static ParseConvert parse(String classFilePath)
     {
-        System.out.println("ParseConvert 52");
         File fileToTest = parseFile(classFilePath);
         System.out.println("ParseConvert 54");
-        SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
+        System.out.println(fileToTest);
+        Path root = fileToTest.getParentFile().toPath().toAbsolutePath();
+        System.out.println(root);
+        System.out.println(Files.isDirectory(root));
+        SourceRoot sourceRoot = new SourceRoot(root);
         System.out.println("ParseConvert 56");
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
         System.out.println("ParseConvert 58");
