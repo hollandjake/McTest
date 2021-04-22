@@ -53,7 +53,9 @@ public class ParseConvert
         File fileToTest = parseFile(classFilePath);
         System.out.println("ParseConvert 54");
         SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
+        System.out.println("ParseConvert 56");
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
+        System.out.println("ParseConvert 58");
 
         AtomicReference<String> packageName = new AtomicReference<>("");
         AtomicReference<String> classPath = new AtomicReference<>("");
@@ -61,6 +63,7 @@ public class ParseConvert
             packageName.set(packageDeclaration.getNameAsString());
             classPath.set(String.format("%s.%s", packageName.get(), fileToTest.getName().replace(".java", "")));
         });
+        System.out.println("ParseConvert 66");
 
         //Add import to class
         Set<Class<?>> imports = new HashSet<>();
@@ -170,6 +173,7 @@ public class ParseConvert
                 return n;
             }
         }, null);
+        System.out.println("ParseConvert 176");
 
         //Add imports
         imports.forEach(cu::addImport);
@@ -183,6 +187,7 @@ public class ParseConvert
               .filter(method -> method.getDeclaringClass() == clazz)
               .forEach(method -> methodIterables.put(method, methodStringIterables.get(method.getName())));
 
+        System.out.println("ParseConvert 190");
         return new ParseConvert(methodIterables, clazz, fileToTest, packageName.get());
     }
 
