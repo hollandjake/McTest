@@ -53,13 +53,14 @@ public class ParseConvert
         File fileToTest = parseFile(classFilePath);
         System.out.println("ParseConvert 54");
         System.out.println(fileToTest);
-        Path root = fileToTest.getParentFile().toPath();
+        File parent = fileToTest.getParentFile();
+        System.out.println(parent);
+        Path root = parent.toPath();
         System.out.println(root);
+        System.out.println(root.toFile().isDirectory());
         System.out.println(Files.isDirectory(root));
         SourceRoot sourceRoot = new SourceRoot(root);
-        System.out.println("ParseConvert 56");
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
-        System.out.println("ParseConvert 58");
 
         AtomicReference<String> packageName = new AtomicReference<>("");
         AtomicReference<String> classPath = new AtomicReference<>("");
