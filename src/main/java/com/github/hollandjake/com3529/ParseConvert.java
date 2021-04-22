@@ -2,7 +2,6 @@ package com.github.hollandjake.com3529;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
@@ -32,7 +31,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.utils.CodeGenerationUtils;
-import com.github.javaparser.utils.SourceRoot;
 
 import net.openhft.compiler.CompilerUtils;
 
@@ -51,16 +49,7 @@ public class ParseConvert
     public static ParseConvert parse(String classFilePath)
     {
         File fileToTest = parseFile(classFilePath);
-        System.out.println("ParseConvert 54");
-        System.out.println(fileToTest);
-        File parent = fileToTest.getParentFile();
-        System.out.println(parent);
-        Path root = parent.toPath();
-        System.out.println(root);
-        System.out.println(root.toFile().isDirectory());
-        System.out.println(Files.isDirectory(root));
-        SourceRoot sourceRoot = new SourceRoot(root);
-        CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
+        CompilationUnit cu = StaticJavaParser.parse(fileToTest);
 
         AtomicReference<String> packageName = new AtomicReference<>("");
         AtomicReference<String> classPath = new AtomicReference<>("");
@@ -68,7 +57,6 @@ public class ParseConvert
             packageName.set(packageDeclaration.getNameAsString());
             classPath.set(String.format("%s.%s", packageName.get(), fileToTest.getName().replace(".java", "")));
         });
-        System.out.println("ParseConvert 66");
 
         //Add import to class
         Set<Class<?>> imports = new HashSet<>();
@@ -178,7 +166,6 @@ public class ParseConvert
                 return n;
             }
         }, null);
-        System.out.println("ParseConvert 176");
 
         //Add imports
         imports.forEach(cu::addImport);
@@ -192,7 +179,6 @@ public class ParseConvert
               .filter(method -> method.getDeclaringClass() == clazz)
               .forEach(method -> methodIterables.put(method, methodStringIterables.get(method.getName())));
 
-        System.out.println("ParseConvert 190");
         return new ParseConvert(methodIterables, clazz, fileToTest, packageName.get());
     }
 
@@ -206,32 +192,22 @@ public class ParseConvert
         File fileToTest = null;
         try
         {
-            System.out.println("ParseConvert 199");
             fileToTest = new File(classToTest);
-            System.out.println("ParseConvert 201");
         }
         catch (InvalidPathException ignored) {}
 
-        System.out.println("ParseConvert 205");
         if (fileToTest == null || !fileToTest.exists())
         {
-            System.out.println("ParseConvert 208");
             Path parentPath = CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources/");
-            System.out.println("ParseConvert 210");
             fileToTest = new File(String.format("%s/%s", parentPath.toAbsolutePath(), classToTest));
-            System.out.println("ParseConvert 212");
         }
-        System.out.println("ParseConvert 214");
 
         final String fileName = fileToTest.getName();
-        System.out.println("ParseConvert 216");
 
         if (!fileToTest.exists() || !fileName.endsWith(".java"))
         {
-            System.out.println("ParseConvert 221");
             throw new UnsupportedOperationException(String.format("%s is not a valid file", fileToTest.toString()));
         }
-        System.out.println("ParseConvert 224");
 
         return fileToTest;
     }
