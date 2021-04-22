@@ -8,24 +8,24 @@ import java.util.stream.Collectors;
 
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.github.hollandjake.com3529.testsuite.TestSuite;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ClassTestGenerator
 {
-    public static List<MethodTestSuite> forClass(String className)
+    public static List<TestSuite> forClass(String classFilePath)
     {
-        return forClass(className, "../generatedTests");
+        return forClass(ParseConvert.parse(classFilePath), null);
     }
 
-    public static List<MethodTestSuite> forClass(String className, String outputDirectory)
+    public static List<TestSuite> forClass(String classFilePath, String outputDirectory)
     {
-        File outputFile = new File(outputDirectory);
-        return forClass(ParseConvert.parse(className), outputFile);
+        return forClass(ParseConvert.parse(classFilePath), new File(outputDirectory));
     }
 
-    public static List<MethodTestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
+    public static List<TestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
     {
         if (outputDirectory != null && !outputDirectory.exists() && !outputDirectory.mkdirs())
         {
@@ -34,14 +34,14 @@ public class ClassTestGenerator
         Class<?> clazz = mappedClass.getClazz();
 
         return Arrays.stream(clazz.getMethods())
-              .parallel()
-              .filter(method -> method.getDeclaringClass() == clazz)
-              .map(method -> MethodTestGenerator.forMethod(
-                      new Method(mappedClass.getFileUnderTest(), method, mappedClass.getBranchTree(method)),
-                      mappedClass.getPackageName(),
-                      outputDirectory
-              ))
-              .collect(Collectors.toList());
+                     .parallel()
+                     .filter(method -> method.getDeclaringClass() == clazz)
+                     .map(method -> MethodTestGenerator.forMethod(
+                             new Method(mappedClass.getFileUnderTest(), method, mappedClass.getBranchTree(method)),
+                             mappedClass.getPackageName(),
+                             outputDirectory
+                     ))
+                     .collect(Collectors.toList());
     }
 
     public static void main(String[] args)

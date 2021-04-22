@@ -33,36 +33,36 @@ public class End2EndTest
     @Test
     public void shouldGenerateTestsForTriangle()
     {
-        ClassTestGenerator.forClass("Triangle.java");
+        ClassTestGenerator.forClass("Triangle.java", "../generatedTests");
     }
 
     @Test
     public void shouldGenerateTestsForBMICalculator()
     {
-        ClassTestGenerator.forClass("BMICalculator.java");
+        ClassTestGenerator.forClass("BMICalculator.java", "../generatedTests");
     }
 
     @Test
     public void shouldGenerateTestsForStringTest()
     {
-        ClassTestGenerator.forClass("StringTest.java");
+        ClassTestGenerator.forClass("StringTest.java", "../generatedTests");
     }
 
     @Test
     public void shouldGenerateTestsForShortTest()
     {
-        ClassTestGenerator.forClass("ShortTest.java");
+        ClassTestGenerator.forClass("ShortTest.java", "../generatedTests");
     }
 
     @Test
     public void shouldGenerateTestsForLoopTest()
     {
-        ClassTestGenerator.forClass("LoopTest.java");
+        ClassTestGenerator.forClass("LoopTest.java", "../generatedTests");
     }
 
     @Test
     public void shouldGenerateTestsForLongTest()
     {
-        ClassTestGenerator.forClass("LongTest.java");
+        ClassTestGenerator.forClass("LongTest.java", "../generatedTests");
     }
 }

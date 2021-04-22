@@ -4,7 +4,10 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.github.hollandjake.com3529.testsuite.Test;
+import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -62,21 +65,18 @@ public class MethodTestSuite
         }
     }
 
-    public void build(ClassOrInterfaceDeclaration classDeclaration, String className, String methodName)
+    public TestSuite finalise()
     {
-        int testNumber = 0;
-        for (TestCase test : tests)
-        {
-            if (test.getOutput() != null)
-            {
-                MethodDeclaration methodDeclaration = classDeclaration.addMethod("test" + testNumber,
-                                                                                 Modifier.publicModifier()
-                                                                                         .getKeyword());
-                methodDeclaration.addAnnotation(StaticJavaParser.parseAnnotation("@Test"));
-                test.build(methodDeclaration, className, methodName);
-                testNumber++;
-            }
-        }
+        java.lang.reflect.Method method = this.method.getExecutableMethod();
+        return new TestSuite(
+                method,
+                this.method.getFileUnderTest(),
+                this.coverageReport,
+                tests.stream()
+                     .filter(testCase -> Objects.nonNull(testCase.getOutput()))
+                     .map(TestCase::finalise)
+                     .collect(Collectors.toSet())
+        );
     }
 
     public double getFitness()

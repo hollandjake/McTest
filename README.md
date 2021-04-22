@@ -132,7 +132,7 @@ To enable debug outputs you can pass the following system property
 Supplied in the source code at `src/main/resources` are java files Triangle.java and BMICalculator.java which both can demonstrate McTest in action.
 
 You can run `Triangle.java` and `BMICalculator.java` by executing the tests `shouldGenerateTestsForTriangle()` and `shouldGenerateTestsForBMICalculator()` respectively, 
-these tests are located in `src/test/java/com/github/hollandjake/com3529/test/ClassTestGeneratorTest.java`
+these tests are located in `src/test/java/com/github/hollandjake/com3529/test/End2EndTest.java`
 
 After executing the tests, the console will let you know where the project is of the JUnit tests which were generated. The new project for the tests will look like the 
 following for the `Triangle.java` and `BMICalculator.java` respectively. There will also be a coverage report PDF outlining the conditional coverage of the test suite located inside the project root.

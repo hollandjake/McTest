@@ -47,9 +47,9 @@ public class ParseConvert
     private final String packageName;
 
     @SneakyThrows
-    public static ParseConvert parse(String classToTest)
+    public static ParseConvert parse(String classFilePath)
     {
-        File fileToTest = parseFile(classToTest);
+        File fileToTest = parseFile(classFilePath);
 
         SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());

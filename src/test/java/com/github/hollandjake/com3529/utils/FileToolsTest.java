@@ -18,9 +18,11 @@ import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.javaparser.Position;
 import com.github.javaparser.Range;
+import com.github.javaparser.ast.CompilationUnit;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Image;
@@ -72,24 +74,25 @@ public class FileToolsTest
     @Test
     public void testGenerateJUnitTests()
     {
-        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
-        Method mockMethod = mock(Method.class);
-        java.lang.reflect.Method mockMethodExecutable = mock(java.lang.reflect.Method.class);
+        TestSuite mockTestSuite = mock(TestSuite.class);
+        java.lang.reflect.Method mockMethod = mock(java.lang.reflect.Method.class);
         File mockOutput = mock(File.class);
         URI mockUri = mock(URI.class);
 
         filesToolsMockedStatic.when(() -> FileTools.writeToFile(any(), anyString()))
-                              .thenAnswer((Answer<Void>) invocation -> null);
+                              .thenAnswer(invocation -> null);
         filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any()))
-                              .thenAnswer((Answer<Void>) invocation -> null);
+                              .thenAnswer(invocation -> null);
         filesToolsMockedStatic.when(() -> FileTools.writePOMToFile(any(), anyString()))
                               .thenCallRealMethod();
 
         when(mockTestSuite.getMethod()).thenReturn(mockMethod);
-        when(mockMethod.getExecutableMethod()).thenReturn(mockMethodExecutable);
 
-        when(mockMethodExecutable.getDeclaringClass()).thenReturn((Class) String.class);
-        when(mockMethodExecutable.getName()).thenReturn("testMethod");
+        when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
+        when(mockMethod.getName()).thenReturn("testMethod");
+
+        when(mockTestSuite.generateTestSuite()).thenReturn(new CompilationUnit());
+        when(mockTestSuite.getFileUnderTest()).thenReturn(null);
 
         when(mockOutput.toURI()).thenReturn(mockUri);
         when(mockUri.resolve(anyString())).thenReturn(mockUri);
@@ -115,18 +118,16 @@ public class FileToolsTest
     @Test(expectedExceptions = IOException.class)
     public void testGenerateJUnitTestsThrowsException()
     {
-        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
-        Method mockMethod = mock(Method.class);
-        java.lang.reflect.Method mockMethodExecutable = mock(java.lang.reflect.Method.class);
+        TestSuite mockTestSuite = mock(TestSuite.class);
+        java.lang.reflect.Method mockMethod = mock(java.lang.reflect.Method.class);
         File mockOutput = mock(File.class);
 
         filesUtilsMockedStatic.when(() -> FileUtils.deleteDirectory(any())).thenThrow(IOException.class);
 
         when(mockTestSuite.getMethod()).thenReturn(mockMethod);
-        when(mockMethod.getExecutableMethod()).thenReturn(mockMethodExecutable);
 
-        when(mockMethodExecutable.getDeclaringClass()).thenReturn((Class) String.class);
-        when(mockMethodExecutable.getName()).thenReturn("testMethod");
+        when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
+        when(mockMethod.getName()).thenReturn("testMethod");
 
         FileTools.generateJUnitTests(mockTestSuite, "com.github.hollandjake.com3529.test", mockOutput);
     }
@@ -134,7 +135,7 @@ public class FileToolsTest
     @Test
     public void testGenerateCoverageReport()
     {
-        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
+        TestSuite mockTestSuite = mock(TestSuite.class);
         CoverageReport mockCoverage = mock(CoverageReport.class);
         ConditionNode mockCondition1 = mock(ConditionNode.class);
         ConditionNode mockCondition2 = mock(ConditionNode.class);
@@ -198,7 +199,7 @@ public class FileToolsTest
     @Test
     public void testGenerateCoverageReportWithoutFailedTests()
     {
-        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
+        TestSuite mockTestSuite = mock(TestSuite.class);
         CoverageReport mockCoverage = mock(CoverageReport.class);
         ConditionNode mockCondition1 = mock(ConditionNode.class);
         File mockOutput = mock(File.class);
@@ -242,7 +243,7 @@ public class FileToolsTest
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testGenerateCoverageReportThrowsException()
     {
-        MethodTestSuite mockTestSuite = mock(MethodTestSuite.class);
+        TestSuite mockTestSuite = mock(TestSuite.class);
         CoverageReport mockCoverage = mock(CoverageReport.class);
         File mockOutput = mock(File.class);
 

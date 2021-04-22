@@ -8,6 +8,8 @@ import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.solver.Breed;
 import com.github.hollandjake.com3529.generation.solver.InitialPopulationGenerator;
 import com.github.hollandjake.com3529.generation.solver.genetics.NaturalSelection;
+import com.github.hollandjake.com3529.testsuite.Test;
+import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.hollandjake.com3529.utils.FileTools;
 import com.typesafe.config.ConfigFactory;
 
@@ -36,13 +38,13 @@ public class MethodTestGenerator
     private static final long MAX_ITERATIONS = ConfigFactory.load().getLong("Genetics.MaxIterations");
 
     @SneakyThrows
-    public static MethodTestSuite forMethod(Method method, String packageName, File outputDirectory)
+    public static TestSuite forMethod(Method method, String packageName, File outputDirectory)
     {
         log.info("Generating tests for \"{}.{}.{}\"",
                  packageName,
                  method.getExecutableMethod().getDeclaringClass().getSimpleName(),
                  method.getExecutableMethod().getName());
-        MethodTestSuite testSuite = generate(method);
+        TestSuite testSuite = generate(method).finalise();
 
         if (outputDirectory != null)
         {

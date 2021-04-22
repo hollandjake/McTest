@@ -3,6 +3,7 @@ package com.github.hollandjake.com3529.generation;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import com.github.hollandjake.com3529.testsuite.Test;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -74,6 +75,11 @@ public class TestCase
                 )
         );
         methodDeclaration.setBody(new BlockStmt().addStatement(expr));
+    }
+
+    public Test finalise()
+    {
+        return new Test(method.getExecutableMethod(), inputs.clone(), output);
     }
 
     public boolean execute()

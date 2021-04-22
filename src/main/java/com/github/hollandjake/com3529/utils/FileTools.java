@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
+import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -41,25 +42,18 @@ import lombok.extern.slf4j.Slf4j;
 public class FileTools
 {
     @SneakyThrows
-    public static void generateJUnitTests(MethodTestSuite methodTestSuite,
+    public static void generateJUnitTests(TestSuite testSuite,
             String packageName,
             File outputDirectory)
     {
         //Grab details about class
-        Method method = methodTestSuite.getMethod().getExecutableMethod();
+        Method method = testSuite.getMethod();
         String className = method.getDeclaringClass().getSimpleName();
         String methodName = method.getName();
         String testClassName = className + methodName.substring(0, 1).toUpperCase() + methodName.substring(1) + "Tests";
 
         log.info("Writing generated tests for \"{}.{}.{}\"", packageName, className, methodName);
 
-        //Create the JUnit tests
-        CompilationUnit cu = new CompilationUnit();
-        cu.setPackageDeclaration(packageName);
-        cu.addImport("org.junit.Test");
-        cu.addImport("org.junit.Assert.assertEquals", true, false);
-        ClassOrInterfaceDeclaration classDeclaration = cu.addClass(testClassName);
-        methodTestSuite.build(classDeclaration, className, methodName);
 
         //Create new maven project with JUnit tests
         URI root = outputDirectory.toURI();
@@ -73,17 +67,17 @@ public class FileTools
         File testFile = new File(testJava.resolve(testClassName + ".java"));
         File pomFile = new File(root.resolve("pom.xml"));
 
-        writeToFile(testFile, cu.toString());
-        copyFile(methodTestSuite.getMethod().getFileUnderTest(), mainFile);
+        writeToFile(testFile, testSuite.generateTestSuite().toString());
+        copyFile(testSuite.getFileUnderTest(), mainFile);
         writePOMToFile(pomFile, packageName);
 
         log.info("Tests saved to {}", outputDirectory);
     }
 
     @SneakyThrows
-    public static void generateCoverageReport(MethodTestSuite methodTestSuite, File outputDirectory)
+    public static void generateCoverageReport(TestSuite testSuite, File outputDirectory)
     {
-        List<ConditionNode> conditionNodeList = methodTestSuite.getCoverageReport().getConditionNodes();
+        List<ConditionNode> conditionNodeList = testSuite.getCoverageReport().getConditionNodes();
 
         Document document = new Document();
         Path filePath = new File(outputDirectory + "/CoverageReport.pdf").toPath().toAbsolutePath();
