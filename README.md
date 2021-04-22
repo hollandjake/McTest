@@ -1,5 +1,5 @@
-![](https://github.com/hollandjake/COM3529/actions/workflows/main.yml/badge.svg)
-[![codecov](https://codecov.io/gh/hollandjake/COM3529/branch/master/graph/badge.svg?token=jU7JnWwhy3)](https://codecov.io/gh/hollandjake/COM3529)
+![](https://github.com/hollandjake/McTest/actions/workflows/main.yml/badge.svg)
+[![codecov](https://codecov.io/gh/hollandjake/McTest/branch/master/graph/badge.svg?token=xtiWkmR3P9)](https://codecov.io/gh/hollandjake/McTest)
 
 <br />
 <p align="center">
