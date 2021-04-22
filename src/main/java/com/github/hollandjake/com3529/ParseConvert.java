@@ -31,7 +31,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.utils.CodeGenerationUtils;
-import com.github.javaparser.utils.SourceRoot;
 
 import net.openhft.compiler.CompilerUtils;
 
@@ -50,9 +49,7 @@ public class ParseConvert
     public static ParseConvert parse(String classFilePath)
     {
         File fileToTest = parseFile(classFilePath);
-
-        SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
-        CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
+        CompilationUnit cu = StaticJavaParser.parse(fileToTest);
 
         AtomicReference<String> packageName = new AtomicReference<>("");
         AtomicReference<String> classPath = new AtomicReference<>("");
