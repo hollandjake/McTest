@@ -49,8 +49,9 @@ public class ParseConvert
     @SneakyThrows
     public static ParseConvert parse(String classFilePath)
     {
+        System.out.println("ParseConvert 52");
         File fileToTest = parseFile(classFilePath);
-
+        System.out.println("ParseConvert 54");
         SourceRoot sourceRoot = new SourceRoot(fileToTest.getParentFile().toPath().toAbsolutePath());
         CompilationUnit cu = sourceRoot.parse("", fileToTest.getName());
 
@@ -195,22 +196,32 @@ public class ParseConvert
         File fileToTest = null;
         try
         {
+            System.out.println("ParseConvert 199");
             fileToTest = new File(classToTest);
+            System.out.println("ParseConvert 201");
         }
         catch (InvalidPathException ignored) {}
 
+        System.out.println("ParseConvert 205");
         if (fileToTest == null || !fileToTest.exists())
         {
+            System.out.println("ParseConvert 208");
             Path parentPath = CodeGenerationUtils.mavenModuleRoot(ParseConvert.class).resolve("src/main/resources/");
+            System.out.println("ParseConvert 210");
             fileToTest = new File(String.format("%s/%s", parentPath.toAbsolutePath(), classToTest));
+            System.out.println("ParseConvert 212");
         }
+        System.out.println("ParseConvert 214");
 
         final String fileName = fileToTest.getName();
+        System.out.println("ParseConvert 216");
 
         if (!fileToTest.exists() || !fileName.endsWith(".java"))
         {
+            System.out.println("ParseConvert 221");
             throw new UnsupportedOperationException(String.format("%s is not a valid file", fileToTest.toString()));
         }
+        System.out.println("ParseConvert 224");
 
         return fileToTest;
     }

@@ -1,5 +1,7 @@
 package com.github.hollandjake.com3529;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import com.github.hollandjake.com3529.testsuite.TestSuite;
@@ -15,7 +17,9 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 public class ClassTestGeneratorTest
 {
@@ -41,7 +45,6 @@ public class ClassTestGeneratorTest
     public void testForClassWithClassNameOnly()
     {
         List<TestSuite> generatedTests = ClassTestGenerator.forClass("Triangle.java");
-
         assertThat(generatedTests, hasSize(1)); //Only has one method so should only have one testsuite
         assertThat(generatedTests.get(0).getTests(), not(empty()));
         filesToolsMockedStatic.verifyNoInteractions();
