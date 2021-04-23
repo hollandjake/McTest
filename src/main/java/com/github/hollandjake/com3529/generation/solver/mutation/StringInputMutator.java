@@ -24,7 +24,7 @@ public class StringInputMutator extends InputMutator<String>
     {
         int remainingOffset = (int) Math.abs(offset);
 
-        if (remainingOffset <= 0)
+        if (remainingOffset == 0)
         {
             return value;
         }
