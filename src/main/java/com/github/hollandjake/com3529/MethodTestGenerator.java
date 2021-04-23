@@ -36,6 +36,14 @@ public class MethodTestGenerator
     @Accessors(fluent = true)
     private static final long MAX_ITERATIONS = ConfigFactory.load().getLong("Genetics.MaxIterations");
 
+    /**
+     * This method is the entry point to MethodTestGenerator and calls the generate method to
+     * generate the tests and calls FileTools to generate the automatic JUnit tests.
+     * @param method This is the method to test on.
+     * @param packageName This is the package name of the method to test on.
+     * @param outputDirectory This is directory to output the tests to.
+     * @return TestSuite This contains the generated tests for the method.
+     */
     @SneakyThrows
     public static TestSuite forMethod(Method method, String packageName, File outputDirectory)
     {
@@ -53,6 +61,11 @@ public class MethodTestGenerator
         return testSuite;
     }
 
+    /**
+     * This method uses an evolutionary algorithm to generated tests for the method.
+     * @param method This is the method to test on.
+     * @return MethodTestSuite This returns the test suite for the method being tested on.
+     */
     private static MethodTestSuite generate(Method method)
     {
         List<MethodTestSuite> population = InitialPopulationGenerator.generate(method, POPULATION_SIZE());

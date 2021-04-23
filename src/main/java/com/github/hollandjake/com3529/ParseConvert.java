@@ -45,6 +45,12 @@ public class ParseConvert
     private final File fileUnderTest;
     private final String packageName;
 
+    /**
+     * This method parses through the Class file being tested on, instrumenting condition code
+     * and creating tree's for each method.
+     * @param classFilePath This is the path to the Class file being tested on.
+     * @return ParseConvert This returns this class.
+     */
     @SneakyThrows
     public static ParseConvert parse(String classFilePath)
     {
@@ -182,11 +188,21 @@ public class ParseConvert
         return new ParseConvert(methodIterables, clazz, fileToTest, packageName.get());
     }
 
+    /**
+     * This methods gets the branch tree from the method.
+     * @param method This is the method to obtain the branch tree from.
+     * @return Tree This returns the tree of the method.
+     */
     public Tree getBranchTree(Method method)
     {
         return methodBranchTrees.get(method);
     }
 
+    /**
+     * This method gets the File object of the Class to test on.
+     * @param classToTest This is the location to the Class to test on.
+     * @return File This returns the File object of the Class to test on.
+     */
     public static File parseFile(String classToTest)
     {
         File fileToTest = null;
