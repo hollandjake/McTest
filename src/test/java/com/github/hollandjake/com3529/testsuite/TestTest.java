@@ -29,12 +29,11 @@ public class TestTest
 
         MethodDeclaration methodDeclaration = test.generateTestCase();
         MethodDeclaration expected = StaticJavaParser.parseMethodDeclaration(
-                "@Test\n" +
-                        "public void test() {" +
+                "@Test public void test() {" +
                         "assertEquals(\"1\", String.valueOf(String.testName('1',\"1\",(short) 1, (byte) 1, 1)));" +
                         "}"
         );
 
-        assertEquals(methodDeclaration.toString(), expected.toString());
+        assertEquals(expected.toString(), methodDeclaration.toString());
     }
 }
