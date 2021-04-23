@@ -4,33 +4,32 @@ import java.util.Arrays;
 
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 
-import org.mockito.MockedStatic;
-import org.testng.annotations.AfterMethod;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import lombok.SneakyThrows;
+
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.testng.AssertJUnit.assertEquals;
 
+@RunWith(PowerMockRunner.class)
+@PrepareOnlyThisForTest
 public class NaturalSelectionTest
 {
-    MockedStatic<NaturalSelection> naturalSelection;
-
     @BeforeMethod
+    @SneakyThrows
     public void setUp()
     {
-        naturalSelection = mockStatic(NaturalSelection.class);
-        naturalSelection.when(() -> NaturalSelection.overPopulation(anyList())).thenCallRealMethod();
-        naturalSelection.when(NaturalSelection::TOP_N).thenReturn(2);
-    }
-
-    @AfterMethod
-    public void tearDown()
-    {
-        naturalSelection.close();
+        mockStatic(NaturalSelection.class);
+        PowerMockito.when(NaturalSelection.class, "overPopulation", anyList()).thenCallRealMethod();
+        PowerMockito.when(NaturalSelection.class, "TOP_N").thenReturn(2);
     }
 
     @Test

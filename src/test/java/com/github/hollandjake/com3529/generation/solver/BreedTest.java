@@ -11,53 +11,53 @@ import com.github.hollandjake.com3529.generation.Method;
 import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.generation.TestCase;
 
-import org.mockito.MockedStatic;
-import org.testng.annotations.AfterMethod;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import lombok.SneakyThrows;
 
 import static org.hamcrest.CoreMatchers.either;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.oneOf;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareOnlyThisForTest
 public class BreedTest
 {
-    private MockedStatic<Breed> breed;
-
     @BeforeMethod
+    @SneakyThrows
     public void setUp()
     {
-        breed = mockStatic(Breed.class);
+        PowerMockito.mockStatic(Breed.class);
         Random random = new Random(1);
-        breed.when(Breed::RANDOM).thenReturn(random);
-        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.75);
-        breed.when(Breed::MUTATION_PROBABILITY).thenReturn(0.1);
-        breed.when(() -> Breed.repopulate(any(), anyList(), anyInt())).thenCallRealMethod();
-        breed.when(() -> Breed.crossover(any(), any())).thenCallRealMethod();
-        breed.when(() -> Breed.mutate(anySet())).thenCallRealMethod();
-    }
-
-    @AfterMethod
-    public void tearDown()
-    {
-        breed.close();
+        PowerMockito.when(Breed.class, "RANDOM").thenReturn(random);
+        PowerMockito.when(Breed.class, "CROSSOVER_SELECTION_PROBABILITY").thenReturn(0.75);
+        PowerMockito.when(Breed.class, "MUTATION_PROBABILITY").thenReturn(0.1);
+        PowerMockito.when(Breed.class, "repopulate", any(), anyList(), anyInt()).thenCallRealMethod();
+        PowerMockito.when(Breed.class, "crossover", any(), any()).thenCallRealMethod();
+        PowerMockito.when(Breed.class, "mutate", anySet()).thenCallRealMethod();
     }
 
     @Test
+    @SneakyThrows
     public void testCrossover()
     {
         TestCase testCase1 = mock(TestCase.class);
@@ -67,18 +67,19 @@ public class BreedTest
         Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3,testCase4));
         Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3));
 
-        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.5);
+        PowerMockito.when(Breed.class, "CROSSOVER_SELECTION_PROBABILITY").thenReturn(0.5);
 
         Set<TestCase> outputs = Breed.crossover(parentATests, parentBTests);
         assertThat(outputs, hasItem(oneOf(testCase1, testCase2, testCase3, testCase4)));
 
-        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(1d);
+        PowerMockito.when(Breed.class, "CROSSOVER_SELECTION_PROBABILITY").thenReturn(1);
 
         outputs = Breed.crossover(parentATests, parentBTests);
         assertThat(outputs, equalTo(new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4))));
     }
 
     @Test
+    @SneakyThrows
     public void testCrossoverParentAShorter()
     {
         TestCase testCase1 = mock(TestCase.class);
@@ -88,27 +89,28 @@ public class BreedTest
         Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3));
         Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4));
 
-        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.5);
+        PowerMockito.when(Breed.class, "CROSSOVER_SELECTION_PROBABILITY").thenReturn(0.5);
 
         Set<TestCase> outputs = Breed.crossover(parentATests, parentBTests);
         assertThat(outputs, hasItem(oneOf(testCase1, testCase2, testCase3, testCase4)));
 
-        breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(1d);
+        PowerMockito.when(Breed.class, "CROSSOVER_SELECTION_PROBABILITY").thenReturn(1);
 
         outputs = Breed.crossover(parentATests, parentBTests);
         assertThat(outputs, equalTo(new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4))));
     }
 
     @Test
+    @SneakyThrows
     public void testMutate()
     {
-        breed.when(Breed::MUTATION_PROBABILITY).thenReturn(0.5);
+        PowerMockito.when(Breed.class, "MUTATION_PROBABILITY").thenReturn(0.5);
         TestCase testCase = mock(TestCase.class);
         when(testCase.getInputs()).thenReturn(new Object[]{1,2,3});
         Set<TestCase> outputs = Breed.mutate(Collections.singleton(testCase));
         assertThat(outputs, not(equalTo(Collections.singleton(testCase))));
 
-        breed.when(Breed::MUTATION_PROBABILITY).thenReturn(0d);
+        PowerMockito.when(Breed.class, "MUTATION_PROBABILITY").thenReturn(0);
         outputs = Breed.mutate(Collections.singleton(testCase));
         assertThat(outputs, equalTo(Collections.singleton(testCase)));
     }
@@ -141,6 +143,6 @@ public class BreedTest
 
         assertThat(output, hasSize(populationSize));
         assertThat(output, either(hasItem(testSuite1)).or(hasItem(testSuite2)));
-        breed.verify(never(), () -> Breed.crossover(any(),any()));
+        verifyStatic(Breed.class); Breed.crossover(any(), any());
     }
 }
