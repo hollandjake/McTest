@@ -42,16 +42,17 @@ public class TestSuite
     /**
      * Generate a JUnit test class representing the {@link TestSuite}
      *
+     * @param testClassName The generated name of the test class
      * @return The {@link CompilationUnit} representing the JUnit test class
      */
-    public CompilationUnit generateTestSuite()
+    public CompilationUnit generateTestSuite(String testClassName)
     {
         CompilationUnit cu = new CompilationUnit();
         Class<?> declaringClass = method.getDeclaringClass();
         cu.setPackageDeclaration(packageUnderTest);
         cu.addImport("org.junit.Test");
         cu.addImport("org.junit.Assert.assertEquals", true, false);
-        ClassOrInterfaceDeclaration classDeclaration = cu.addClass(declaringClass.getSimpleName());
+        ClassOrInterfaceDeclaration classDeclaration = cu.addClass(testClassName);
 
         AtomicInteger i = new AtomicInteger();
         tests.stream().parallel()

@@ -94,7 +94,7 @@ public class FileToolsTest
         when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
         when(mockMethod.getName()).thenReturn("testMethod");
 
-        when(mockTestSuite.generateTestSuite()).thenReturn(new CompilationUnit());
+        when(mockTestSuite.generateTestSuite(anyString())).thenReturn(new CompilationUnit());
         when(mockTestSuite.getFileUnderTest()).thenReturn(null);
 
         when(mockOutput.toURI()).thenReturn(mockUri);

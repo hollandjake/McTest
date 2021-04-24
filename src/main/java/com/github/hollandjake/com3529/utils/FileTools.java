@@ -73,7 +73,7 @@ public class FileTools
         File testFile = new File(testJava.resolve(testClassName + ".java"));
         File pomFile = new File(root.resolve("pom.xml"));
 
-        writeToFile(testFile, testSuite.generateTestSuite().toString());
+        writeToFile(testFile, testSuite.generateTestSuite(testClassName).toString());
         copyFile(testSuite.getFileUnderTest(), mainFile);
         writePOMToFile(pomFile, packageName);
 

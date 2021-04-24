@@ -28,10 +28,10 @@ public class TestSuiteTest
         assertEquals(StaticJavaParser.parse("package java.lang;"
                                                     + "import org.junit.Test;"
                                                     + "import static org.junit.Assert.assertEquals;"
-                                                    + "public class String {"
+                                                    + "public class StringMockMethodTest {"
                                                     + "    @Test public void test0() {"
                                                     + "        assertEquals(\"1\", String.valueOf(String.mockMethod(1, 2, 3)));"
                                                     + "    }"
-                                                    + "}").toString(), testSuite.generateTestSuite().toString());
+                                                    + "}").toString(), testSuite.generateTestSuite("StringMockMethodTest").toString());
     }
 }
