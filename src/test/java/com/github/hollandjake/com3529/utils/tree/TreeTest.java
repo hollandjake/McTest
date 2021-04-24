@@ -25,7 +25,7 @@ public class TreeTest
     public void testAddChild()
     {
         Tree tree = new Tree();
-        IfNode childNode = new IfNode(null, 1);
+        BranchNode childNode = new BranchNode(null, 1);
         tree.addChild(childNode);
 
         assertThat(tree.getChildren(), hasItem(childNode));
@@ -35,7 +35,7 @@ public class TreeTest
     @Test
     public void testGetConditionNode()
     {
-        IfNode childNode = mock(IfNode.class);
+        BranchNode childNode = mock(BranchNode.class);
         Tree tree = new Tree(Arrays.asList(childNode, childNode, childNode));
 
         ConditionNode conditionNode = mock(ConditionNode.class);
@@ -49,19 +49,19 @@ public class TreeTest
     @Test
     public void testGetIfNode()
     {
-        IfNode childNode = mock(IfNode.class);
+        BranchNode childNode = mock(BranchNode.class);
         Tree tree = new Tree(Arrays.asList(childNode, childNode, childNode));
 
-        when(childNode.getIfNode(anyInt())).thenReturn(null, null, childNode, null, null, null);
-        assertEquals(childNode, tree.getIfNode(1));
-        assertNull(tree.getIfNode(1));
+        when(childNode.getBranchNode(anyInt())).thenReturn(null, null, childNode, null, null, null);
+        assertEquals(childNode, tree.getBranchNode(1));
+        assertNull(tree.getBranchNode(1));
     }
 
     @Test
     public void testGetAllChildren()
     {
-        IfNode childNode = new IfNode(null, 1);
-        IfNode nestedChildNode = new IfNode(null, 2);
+        BranchNode childNode = new BranchNode(null, 1);
+        BranchNode nestedChildNode = new BranchNode(null, 2);
         childNode.addThenChild(nestedChildNode);
 
         Tree tree = new Tree(Collections.singletonList(childNode));
@@ -72,7 +72,7 @@ public class TreeTest
     @Test
     public void testClone()
     {
-        IfNode childNode = mock(IfNode.class);
+        BranchNode childNode = mock(BranchNode.class);
         Tree tree = new Tree(Collections.singletonList(childNode));
 
         when(childNode.clone()).thenReturn(childNode);
@@ -85,10 +85,10 @@ public class TreeTest
     @Test
     public void testIterator()
     {
-        IfNode childNode = mock(IfNode.class);
+        BranchNode childNode = mock(BranchNode.class);
         Tree tree = new Tree(Arrays.asList(childNode, childNode, childNode));
 
-        Iterator<IfNode> iterable = tree.iterator();
+        Iterator<BranchNode> iterable = tree.iterator();
 
         assertTrue(iterable.hasNext());
         assertEquals(iterable.next(), childNode);
@@ -109,7 +109,7 @@ public class TreeTest
     @Test
     public void testJoin()
     {
-        IfNode childNode = mock(IfNode.class);
+        BranchNode childNode = mock(BranchNode.class);
         Tree tree1 = new Tree(Collections.singletonList(childNode));
         Tree tree2 = new Tree(Collections.singletonList(childNode));
 

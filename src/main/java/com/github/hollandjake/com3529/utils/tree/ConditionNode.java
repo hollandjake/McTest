@@ -8,18 +8,28 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Represents a conditional expression inside the {@link Tree} hierarchy
+ */
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ConditionNode implements Cloneable
 {
     @ToString.Exclude
-    private IfNode parent;
+    private BranchNode parent;
     private final int conditionId;
     private ConditionCoverage conditionCoverage;
     private final String conditionString;
     private final Range lineRange;
 
+    /**
+     * Calculate the fitness of the node
+     * If the node itself doesn't have a {@link ConditionCoverage} i.e. its not been reached.
+     * Then the nodes fitness is recursively defined as the 1 + the parents fitness
+     *
+     * @return The fitness of the node
+     */
     public double getFitness()
     {
         if (conditionCoverage != null) {
@@ -28,6 +38,11 @@ public class ConditionNode implements Cloneable
         return 1 + parent.getFitness();
     }
 
+    /**
+     * Creates a deep clone of the node
+     *
+     * @return The cloned instance
+     */
     public ConditionNode clone()
     {
         return new ConditionNode(
@@ -39,6 +54,13 @@ public class ConditionNode implements Cloneable
         );
     }
 
+    /**
+     * Join a {@link ConditionNode} instance with a {@link Tree},
+     * joining only on the matching {@link ConditionNode} inside the tree.
+     *
+     * @param other The Tree to match against
+     * @return The joined {@link ConditionNode}
+     */
     public ConditionNode join(Tree other)
     {
         ConditionNode otherNode = other.getConditionNode(conditionId);

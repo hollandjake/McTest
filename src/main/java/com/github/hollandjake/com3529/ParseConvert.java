@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
-import com.github.hollandjake.com3529.utils.tree.IfNode;
+import com.github.hollandjake.com3529.utils.tree.BranchNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -101,9 +101,9 @@ public class ParseConvert
                         ConditionCoverage.from(0, 0d, 0d, n.getOperator());
 
                         int conditionId = this.conditionNum.getAndIncrement();
-                        if (ifNode instanceof IfNode)
+                        if (ifNode instanceof BranchNode)
                         {
-                            ((IfNode) ifNode).addCondition(new ConditionNode(conditionId, n.toString(), n.getRange().orElse(null)));
+                            ((BranchNode) ifNode).addCondition(new ConditionNode(conditionId, n.toString(), n.getRange().orElse(null)));
                         }
 
                         imports.add(BinaryExpr.class);
@@ -119,9 +119,9 @@ public class ParseConvert
                     catch (UnsupportedOperationException e)
                     {
                         Expression left = (Expression) n.getLeft().accept(this, ifNode);
-                        if (ifNode instanceof IfNode)
+                        if (ifNode instanceof BranchNode)
                         {
-                            ((IfNode) ifNode).addConditionOperator(n.getOperator());
+                            ((BranchNode) ifNode).addConditionOperator(n.getOperator());
                         }
                         Expression right = (Expression) n.getRight().accept(this, ifNode);
                         n.setLeft(left);
@@ -136,16 +136,16 @@ public class ParseConvert
             @Override
             public Visitable visit(IfStmt n, Tree parentNode)
             {
-                IfNode self = new IfNode(parentNode, ifNum.getAndIncrement());
-                if (parentNode instanceof IfNode)
+                BranchNode self = new BranchNode(parentNode, ifNum.getAndIncrement());
+                if (parentNode instanceof BranchNode)
                 {
                     if (truthPathStack.peek() == Boolean.TRUE)
                     {
-                        ((IfNode) parentNode).addThenChild(self);
+                        ((BranchNode) parentNode).addThenChild(self);
                     }
                     else
                     {
-                        ((IfNode) parentNode).addElseChild(self);
+                        ((BranchNode) parentNode).addElseChild(self);
                     }
                 }
                 else

@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyByte;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,142 +14,142 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotSame;
 import static org.testng.AssertJUnit.assertNull;
 
-public class IfNodeTest
+public class BranchNodeTest
 {
     @Test
     public void testGetFitnessWithTruthiness()
     {
-        IfNode mockParent = mock(IfNode.class);
-        IfNode ifNode = new IfNode(mockParent, 1);
+        BranchNode mockParent = mock(BranchNode.class);
+        BranchNode branchNode = new BranchNode(mockParent, 1);
         ConditionNode mockCondition = mock(ConditionNode.class);
         ConditionCoverage mockConditionCoverage = mock(ConditionCoverage.class);
 
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
 
         when(mockCondition.getConditionCoverage()).thenReturn(mockConditionCoverage, mockConditionCoverage, null);
         when(mockConditionCoverage.getTruthDistance()).thenReturn(1d);
         when(mockConditionCoverage.getFalseDistance()).thenReturn(0d);
         when(mockParent.getFitness(anyBoolean())).thenReturn(1d);
 
-        assertEquals(0.5d, ifNode.getFitness(true));
-        assertEquals(0d, ifNode.getFitness(false));
-        assertEquals(2d, ifNode.getFitness(false));
+        assertEquals(0.5d, branchNode.getFitness(true));
+        assertEquals(0d, branchNode.getFitness(false));
+        assertEquals(2d, branchNode.getFitness(false));
     }
 
     @Test
     public void testGetFitness()
     {
-        IfNode mockParent = mock(IfNode.class);
-        IfNode ifNode = new IfNode(mockParent, 1);
+        BranchNode mockParent = mock(BranchNode.class);
+        BranchNode branchNode = new BranchNode(mockParent, 1);
         ConditionNode mockCondition = mock(ConditionNode.class);
         ConditionCoverage mockConditionCoverage = mock(ConditionCoverage.class);
 
         when(mockCondition.getConditionCoverage()).thenReturn(mockConditionCoverage, (ConditionCoverage) null);
 
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
 
         when(mockConditionCoverage.getNormalisedFitness()).thenReturn(1d);
         when(mockParent.getFitness()).thenReturn(1d);
 
-        assertEquals(1d, ifNode.getFitness());
-        assertEquals(2d, ifNode.getFitness());
+        assertEquals(1d, branchNode.getFitness());
+        assertEquals(2d, branchNode.getFitness());
     }
 
     @Test
     public void testGetRawFitness()
     {
-        IfNode ifNode = new IfNode(null, 1);
+        BranchNode branchNode = new BranchNode(null, 1);
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
         when(mockCondition.getFitness()).thenReturn(1d);
 
-        assertEquals(1d, ifNode.getRawFitness());
+        assertEquals(1d, branchNode.getRawFitness());
     }
 
     @Test
     public void testGetConditionNode()
     {
-        IfNode ifNode = new IfNode(null, 1);
+        BranchNode branchNode = new BranchNode(null, 1);
         ConditionNode mockCondition = mock(ConditionNode.class);
 
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
         when(mockCondition.getConditionId()).thenReturn(1);
 
-        assertEquals(mockCondition, ifNode.getConditionNode(1));
+        assertEquals(mockCondition, branchNode.getConditionNode(1));
     }
 
     @Test
     public void testGetConditionNodeWithNoMatch()
     {
-        IfNode ifNode = new IfNode(null, 1);
+        BranchNode branchNode = new BranchNode(null, 1);
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
         when(mockCondition.getConditionId()).thenReturn(0);
 
-        assertNull(ifNode.getConditionNode(1));
+        assertNull(branchNode.getConditionNode(1));
     }
 
     @Test
     public void testClone()
     {
         Tree mockTree = mock(Tree.class);
-        IfNode ifNode = new IfNode(1, mockTree, false);
-        IfNode childIfNodeThen = mock(IfNode.class);
-        IfNode childIfNodeElse = mock(IfNode.class);
+        BranchNode branchNode = new BranchNode(1, mockTree, false);
+        BranchNode childBranchNodeThen = mock(BranchNode.class);
+        BranchNode childBranchNodeElse = mock(BranchNode.class);
 
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
-        ifNode.addConditionOperator(BinaryExpr.Operator.OR);
+        branchNode.addCondition(mockCondition);
+        branchNode.addConditionOperator(BinaryExpr.Operator.OR);
 
-        ifNode.addThenChild(childIfNodeThen);
-        ifNode.addElseChild(childIfNodeElse);
+        branchNode.addThenChild(childBranchNodeThen);
+        branchNode.addElseChild(childBranchNodeElse);
 
-        when(childIfNodeThen.clone()).thenReturn(childIfNodeThen);
-        when(childIfNodeElse.clone()).thenReturn(childIfNodeElse);
+        when(childBranchNodeThen.clone()).thenReturn(childBranchNodeThen);
+        when(childBranchNodeElse.clone()).thenReturn(childBranchNodeElse);
         when(mockCondition.clone()).thenReturn(mockCondition);
 
-        IfNode clone = ifNode.clone();
+        BranchNode clone = branchNode.clone();
         clone.setParentNode(mockTree);
 
-        assertEquals(ifNode, clone);
-        assertNotSame(ifNode, clone);
+        assertEquals(branchNode, clone);
+        assertNotSame(branchNode, clone);
     }
 
     @Test
     public void testGetTotalConditionCoverageWithNullCoverage()
     {
-        IfNode ifNode = new IfNode(1, null, false);
+        BranchNode branchNode = new BranchNode(1, null, false);
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
 
         when(mockCondition.getConditionCoverage()).thenReturn(null);
 
-        assertNull(ifNode.getTotalConditionCoverage());
+        assertNull(branchNode.getTotalConditionCoverage());
     }
 
     @Test
     public void testGetTotalConditionCoverageWithOneCondition()
     {
-        IfNode ifNode = new IfNode(1, null, false);
+        BranchNode branchNode = new BranchNode(1, null, false);
         ConditionNode mockCondition = mock(ConditionNode.class);
         ConditionCoverage mockCoverage = mock(ConditionCoverage.class);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
 
         when(mockCondition.getConditionCoverage()).thenReturn(mockCoverage);
 
-        assertEquals(mockCoverage, ifNode.getTotalConditionCoverage());
+        assertEquals(mockCoverage, branchNode.getTotalConditionCoverage());
     }
 
     @Test
     public void testGetTotalConditionCoverageWithMultipleConditions()
     {
-        IfNode ifNode = new IfNode(1, null, false);
+        BranchNode branchNode = new BranchNode(1, null, false);
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
-        ifNode.addConditionOperator(BinaryExpr.Operator.AND);
-        ifNode.addCondition(mockCondition);
-        ifNode.addConditionOperator(BinaryExpr.Operator.OR);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
+        branchNode.addConditionOperator(BinaryExpr.Operator.AND);
+        branchNode.addCondition(mockCondition);
+        branchNode.addConditionOperator(BinaryExpr.Operator.OR);
+        branchNode.addCondition(mockCondition);
         ConditionCoverage coverage1 = new ConditionCoverage(0,true, 2d, 1d);
         ConditionCoverage coverage2 = new ConditionCoverage(1,true, 1d, 2d);
         ConditionCoverage coverage3 = new ConditionCoverage(2,false, 5d, 5d);
@@ -158,70 +157,70 @@ public class IfNodeTest
 
         when(mockCondition.getConditionCoverage()).thenReturn(coverage1, coverage2, coverage3);
 
-        assertEquals(expected, ifNode.getTotalConditionCoverage());
+        assertEquals(expected, branchNode.getTotalConditionCoverage());
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testGetTotalConditionCoverageThrowsUnsupportedException()
     {
-        IfNode ifNode = new IfNode(1, null, false);
+        BranchNode branchNode = new BranchNode(1, null, false);
         ConditionNode mockCondition = mock(ConditionNode.class);
-        ifNode.addCondition(mockCondition);
-        ifNode.addConditionOperator(BinaryExpr.Operator.DIVIDE);
-        ifNode.addCondition(mockCondition);
+        branchNode.addCondition(mockCondition);
+        branchNode.addConditionOperator(BinaryExpr.Operator.DIVIDE);
+        branchNode.addCondition(mockCondition);
         ConditionCoverage coverage1 = new ConditionCoverage(0,true, 2d, 1d);
         ConditionCoverage coverage2 = new ConditionCoverage(1,true, 1d, 2d);
 
         when(mockCondition.getConditionCoverage()).thenReturn(coverage1, coverage2);
 
-        ifNode.getTotalConditionCoverage();
+        branchNode.getTotalConditionCoverage();
     }
 
     @Test
     public void testGetIfNode()
     {
-        IfNode ifNode = new IfNode(null, 1);
-        IfNode childNode = new IfNode(null, 2);
-        ifNode.addThenChild(childNode);
+        BranchNode branchNode = new BranchNode(null, 1);
+        BranchNode childNode = new BranchNode(null, 2);
+        branchNode.addThenChild(childNode);
 
-        assertEquals(ifNode,ifNode.getIfNode(1));
-        assertEquals(childNode,ifNode.getIfNode(2));
+        assertEquals(branchNode, branchNode.getBranchNode(1));
+        assertEquals(childNode, branchNode.getBranchNode(2));
     }
 
     @Test
     public void testJoin()
     {
         Tree mockParent = mock(Tree.class);
-        IfNode ifNode = new IfNode(mockParent, 1);
-        IfNode childNodeThen = mock(IfNode.class);
-        IfNode childNodeElse = mock(IfNode.class);
+        BranchNode branchNode = new BranchNode(mockParent, 1);
+        BranchNode childNodeThen = mock(BranchNode.class);
+        BranchNode childNodeElse = mock(BranchNode.class);
         ConditionNode mockCondition = mock(ConditionNode.class);
 
-        ifNode.addThenChild(childNodeThen);
-        ifNode.addElseChild(childNodeElse);
-        ifNode.addCondition(mockCondition);
-        ifNode.addConditionOperator(BinaryExpr.Operator.OR);
+        branchNode.addThenChild(childNodeThen);
+        branchNode.addElseChild(childNodeElse);
+        branchNode.addCondition(mockCondition);
+        branchNode.addConditionOperator(BinaryExpr.Operator.OR);
 
-        when(mockParent.getIfNode(anyInt())).thenReturn(ifNode, childNodeThen, childNodeElse);
+        when(mockParent.getBranchNode(anyInt())).thenReturn(branchNode, childNodeThen, childNodeElse);
         when(mockCondition.join(any())).thenReturn(mockCondition);
         when(childNodeThen.join(any())).thenReturn(childNodeThen);
         when(childNodeElse.join(any())).thenReturn(childNodeElse);
 
-        IfNode join = ifNode.join(mockParent);
+        BranchNode join = branchNode.join(mockParent);
         join.setParentNode(mockParent);
-        assertEquals(ifNode, join);
-        assertNotSame(ifNode, join);
+        assertEquals(branchNode, join);
+        assertNotSame(branchNode, join);
     }
 
     @Test
     public void testJoinWithNullOther()
     {
         Tree mockTree = mock(Tree.class);
-        IfNode ifNode = new IfNode(null, 1);
-        assertEquals(ifNode, ifNode.join(null));
+        BranchNode branchNode = new BranchNode(null, 1);
+        assertEquals(branchNode, branchNode.join(null));
 
-        IfNode join = ifNode.join(mockTree);
-        assertEquals(ifNode, join);
-        assertNotSame(ifNode, join);
+        BranchNode join = branchNode.join(mockTree);
+        assertEquals(branchNode, join);
+        assertNotSame(branchNode, join);
     }
 }

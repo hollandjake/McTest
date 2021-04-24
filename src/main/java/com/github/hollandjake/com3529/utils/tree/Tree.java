@@ -3,9 +3,6 @@ package com.github.hollandjake.com3529.utils.tree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,29 +10,46 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The hierarchy of the {@link BranchNode BranchNodes}
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Tree implements Cloneable, Iterable<IfNode>
+public class Tree implements Cloneable, Iterable<BranchNode>
 {
+    /**
+     * The children of this node
+     */
     @ToString.Exclude
-    private final List<IfNode> children = new ArrayList<>();
+    private final List<BranchNode> children = new ArrayList<>();
 
-    public Tree(List<IfNode> children)
+    public Tree(List<BranchNode> children)
     {
         this.children.addAll(children);
     }
 
-    public void addChild(IfNode child)
+    /**
+     * Add a child to this node, setting the child's parent as this
+     *
+     * @param child the child to add
+     */
+    public void addChild(BranchNode child)
     {
         children.add(child);
         child.setParentNode(this);
     }
 
+    /**
+     * Recursively get a specific {@link ConditionNode} defined by the conditionId
+     *
+     * @param conditionId the id to search for
+     * @return The matched {@link ConditionNode}
+     */
     public ConditionNode getConditionNode(int conditionId)
     {
-        for (IfNode child : getChildren())
+        for (BranchNode child : getChildren())
         {
             ConditionNode found = child.getConditionNode(conditionId);
             if (found != null)
@@ -46,11 +60,17 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return null;
     }
 
-    public IfNode getIfNode(int ifId)
+    /**
+     * Recursively get a specific {@link BranchNode} defined by the branchId
+     *
+     * @param branchId the id to search for
+     * @return The matched {@link BranchNode}
+     */
+    public BranchNode getBranchNode(int branchId)
     {
-        for (IfNode child : getChildren())
+        for (BranchNode child : getChildren())
         {
-            IfNode found = child.getIfNode(ifId);
+            BranchNode found = child.getBranchNode(branchId);
             if (found != null)
             {
                 return found;
@@ -59,9 +79,13 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return null;
     }
 
-    public List<IfNode> getAllChildren()
+    /**
+     * Recursively fetch all the {@link BranchNode BranchNodes} that can be reached from this node
+     * @return all the children below this node
+     */
+    public List<BranchNode> getAllChildren()
     {
-        List<IfNode> allChildren = new ArrayList<>();
+        List<BranchNode> allChildren = new ArrayList<>();
         children.forEach(child -> {
             allChildren.add(child);
             allChildren.addAll(child.getAllChildren());
@@ -69,6 +93,10 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return allChildren;
     }
 
+    /**
+     * Creates a deep copy of the node
+     * @return the cloned instance
+     */
     @Override
     public Tree clone()
     {
@@ -77,22 +105,43 @@ public class Tree implements Cloneable, Iterable<IfNode>
         return clone;
     }
 
+    /**
+     * Produce an iterator to iterate over all the children
+     * @return the iterator
+     */
     @Override
-    public Iterator<IfNode> iterator()
+    public Iterator<BranchNode> iterator()
     {
         return getAllChildren().iterator();
     }
 
+    /**
+     * Returns the fitness of this node.
+     * This defaults to be 0 for a Tree since this is the root
+     *
+     * @return 0
+     */
     public double getFitness()
     {
         return 0d; // Skip this node
     }
 
+    /**
+     * Returns the fitness of this node.
+     * This defaults to be 0 for a Tree since this is the root
+     *
+     * @return 0
+     */
     public double getFitness(boolean truthy)
     {
         return 0d; // Skip this node
     }
 
+    /**
+     * Join this {@link Tree} to another {@link Tree}
+     * @param other the other {@link Tree}
+     * @return The joined {@link Tree}
+     */
     public Tree join(Tree other)
     {
         Tree cloneNode = new Tree();

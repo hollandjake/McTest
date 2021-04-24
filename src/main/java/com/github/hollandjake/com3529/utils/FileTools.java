@@ -37,10 +37,19 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Responsible for all the file writing operations
+ */
 @Slf4j
 @UtilityClass
 public class FileTools
 {
+    /**
+     * Write out the JUnit tests for the given {@link TestSuite}
+     * @param testSuite The {@link TestSuite} to generate from
+     * @param packageName the name of the package to write
+     * @param outputDirectory the location of the directory to write the file to
+     */
     @SneakyThrows
     public static void generateJUnitTests(TestSuite testSuite,
             String packageName,
@@ -74,6 +83,11 @@ public class FileTools
         log.info("Tests saved to {}", outputDirectory);
     }
 
+    /**
+     * Write out the coverage report pdf for a given {@link TestSuite}
+     * @param testSuite the {@link TestSuite} to generate for
+     * @param outputDirectory the location of the directory to write the file to
+     */
     @SneakyThrows
     public static void generateCoverageReport(TestSuite testSuite, File outputDirectory)
     {
@@ -182,6 +196,10 @@ public class FileTools
         log.info("Coverage report saved to {}", filePath);
     }
 
+    /**
+     * Add the table header to the pdf document for the coverage report
+     * @param table the table to add the headers too
+     */
     static void addTableHeader(PdfPTable table)
     {
         Stream.of("Condition Number", "Location", "Expression", "Executed True", "Executed False")
@@ -197,6 +215,11 @@ public class FileTools
               });
     }
 
+    /**
+     * Writes the content to the file and ensures the file exists
+     * @param file the {@link File} to write to
+     * @param content the content to write to the file
+     */
     @SneakyThrows
     static void writeToFile(File file, String content)
     {
@@ -207,6 +230,11 @@ public class FileTools
         }
     }
 
+    /**
+     * Copy one {@link File} to another location
+     * @param source the {@link File} to copy
+     * @param dest the location to copy the file to
+     */
     @SneakyThrows
     static void copyFile(File source, File dest)
     {
@@ -214,6 +242,11 @@ public class FileTools
         Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /**
+     * Write a pom.xml for the generated tests to use
+     * @param path The {@link File} to save as the pom.xml
+     * @param packageName The package name of the module
+     */
     public static void writePOMToFile(File path, String packageName)
     {
         String content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

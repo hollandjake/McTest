@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
-import com.github.hollandjake.com3529.utils.tree.IfNode;
+import com.github.hollandjake.com3529.utils.tree.BranchNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
@@ -76,8 +76,8 @@ public class CoverageReportTest
     @Test
     public void testGetFitness()
     {
-        IfNode mockNode1 = mock(IfNode.class);
-        IfNode mockNode2 = mock(IfNode.class);
+        BranchNode mockNode1 = mock(BranchNode.class);
+        BranchNode mockNode2 = mock(BranchNode.class);
 
         when(treeMock.getAllChildren()).thenReturn(Arrays.asList(mockNode1, mockNode2));
         when(mockNode1.getRawFitness()).thenReturn(1d);
@@ -96,8 +96,8 @@ public class CoverageReportTest
     @Test
     public void testGetBranchesCovered()
     {
-        IfNode mockNode1 = mock(IfNode.class);
-        IfNode mockNode2 = mock(IfNode.class);
+        BranchNode mockNode1 = mock(BranchNode.class);
+        BranchNode mockNode2 = mock(BranchNode.class);
 
         ConditionCoverage coverage1 = new ConditionCoverage(0, true, 0d, 1d);
         ConditionCoverage coverage2 = new ConditionCoverage(0, false, 1d, 0d);
@@ -127,7 +127,7 @@ public class CoverageReportTest
     @Test
     public void testGetConditionNodes()
     {
-        IfNode mockNode = mock(IfNode.class);
+        BranchNode mockNode = mock(BranchNode.class);
         ConditionNode mockConditionNode = mock(ConditionNode.class);
 
         when(treeMock.getAllChildren()).thenReturn(Arrays.asList(mockNode, mockNode));

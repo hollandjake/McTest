@@ -22,7 +22,7 @@ public class ConditionNodeTest
     public void testGetFitness()
     {
         ConditionCoverage mockCoverage = mock(ConditionCoverage.class);
-        ConditionNode conditionNode = new ConditionNode(mock(IfNode.class),
+        ConditionNode conditionNode = new ConditionNode(mock(BranchNode.class),
                                                         0,
                                                         mockCoverage,
                                                         "testConditionString",
@@ -36,7 +36,7 @@ public class ConditionNodeTest
     @Test
     public void testGetFitnessWithNullCoverage()
     {
-        IfNode mockParent = mock(IfNode.class);
+        BranchNode mockParent = mock(BranchNode.class);
         ConditionNode conditionNode = new ConditionNode(mockParent, 0, null, "testConditionString", mock(Range.class));
 
         when(mockParent.getFitness()).thenReturn(1d);
@@ -47,7 +47,7 @@ public class ConditionNodeTest
     @Test
     public void testTestClone()
     {
-        IfNode mockParent = mock(IfNode.class);
+        BranchNode mockParent = mock(BranchNode.class);
         ConditionCoverage mockCoverage = mock(ConditionCoverage.class);
         Range mockRange = mock(Range.class);
 
@@ -72,8 +72,8 @@ public class ConditionNodeTest
     @Test
     public void testJoin()
     {
-        IfNode mockParent1 = mock(IfNode.class);
-        IfNode mockParent2 = mock(IfNode.class);
+        BranchNode mockParent1 = mock(BranchNode.class);
+        BranchNode mockParent2 = mock(BranchNode.class);
         ConditionCoverage mockCoverage1 = mock(ConditionCoverage.class);
         ConditionCoverage mockCoverage2 = mock(ConditionCoverage.class);
         ConditionCoverage mockCoverage3 = mock(ConditionCoverage.class);
@@ -93,7 +93,7 @@ public class ConditionNodeTest
     @Test
     public void testJoinOtherNull()
     {
-        IfNode mockParent1 = mock(IfNode.class);
+        BranchNode mockParent1 = mock(BranchNode.class);
         ConditionCoverage mockCoverage = mock(ConditionCoverage.class);
         Range mockRange = mock(Range.class);
         Tree mockTree = mock(Tree.class);

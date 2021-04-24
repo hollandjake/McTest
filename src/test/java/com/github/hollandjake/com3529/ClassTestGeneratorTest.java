@@ -1,7 +1,5 @@
 package com.github.hollandjake.com3529;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 import com.github.hollandjake.com3529.testsuite.TestSuite;
@@ -17,9 +15,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 public class ClassTestGeneratorTest
 {
