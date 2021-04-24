@@ -27,7 +27,7 @@ import lombok.Data;
 public class Test
 {
     /**
-     * The method that was tested
+     * The modified method that was tested
      */
     private final Method method;
     /**

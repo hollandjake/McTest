@@ -46,7 +46,7 @@ public class ClassTestGenerator
      * @param outputDirectory The file representing the directory where the tests should be saved to
      * @return A list of {@link TestSuite TestSuites}, one for every method in the class file being tested
      */
-    public static List<TestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
+    static List<TestSuite> forClass(ParseConvert mappedClass, File outputDirectory)
     {
         if (outputDirectory != null && !outputDirectory.exists() && !outputDirectory.mkdirs())
         {

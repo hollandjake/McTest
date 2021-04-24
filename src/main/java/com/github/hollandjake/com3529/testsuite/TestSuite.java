@@ -19,7 +19,7 @@ import lombok.Data;
 public class TestSuite
 {
     /**
-     * The method that was tested
+     * The modified method that was tested
      */
     private final Method method;
     /**

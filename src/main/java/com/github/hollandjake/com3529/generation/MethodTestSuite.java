@@ -1,5 +1,6 @@
 package com.github.hollandjake.com3529.generation;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
@@ -86,10 +87,12 @@ public class MethodTestSuite
                 this.method.getFileUnderTest(),
                 this.method.getPackageUnderTest(),
                 this.coverageReport,
-                tests.stream()
-                     .filter(testCase -> Objects.nonNull(testCase.getOutput()))
-                     .map(TestCase::finalise)
-                     .collect(Collectors.toSet())
+                Collections.unmodifiableSet(
+                        tests.stream()
+                             .filter(testCase -> Objects.nonNull(testCase.getOutput()))
+                             .map(TestCase::finalise)
+                             .collect(Collectors.toSet())
+                )
         );
     }
 
