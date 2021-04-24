@@ -20,6 +20,9 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Responsible for creating the new individuals for a population
+ */
 @UtilityClass
 public class Breed
 {
@@ -28,23 +31,38 @@ public class Breed
             lazy = true)
     private static final Random RANDOM = new SecureRandom();
 
+    /**
+     * The probability an individual's gene will be carried into a new child
+     */
     @Accessors(fluent = true)
     @Getter(value = AccessLevel.PACKAGE,
             lazy = true)
     private static final double CROSSOVER_SELECTION_PROBABILITY = ConfigFactory.load().getDouble(
             "Genetics.CrossoverSelectionProbability");
 
+    /**
+     * The probability a gene will mutate
+     */
     @Accessors(fluent = true)
     @Getter(value = AccessLevel.PACKAGE,
             lazy = true)
     private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
+    /**
+     * Repopulate the population back to the size we want, this includes the old parents.
+     *
+     * @param method         The method that the test generation is running on
+     * @param oldPopulation  The population that will be used as parents for the new population
+     * @param populationSize How large the new population should be
+     * @return The new population
+     */
     public static List<MethodTestSuite> repopulate(Method method,
             List<MethodTestSuite> oldPopulation,
             int populationSize)
     {
         List<MethodTestSuite> tests = new ArrayList<>(oldPopulation);
 
+        // Generate all the new children for the population by picking two random parents and performing crossover and mutation
         tests.addAll(IntStream.range(oldPopulation.size(), populationSize).parallel().mapToObj(p -> {
             MethodTestSuite parentA = oldPopulation.get(RANDOM().nextInt(oldPopulation.size()));
             MethodTestSuite parentB = oldPopulation.get(RANDOM().nextInt(oldPopulation.size()));
@@ -54,9 +72,18 @@ public class Breed
             return new MethodTestSuite(method, testCases);
         }).collect(Collectors.toList()));
 
+        // Limit is applied here as the old population could be larger than the target population size
         return tests.stream().limit(populationSize).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a new Set of {@link TestCase TestCases} which are a cross-join subset of the two parents
+     * The selection process is based on {@link #CROSSOVER_SELECTION_PROBABILITY}
+     *
+     * @param parentA The first parent's tests
+     * @param parentB The second parent's tests
+     * @return a new Set of {@link TestCase TestCases}
+     */
     static Set<TestCase> crossover(Set<TestCase> parentA, Set<TestCase> parentB)
     {
         //Uniform crossover
@@ -84,6 +111,21 @@ public class Breed
         return testCases;
     }
 
+    /**
+     * Mutate a Set of {@link TestCase TestCases} through a series of mutation operations upon the inputs of each {@link TestCase}
+     * <p>
+     * Possible mutations are as follows:
+     * <ul>
+     *     <li>Gaussian movement using the <code>InputMutator.add</code>. (This can be both negative and positive)
+     *     <li>Random new input used
+     * </ul>
+     *
+     * These mutations are not equality weighted - Gaussian movement has a 2/3 chance while Random has a 1/3 chance.
+     * The chance an input is even mutated is defined by the {@link #MUTATION_PROBABILITY} property
+     *
+     * @param tests The set of input {@link TestCase TestCases}
+     * @return The mutated set of input {@link TestCase TestCases}
+     */
     static Set<TestCase> mutate(Set<TestCase> tests)
     {
         //Uniform mutation

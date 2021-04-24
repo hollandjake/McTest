@@ -25,16 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 public class MethodTestGenerator
 {
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC,
-            lazy = true)
+    @Getter(lazy = true)
     private static final int POPULATION_SIZE = ConfigFactory.load().getInt("Genetics.PopulationSize");
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC,
-            lazy = true)
+    @Getter(lazy = true)
     private static final double TARGET_FITNESS = ConfigFactory.load().getDouble("Genetics.TargetFitness");
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC,
-            lazy = true)
+    @Getter(lazy = true)
     private static final long MAX_ITERATIONS = ConfigFactory.load().getLong("Genetics.MaxIterations");
 
     @SneakyThrows

@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 public class ConditionCoverage implements Cloneable
 {
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC)
+    @Getter
     private static final int K = ConfigFactory.load().getInt("ConditionCoverage.K");
     private final int conditionId;
     private final Boolean result;

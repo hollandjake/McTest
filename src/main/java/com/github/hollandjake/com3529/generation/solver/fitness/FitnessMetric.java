@@ -77,6 +77,8 @@ public abstract class FitnessMetric<T>
      * @param leftVariable The first argument
      * @param rightVariable The second argument
      * @return {@link FitnessMetric<Object>} The fitness metric instance associated with the two inputs
+     * @throws UnsupportedOperationException When both inputs dont match types
+     * @throws UnsupportedOperationException When both input types are not supported
      */
     public static FitnessMetric<Object> getMetricFor(Object leftVariable, Object rightVariable)
     {

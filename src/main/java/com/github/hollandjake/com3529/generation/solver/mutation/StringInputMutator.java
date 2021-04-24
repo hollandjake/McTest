@@ -3,8 +3,16 @@ package com.github.hollandjake.com3529.generation.solver.mutation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class responsible for generating and mutating a {@link String}
+ */
 public class StringInputMutator extends InputMutator<String>
 {
+    /**
+     * Generate a random {@link String}
+     *
+     * @return The random {@link String}
+     */
     @Override
     public String generate()
     {
@@ -19,12 +27,19 @@ public class StringInputMutator extends InputMutator<String>
         return output.toString();
     }
 
+    /**
+     * Create a new individual which is a mutated version of the {@code value} argument, mutated by {@code offset} amount
+     *
+     * @param value The input to mutate
+     * @param offset How much to mutate by
+     * @return The new mutated individual
+     */
     @Override
     public String modify(String value, double offset)
     {
-        int remainingOffset = (int) Math.abs(offset);
+        int offsetSize = (int) Math.abs(offset);
 
-        if (remainingOffset == 0)
+        if (offsetSize == 0)
         {
             return value;
         }
@@ -32,7 +47,7 @@ public class StringInputMutator extends InputMutator<String>
         List<Character> newString = value.chars().mapToObj(e -> (char) e).collect(Collectors.toList());
         CharacterInputMutator charBuilder = InputMutator.getCharacterInputMutator();
 
-        for (int i = 0; i < remainingOffset; i++)
+        for (int i = 0; i < offsetSize; i++)
         {
             if (newString.isEmpty())
             {

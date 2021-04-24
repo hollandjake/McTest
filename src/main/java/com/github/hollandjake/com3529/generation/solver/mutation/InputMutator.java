@@ -9,29 +9,58 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Input mutator factory
+ *
+ * Responsible for assigning the correct mutator to a given input
+ * @param <T> The individual type in which a mutation can be performed on
+ */
 public abstract class InputMutator<T>
 {
+    @Getter
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC)
     private static final Random RANDOM = new SecureRandom();
+
+    /**
+     * Distribution of random numbers resulting in a range of -{@link #NUMBER_DISTRIBUTION} to +{@link #NUMBER_DISTRIBUTION}
+     */
+    @Getter
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PUBLIC)
     private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber("Genetics.Initial.InputDistribution");
 
-    private static final IntegerInputMutator integerInputMutator = new IntegerInputMutator();
-    private static final FloatInputMutator floatInputMutator = new FloatInputMutator();
-    private static final DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
-    private static final LongInputMutator longInputMutator = new LongInputMutator();
-    private static final ByteInputMutator byteInputMutator = new ByteInputMutator();
-    private static final ShortInputMutator shortInputMutator = new ShortInputMutator();
-    private static final BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
-    @Getter(value = AccessLevel.PUBLIC) private static final CharacterInputMutator characterInputMutator = new CharacterInputMutator();
-    private static final StringInputMutator stringInputMutator = new StringInputMutator();
+    @Getter private static final IntegerInputMutator integerInputMutator = new IntegerInputMutator();
+    @Getter private static final FloatInputMutator floatInputMutator = new FloatInputMutator();
+    @Getter private static final DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
+    @Getter private static final LongInputMutator longInputMutator = new LongInputMutator();
+    @Getter private static final ByteInputMutator byteInputMutator = new ByteInputMutator();
+    @Getter private static final ShortInputMutator shortInputMutator = new ShortInputMutator();
+    @Getter private static final BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
+    @Getter private static final CharacterInputMutator characterInputMutator = new CharacterInputMutator();
+    @Getter private static final StringInputMutator stringInputMutator = new StringInputMutator();
 
+    /**
+     * Generate a random {@link T}
+     *
+     * @return The random {@link T}
+     */
     public abstract T generate();
 
+    /**
+     * Create a new individual which is a mutated version of the {@code value} argument, mutated by {@code offset} amount
+     *
+     * @param value The input to mutate
+     * @param offset How much to mutate by
+     * @return The new mutated individual
+     */
     public abstract T modify(T value, double offset);
 
+    /**
+     * Factory method to generate a value for a given type
+     *
+     * @param type the type to generate
+     * @return a generated instance of that type
+     * @throws UnsupportedOperationException when input type is not supported
+     */
     public static Object generate(Class<?> type)
     {
         if (type == Integer.class || type == int.class)
@@ -76,6 +105,14 @@ public abstract class InputMutator<T>
         }
     }
 
+    /**
+     * Factory method to modify an individual by an amount
+     *
+     * @param input The input to mutate
+     * @param offset How much to mutate by
+     * @return The new mutated individual
+     * @throws UnsupportedOperationException when input type is not supported
+     */
     public static Object add(Object input, double offset)
     {
         if (input instanceof Integer)

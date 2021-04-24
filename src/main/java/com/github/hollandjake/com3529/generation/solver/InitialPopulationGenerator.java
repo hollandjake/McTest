@@ -17,13 +17,26 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Responsible for generating the first population to test
+ */
 @UtilityClass
 public class InitialPopulationGenerator
 {
+    /**
+     * How many {@link TestCase TestCases} should each individual start with
+     */
     @Accessors(fluent = true)
     @Getter(value = AccessLevel.PACKAGE, lazy = true)
     private static final int INITIAL_NUM_TESTS = ConfigFactory.load().getInt("Genetics.Initial.NumTests");
 
+    /**
+     * Generate the initial population up to the {@code populationSize}
+     *
+     * @param method The method under test
+     * @param populationSize The size of the population
+     * @return The generated population
+     */
     public static List<MethodTestSuite> generate(Method method, int populationSize)
     {
         Class<?>[] methodParameterTypes = method.getExecutableMethod().getParameterTypes();
@@ -46,6 +59,13 @@ public class InitialPopulationGenerator
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a {@link MethodTestSuite} from a sequence of input sequences
+     *
+     * @param method The method under test
+     * @param inputs The sequence of input sequences
+     * @return The generated {@link MethodTestSuite}
+     */
     private static MethodTestSuite createSuite(Method method, List<Object[]> inputs)
     {
         Set<TestCase> tests = inputs.parallelStream()
@@ -55,6 +75,13 @@ public class InitialPopulationGenerator
         return new MethodTestSuite(method, tests);
     }
 
+    /**
+     * Creates a {@link TestCase} from a sequence of inputs
+     *
+     * @param method The method under test
+     * @param inputs The sequence of inputs
+     * @return The generated {@link TestCase}
+     */
     private static TestCase createTestCase(Method method, Object[] inputs)
     {
         return new TestCase(method, inputs);
