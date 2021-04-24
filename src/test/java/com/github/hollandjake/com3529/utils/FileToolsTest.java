@@ -89,8 +89,6 @@ public class FileToolsTest
         filesToolsMockedStatic.when(() -> FileTools.writePOMToFile(any(), anyString()))
                               .thenCallRealMethod();
 
-        when(mockTestSuite.getMethod()).thenReturn(mockMethod);
-
         when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
         when(mockMethod.getName()).thenReturn("testMethod");
 
@@ -126,8 +124,6 @@ public class FileToolsTest
         File mockOutput = mock(File.class);
 
         filesUtilsMockedStatic.when(() -> FileUtils.deleteDirectory(any())).thenThrow(IOException.class);
-
-        when(mockTestSuite.getMethod()).thenReturn(mockMethod);
 
         when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
         when(mockMethod.getName()).thenReturn("testMethod");

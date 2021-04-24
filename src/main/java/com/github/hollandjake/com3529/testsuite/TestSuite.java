@@ -48,7 +48,6 @@ public class TestSuite
     public CompilationUnit generateTestSuite(String testClassName)
     {
         CompilationUnit cu = new CompilationUnit();
-        Class<?> declaringClass = method.getDeclaringClass();
         cu.setPackageDeclaration(packageUnderTest);
         cu.addImport("org.junit.Test");
         cu.addImport("org.junit.Assert.assertEquals", true, false);
