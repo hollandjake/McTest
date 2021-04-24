@@ -116,7 +116,7 @@ public class Breed
      *     <li>Gaussian movement using the <code>InputMutator.add</code>. (This can be both negative and positive)
      *     <li>Random new input used
      * </ul>
-     *
+     * <p>
      * These mutations are not equality weighted - Gaussian movement has a 2/3 chance while Random has a 1/3 chance.
      * The chance an input is even mutated is defined by the {@link #MUTATION_PROBABILITY} property
      *

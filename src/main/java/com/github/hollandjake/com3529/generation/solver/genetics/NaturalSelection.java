@@ -27,7 +27,7 @@ public class NaturalSelection
 
     /**
      * Return the {@link #TOP_N} individuals sorted by ascending fitness
-     *
+     * <p>
      * i.e. Select the {@link #TOP_N} fittest individuals
      *
      * @param population The current population

@@ -5,14 +5,14 @@ import java.util.Random;
 
 import com.typesafe.config.ConfigFactory;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
  * Input mutator factory
- *
+ * <p>
  * Responsible for assigning the correct mutator to a given input
+ *
  * @param <T> The individual type in which a mutation can be performed on
  */
 public abstract class InputMutator<T>
@@ -26,17 +26,27 @@ public abstract class InputMutator<T>
      */
     @Getter
     @Accessors(fluent = true)
-    private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber("Genetics.Initial.InputDistribution");
+    private static final Number NUMBER_DISTRIBUTION = ConfigFactory.load().getNumber(
+            "Genetics.Initial.InputDistribution");
 
-    @Getter private static final IntegerInputMutator integerInputMutator = new IntegerInputMutator();
-    @Getter private static final FloatInputMutator floatInputMutator = new FloatInputMutator();
-    @Getter private static final DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
-    @Getter private static final LongInputMutator longInputMutator = new LongInputMutator();
-    @Getter private static final ByteInputMutator byteInputMutator = new ByteInputMutator();
-    @Getter private static final ShortInputMutator shortInputMutator = new ShortInputMutator();
-    @Getter private static final BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
-    @Getter private static final CharacterInputMutator characterInputMutator = new CharacterInputMutator();
-    @Getter private static final StringInputMutator stringInputMutator = new StringInputMutator();
+    @Getter
+    private static final IntegerInputMutator integerInputMutator = new IntegerInputMutator();
+    @Getter
+    private static final FloatInputMutator floatInputMutator = new FloatInputMutator();
+    @Getter
+    private static final DoubleInputMutator doubleInputMutator = new DoubleInputMutator();
+    @Getter
+    private static final LongInputMutator longInputMutator = new LongInputMutator();
+    @Getter
+    private static final ByteInputMutator byteInputMutator = new ByteInputMutator();
+    @Getter
+    private static final ShortInputMutator shortInputMutator = new ShortInputMutator();
+    @Getter
+    private static final BooleanInputMutator booleanInputMutator = new BooleanInputMutator();
+    @Getter
+    private static final CharacterInputMutator characterInputMutator = new CharacterInputMutator();
+    @Getter
+    private static final StringInputMutator stringInputMutator = new StringInputMutator();
 
     /**
      * Generate a random {@link T}
@@ -48,7 +58,7 @@ public abstract class InputMutator<T>
     /**
      * Create a new individual which is a mutated version of the {@code value} argument, mutated by {@code offset} amount
      *
-     * @param value The input to mutate
+     * @param value  The input to mutate
      * @param offset How much to mutate by
      * @return The new mutated individual
      */
@@ -108,7 +118,7 @@ public abstract class InputMutator<T>
     /**
      * Factory method to modify an individual by an amount
      *
-     * @param input The input to mutate
+     * @param input  The input to mutate
      * @param offset How much to mutate by
      * @return The new mutated individual
      * @throws UnsupportedOperationException when input type is not supported

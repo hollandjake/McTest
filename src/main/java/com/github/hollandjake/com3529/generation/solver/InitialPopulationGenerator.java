@@ -33,7 +33,7 @@ public class InitialPopulationGenerator
     /**
      * Generate the initial population up to the {@code populationSize}
      *
-     * @param method The method under test
+     * @param method         The method under test
      * @param populationSize The size of the population
      * @return The generated population
      */

@@ -19,7 +19,7 @@ public class BooleanInputMutator extends InputMutator<Boolean>
     /**
      * Create a new individual which is a mutated version of the {@code value} argument, mutated by {@code offset} amount
      *
-     * @param value The input to mutate
+     * @param value  The input to mutate
      * @param offset How much to mutate by
      * @return The new mutated individual
      */

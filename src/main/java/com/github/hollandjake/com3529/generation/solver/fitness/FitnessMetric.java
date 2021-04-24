@@ -3,10 +3,9 @@ package com.github.hollandjake.com3529.generation.solver.fitness;
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
-
 /**
  * Fitness evaluator factory
- *
+ * <p>
  * Responsible for assigning the correct metric calculator given two inputs
  */
 public abstract class FitnessMetric<T>
@@ -15,8 +14,8 @@ public abstract class FitnessMetric<T>
      * Equality - fitness evaluation between two {@link T} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage equals(int conditionId, T left, T right);
@@ -25,8 +24,8 @@ public abstract class FitnessMetric<T>
      * Inverse equality - fitness evaluation between two {@link T} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage notEquals(int conditionId, T left, T right);
@@ -35,8 +34,8 @@ public abstract class FitnessMetric<T>
      * Less than - fitness evaluation between two {@link T} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage less(int conditionId, T left, T right);
@@ -45,8 +44,8 @@ public abstract class FitnessMetric<T>
      * Less than or equal to - fitness evaluation between two {@link T} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage lessEquals(int conditionId, T left, T right);
@@ -55,8 +54,8 @@ public abstract class FitnessMetric<T>
      * Greater than - fitness evaluation between two {@link T} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage greater(int conditionId, T left, T right);
@@ -65,8 +64,8 @@ public abstract class FitnessMetric<T>
      * Greater than or equal to - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     public abstract ConditionCoverage greaterEquals(int conditionId, T left, T right);
@@ -74,7 +73,7 @@ public abstract class FitnessMetric<T>
     /**
      * Calculated the correct fitness metric to use given two {@link Object inputs}
      *
-     * @param leftVariable The first argument
+     * @param leftVariable  The first argument
      * @param rightVariable The second argument
      * @return {@link FitnessMetric<Object>} The fitness metric instance associated with the two inputs
      * @throws UnsupportedOperationException When both inputs dont match types
@@ -123,7 +122,7 @@ public abstract class FitnessMetric<T>
     /**
      * Generate an {@link UnsupportedOperationException} relating to an input type and an operator
      *
-     * @param type The type of input
+     * @param type     The type of input
      * @param operator The type of operator
      * @return The generated {@link UnsupportedOperationException}
      */

@@ -14,8 +14,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Equality - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -31,8 +31,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Inverse equality - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -48,8 +48,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Less than - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -62,8 +62,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Less than or equal to - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -76,8 +76,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Greater than - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -90,8 +90,8 @@ public class BooleanFitnessMetric extends FitnessMetric<Boolean>
      * Greater than or equal to - fitness evaluation between two {@link Boolean} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override

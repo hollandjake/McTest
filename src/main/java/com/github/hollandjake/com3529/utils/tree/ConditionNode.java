@@ -32,7 +32,8 @@ public class ConditionNode implements Cloneable
      */
     public double getFitness()
     {
-        if (conditionCoverage != null) {
+        if (conditionCoverage != null)
+        {
             return conditionCoverage.getNormalisedFitness();
         }
         return 1 + parent.getFitness();
@@ -71,7 +72,9 @@ public class ConditionNode implements Cloneable
             cloneNode.setParent(parent);
 
             return cloneNode;
-        } else {
+        }
+        else
+        {
             ConditionNode clone = this.clone();
             clone.setParent(parent);
             return clone;

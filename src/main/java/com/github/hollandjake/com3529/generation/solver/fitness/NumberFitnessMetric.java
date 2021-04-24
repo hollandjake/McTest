@@ -14,8 +14,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Equality - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -31,8 +31,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Inverse equality - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -48,8 +48,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Less than - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -65,8 +65,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Less than or equal to - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -82,8 +82,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Greater than - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -99,8 +99,8 @@ public class NumberFitnessMetric extends FitnessMetric<Number>
      * Greater than or equal to - fitness evaluation between two {@link Number} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override

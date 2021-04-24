@@ -14,8 +14,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Equality - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -32,8 +32,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Inverse equality - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -50,8 +50,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Less than - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @throws UnsupportedOperationException Strings cannot be compared using less-than operator "<"
      */
     @Override
@@ -64,8 +64,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Less than or equal to - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @throws UnsupportedOperationException Strings cannot be compared using less-than-or-equal-to "<="
      */
     @Override
@@ -78,8 +78,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Greater than - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @throws UnsupportedOperationException Strings cannot be compared using greater-than ">"
      */
     @Override
@@ -92,8 +92,8 @@ public class StringFitnessMetric extends FitnessMetric<String>
      * Greater than or equal to - fitness evaluation between two {@link String} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @throws UnsupportedOperationException Strings cannot be compared using greater-than-or-equal-to ">="
      */
     @Override
@@ -105,7 +105,7 @@ public class StringFitnessMetric extends FitnessMetric<String>
     /**
      * Calculates the distance between two {@link String Strings}
      *
-     * @param left Input {@link String}
+     * @param left  Input {@link String}
      * @param right Comparison {@link String}
      * @return distance between the two strings
      */

@@ -61,7 +61,6 @@ public class BranchNode extends Tree
      * Compute the fitness for the entire {@link BranchNode} in a given direction
      *
      * @param forThenChild indicate whether we want the truthy or falsy fitness
-     *
      * @return the fitness of the branch for a given direction
      */
     public double getFitness(boolean forThenChild)

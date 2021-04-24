@@ -17,8 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
-import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.BranchNode;
+import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -37,6 +37,9 @@ import net.openhft.compiler.CompilerUtils;
 import lombok.Data;
 import lombok.SneakyThrows;
 
+/**
+ * Representing the injected class ready for test
+ */
 @Data
 public class ParseConvert
 {
@@ -46,10 +49,11 @@ public class ParseConvert
     private final String packageName;
 
     /**
-     * This method parses through the Class file being tested on, instrumenting condition code
-     * and creating tree's for each method.
-     * @param classFilePath This is the path to the Class file being tested on.
-     * @return ParseConvert This returns this class.
+     * Parse the class file being tested, instrumenting condition code
+     * and creating a {@link Tree} for each method
+     *
+     * @param classFilePath The path to the class file being tested
+     * @return A {@link ParseConvert} instance from the class file
      */
     @SneakyThrows
     public static ParseConvert parse(String classFilePath)
@@ -98,7 +102,8 @@ public class ParseConvert
             }
 
             @Override
-            public Visitable visit(BinaryExpr n, Tree ifNode) {
+            public Visitable visit(BinaryExpr n, Tree ifNode)
+            {
                 if (insideIfCondition.get())
                 {
                     try
@@ -109,7 +114,9 @@ public class ParseConvert
                         int conditionId = this.conditionNum.getAndIncrement();
                         if (ifNode instanceof BranchNode)
                         {
-                            ((BranchNode) ifNode).addCondition(new ConditionNode(conditionId, n.toString(), n.getRange().orElse(null)));
+                            ((BranchNode) ifNode).addCondition(new ConditionNode(conditionId,
+                                                                                 n.toString(),
+                                                                                 n.getRange().orElse(null)));
                         }
 
                         imports.add(BinaryExpr.class);
@@ -134,7 +141,9 @@ public class ParseConvert
                         n.setRight(right);
                         return n;
                     }
-                } else {
+                }
+                else
+                {
                     return super.visit(n, ifNode);
                 }
             }
@@ -189,9 +198,10 @@ public class ParseConvert
     }
 
     /**
-     * This methods gets the branch tree from the method.
-     * @param method This is the method to obtain the branch tree from.
-     * @return Tree This returns the tree of the method.
+     * Gets the branch tree from the method
+     *
+     * @param method The method to obtain the branch tree from
+     * @return The {@link Tree} associated with the method
      */
     public Tree getBranchTree(Method method)
     {
@@ -199,9 +209,10 @@ public class ParseConvert
     }
 
     /**
-     * This method gets the File object of the Class to test on.
-     * @param classToTest This is the location to the Class to test on.
-     * @return File This returns the File object of the Class to test on.
+     * Gets the {@link File} of the class to test on
+     *
+     * @param classToTest The location to the class to test on
+     * @return The {@link File} of the class to test on
      */
     public static File parseFile(String classToTest)
     {
@@ -222,7 +233,7 @@ public class ParseConvert
 
         if (!fileToTest.exists() || !fileName.endsWith(".java"))
         {
-            throw new UnsupportedOperationException(String.format("%s is not a valid file", fileToTest.toString()));
+            throw new UnsupportedOperationException(String.format("%s is not a valid file", fileToTest));
         }
 
         return fileToTest;

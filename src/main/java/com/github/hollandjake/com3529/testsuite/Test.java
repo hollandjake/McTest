@@ -93,7 +93,7 @@ public class Test
                                                   else
                                                   {
                                                       // Generalised response
-                                                      return (Expression) StaticJavaParser.parseExpression(
+                                                      return StaticJavaParser.parseExpression(
                                                               String.valueOf(input)
                                                       );
                                                   }

@@ -69,7 +69,8 @@ public class ConditionCoverage implements Cloneable
 
     /**
      * Combine two {@link ConditionCoverage} elements together
-     * @param left First {@link ConditionCoverage}
+     *
+     * @param left  First {@link ConditionCoverage}
      * @param right Second {@link ConditionCoverage}
      * @return The joined {@link ConditionCoverage}
      */
@@ -91,6 +92,7 @@ public class ConditionCoverage implements Cloneable
 
     /**
      * Perform a deep copy of the {@link ConditionCoverage} element
+     *
      * @return The cloned instance
      */
     @Override
@@ -101,6 +103,7 @@ public class ConditionCoverage implements Cloneable
 
     /**
      * Join a {@link ConditionCoverage} to this {@link ConditionCoverage}
+     *
      * @param other The other {@link ConditionCoverage}
      * @return The new joined {@link ConditionCoverage}
      */
@@ -143,6 +146,7 @@ public class ConditionCoverage implements Cloneable
     /**
      * Calculates the normalise fitness.
      * This value will be between 0 and 1
+     *
      * @return The normalised fitness
      */
     public double getNormalisedFitness()
@@ -152,6 +156,7 @@ public class ConditionCoverage implements Cloneable
 
     /**
      * Normalise any {@link Double} into a value between 0 and 1
+     *
      * @param d The value to normalise
      * @return The normalised value
      */

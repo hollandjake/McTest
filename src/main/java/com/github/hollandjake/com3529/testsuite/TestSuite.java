@@ -2,15 +2,12 @@ package com.github.hollandjake.com3529.testsuite;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 import com.github.hollandjake.com3529.generation.CoverageReport;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.SimpleName;
 
 import lombok.Data;

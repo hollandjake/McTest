@@ -81,6 +81,7 @@ public class Tree implements Cloneable, Iterable<BranchNode>
 
     /**
      * Recursively fetch all the {@link BranchNode BranchNodes} that can be reached from this node
+     *
      * @return all the children below this node
      */
     public List<BranchNode> getAllChildren()
@@ -95,6 +96,7 @@ public class Tree implements Cloneable, Iterable<BranchNode>
 
     /**
      * Creates a deep copy of the node
+     *
      * @return the cloned instance
      */
     @Override
@@ -107,6 +109,7 @@ public class Tree implements Cloneable, Iterable<BranchNode>
 
     /**
      * Produce an iterator to iterate over all the children
+     *
      * @return the iterator
      */
     @Override
@@ -139,6 +142,7 @@ public class Tree implements Cloneable, Iterable<BranchNode>
 
     /**
      * Join this {@link Tree} to another {@link Tree}
+     *
      * @param other the other {@link Tree}
      * @return The joined {@link Tree}
      */

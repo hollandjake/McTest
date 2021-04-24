@@ -13,11 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -46,8 +43,9 @@ public class FileTools
 {
     /**
      * Write out the JUnit tests for the given {@link TestSuite}
-     * @param testSuite The {@link TestSuite} to generate from
-     * @param packageName the name of the package to write
+     *
+     * @param testSuite       The {@link TestSuite} to generate from
+     * @param packageName     the name of the package to write
      * @param outputDirectory the location of the directory to write the file to
      */
     @SneakyThrows
@@ -62,7 +60,6 @@ public class FileTools
         String testClassName = className + methodName.substring(0, 1).toUpperCase() + methodName.substring(1) + "Tests";
 
         log.info("Writing generated tests for \"{}.{}.{}\"", packageName, className, methodName);
-
 
         // Create new maven project with JUnit tests
         URI root = outputDirectory.toURI();
@@ -85,7 +82,8 @@ public class FileTools
 
     /**
      * Write out the coverage report pdf for a given {@link TestSuite}
-     * @param testSuite the {@link TestSuite} to generate for
+     *
+     * @param testSuite       the {@link TestSuite} to generate for
      * @param outputDirectory the location of the directory to write the file to
      */
     @SneakyThrows
@@ -198,6 +196,7 @@ public class FileTools
 
     /**
      * Add the table header to the pdf document for the coverage report
+     *
      * @param table the table to add the headers too
      */
     static void addTableHeader(PdfPTable table)
@@ -217,7 +216,8 @@ public class FileTools
 
     /**
      * Writes the content to the file and ensures the file exists
-     * @param file the {@link File} to write to
+     *
+     * @param file    the {@link File} to write to
      * @param content the content to write to the file
      */
     @SneakyThrows
@@ -232,8 +232,9 @@ public class FileTools
 
     /**
      * Copy one {@link File} to another location
+     *
      * @param source the {@link File} to copy
-     * @param dest the location to copy the file to
+     * @param dest   the location to copy the file to
      */
     @SneakyThrows
     static void copyFile(File source, File dest)
@@ -244,7 +245,8 @@ public class FileTools
 
     /**
      * Write a pom.xml for the generated tests to use
-     * @param path The {@link File} to save as the pom.xml
+     *
+     * @param path        The {@link File} to save as the pom.xml
      * @param packageName The package name of the module
      */
     public static void writePOMToFile(File path, String packageName)

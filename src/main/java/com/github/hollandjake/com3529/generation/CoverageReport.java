@@ -15,7 +15,7 @@ import lombok.ToString;
 
 /**
  * Container and operator on which all injected calls pass through.
- *
+ * <p>
  * This class stores all the information about an execution.
  */
 @Data
@@ -37,9 +37,9 @@ public class CoverageReport
      * as well as responsible for returning the correct value as if it was native java running the calculation
      *
      * @param conditionId The id of the condition currently being evaluated
-     * @param left the left operand
-     * @param right the right operand
-     * @param operator the operator
+     * @param left        the left operand
+     * @param right       the right operand
+     * @param operator    the operator
      * @return the result of the expression
      */
     public boolean cover(int conditionId, Object left, Object right, BinaryExpr.Operator operator)
@@ -76,7 +76,7 @@ public class CoverageReport
 
     /**
      * Compute a sequence of covered branches
-     *
+     * <p>
      * This is used during the report generation.
      *
      * @return A {@link Set} of {@link String Strings} representing each condition that has been satisfied
@@ -113,6 +113,7 @@ public class CoverageReport
 
     /**
      * Get all the {@link ConditionNode ConditionNodes} from the {@link CoverageReport}
+     *
      * @return All the {@link ConditionNode ConditionNodes}
      */
     public List<ConditionNode> getConditionNodes()

@@ -13,8 +13,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Equality - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -32,8 +32,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Inverse equality - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -51,8 +51,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Less than - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -70,8 +70,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Less than or equal to - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -89,8 +89,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Greater than - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override
@@ -108,8 +108,8 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
      * Greater than or equal to - fitness evaluation between two {@link Character} inputs
      *
      * @param conditionId the condition this is executing under
-     * @param left left argument of the operation
-     * @param right right argument of the operation
+     * @param left        left argument of the operation
+     * @param right       right argument of the operation
      * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
      */
     @Override

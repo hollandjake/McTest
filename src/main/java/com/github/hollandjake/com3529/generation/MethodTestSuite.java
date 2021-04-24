@@ -6,12 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.github.hollandjake.com3529.testsuite.Test;
 import com.github.hollandjake.com3529.testsuite.TestSuite;
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -41,8 +36,7 @@ public class MethodTestSuite
 
     /**
      * If the {@link MethodTestSuite} has yet to be run and evaluated this will
-     * execute the method storing all the coverage information
-     * inside {@link #coverageReport}
+     * execute the method storing all the coverage information inside {@link #coverageReport}
      */
     public void execute()
     {

@@ -1,19 +1,8 @@
 package com.github.hollandjake.com3529.generation;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.github.hollandjake.com3529.testsuite.Test;
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.PrimitiveType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -52,6 +41,7 @@ public class TestCase
 
     /**
      * Produce the finalised version of a {@link TestCase} in which none of the parameters can be modified
+     *
      * @return Unmodifiable {@link Test}
      */
     public Test finalise()
@@ -61,10 +51,9 @@ public class TestCase
 
     /**
      * If the {@link TestCase} has yet to be run and evaluated this will
-     * execute the method storing all the coverage information
-     * inside {@link #coverageReport}
+     * execute the method storing all the coverage information inside {@link #coverageReport}
      */
-    public boolean execute()
+    public void execute()
     {
         if (!executed)
         {
@@ -76,7 +65,6 @@ public class TestCase
                         ArrayUtils.add(SerializationUtils.clone(inputs), coverageReport)
                 );
                 executed = true;
-                return true;
             }
             catch (Exception e)
             {
@@ -84,6 +72,5 @@ public class TestCase
                 Logger.getLogger(TestCase.class.getName()).warning(e.toString());
             }
         }
-        return false;
     }
 }
