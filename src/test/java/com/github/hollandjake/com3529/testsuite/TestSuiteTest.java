@@ -20,7 +20,7 @@ public class TestSuiteTest
         Method mockMethod = mock(Method.class);
         CoverageReport mockCoverage = mock(CoverageReport.class);
         com.github.hollandjake.com3529.testsuite.Test test = new com.github.hollandjake.com3529.testsuite.Test(mockMethod,new Object[]{1,2,3}, 1);
-        TestSuite testSuite = new TestSuite(mockMethod, null, mockCoverage, Collections.singleton(test));
+        TestSuite testSuite = new TestSuite(mockMethod, null, "java.lang", mockCoverage, Collections.singleton(test));
 
         when(mockMethod.getDeclaringClass()).thenReturn((Class) String.class);
         when(mockMethod.getName()).thenReturn("mockMethod");

@@ -19,17 +19,31 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Container representing an individual in the population
+ */
 @Data
 public class MethodTestSuite
 {
+    /**
+     * The method under test
+     */
     @ToString.Exclude
     private final Method method;
+    /**
+     * A set of {@link TestCase TestCases} representing the genome of this individual
+     */
     @NonNull
     private Set<TestCase> tests;
     @Setter(AccessLevel.PACKAGE)
     private boolean executed = false;
     private CoverageReport coverageReport;
 
+    /**
+     * If the {@link MethodTestSuite} has yet to be run and evaluated this will
+     * execute the method storing all the coverage information
+     * inside {@link #coverageReport}
+     */
     public void execute()
     {
         if (!executed)
@@ -65,12 +79,18 @@ public class MethodTestSuite
         }
     }
 
+    /**
+     * Produce the finalised version of a {@link MethodTestSuite} in which none of the parameters can be modified
+     *
+     * @return Unmodifiable {@link TestSuite}
+     */
     public TestSuite finalise()
     {
         java.lang.reflect.Method method = this.method.getExecutableMethod();
         return new TestSuite(
                 method,
                 this.method.getFileUnderTest(),
+                this.method.getPackageUnderTest(),
                 this.coverageReport,
                 tests.stream()
                      .filter(testCase -> Objects.nonNull(testCase.getOutput()))
@@ -79,6 +99,12 @@ public class MethodTestSuite
         );
     }
 
+    /**
+     * Returns the fitness of the coverage report
+     *
+     * @return The fitness of the coverage report
+     * @throws NullPointerException if there is no coverage report
+     */
     public double getFitness()
     {
         return Objects.requireNonNull(this.coverageReport).getFitness();

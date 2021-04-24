@@ -31,18 +31,6 @@ public class TestCaseTest
     }
 
     @Test
-    public void testBuild()
-    {
-        MethodDeclaration mockMethodDeclaration = mock(MethodDeclaration.class);
-
-        TestCase testCase = new TestCase(methodMock, new Object[] { 'c', "str", (short) 3, (byte) 4, 5 }, true, "testOutput", mock(CoverageReport.class));
-
-        testCase.build(mockMethodDeclaration, "mockClassName", "mockMethodName");
-
-        verify(mockMethodDeclaration, times(1)).setBody(any());
-    }
-
-    @Test
     @SneakyThrows
     public void testExecute()
     {

@@ -24,64 +24,46 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Container for an individual gene of a {@link MethodTestSuite}
+ */
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class TestCase
 {
+    /**
+     * The method under test
+     */
     @ToString.Exclude
     private final Method method;
+    /**
+     * The sequence of input values to the method
+     */
     private final Object[] inputs;
 
     @Setter
     private boolean executed = false;
+    /**
+     * The result as returned from the execution of the {@link #method} with the {@link #inputs} as arguments
+     */
     private Object output;
     private CoverageReport coverageReport;
 
-    public void build(MethodDeclaration methodDeclaration, String className, String methodName)
-    {
-        MethodCallExpr expr = new MethodCallExpr(
-                "assertEquals",
-                new StringLiteralExpr(output.toString()),
-                new MethodCallExpr(
-                        "String.valueOf",
-                        new MethodCallExpr(
-                                String.format("%s.%s", className, methodName),
-                                Arrays.stream(inputs)
-                                      .map(input -> {
-                                          if (input instanceof Character)
-                                          {
-                                              return new CharLiteralExpr((Character) input);
-                                          }
-                                          else if (input instanceof String)
-                                          {
-                                              return new StringLiteralExpr(((String) input).replace("\"", "\\\""));
-                                          }
-                                          else if (input instanceof Short)
-                                          {
-                                              return new CastExpr(PrimitiveType.shortType(), new IntegerLiteralExpr(String.valueOf(input)));
-                                          }
-                                          else if (input instanceof Byte)
-                                          {
-                                              return new CastExpr(PrimitiveType.byteType(), new IntegerLiteralExpr(String.valueOf(input)));
-                                          }
-                                          else
-                                          {
-                                              return (Expression) StaticJavaParser.parseExpression(String.valueOf(input));
-                                          }
-                                      })
-                                      .toArray(Expression[]::new)
-                        )
-                )
-        );
-        methodDeclaration.setBody(new BlockStmt().addStatement(expr));
-    }
-
+    /**
+     * Produce the finalised version of a {@link TestCase} in which none of the parameters can be modified
+     * @return Unmodifiable {@link Test}
+     */
     public Test finalise()
     {
         return new Test(method.getExecutableMethod(), inputs.clone(), output);
     }
 
+    /**
+     * If the {@link TestCase} has yet to be run and evaluated this will
+     * execute the method storing all the coverage information
+     * inside {@link #coverageReport}
+     */
     public boolean execute()
     {
         if (!executed)

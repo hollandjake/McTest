@@ -76,6 +76,7 @@ public class MethodTestSuiteTest
         File mockFile = mock(File.class);
         when(mockMethod.getExecutableMethod()).thenReturn(mockMethodExecutable);
         when(mockMethod.getFileUnderTest()).thenReturn(mockFile);
+        when(mockMethod.getPackageUnderTest()).thenReturn("mockPackage");
         CoverageReport mockCoverage = mock(CoverageReport.class);
 
         methodTestSuite.setCoverageReport(mockCoverage);
@@ -109,6 +110,7 @@ public class MethodTestSuiteTest
         TestSuite expected = new TestSuite(
                 mockMethodExecutable,
                 mockFile,
+                "mockPackage",
                 mockCoverage,
                 new HashSet<>(Arrays.asList(test3Mapped, test1Mapped))
         );

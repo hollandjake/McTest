@@ -37,7 +37,7 @@ public class ClassTestGenerator
                      .parallel()
                      .filter(method -> method.getDeclaringClass() == clazz)
                      .map(method -> MethodTestGenerator.forMethod(
-                             new Method(mappedClass.getFileUnderTest(), method, mappedClass.getBranchTree(method)),
+                             new Method(mappedClass.getFileUnderTest(), mappedClass.getPackageName(), method, mappedClass.getBranchTree(method)),
                              mappedClass.getPackageName(),
                              outputDirectory
                      ))

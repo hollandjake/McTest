@@ -22,8 +22,7 @@ public class NaturalSelection
      * How many individuals to bring into the next generation from the previous generation
      */
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PACKAGE,
-            lazy = true)
+    @Getter(value = AccessLevel.PACKAGE)
     private static final int TOP_N = ConfigFactory.load().getInt("Genetics.TopN");
 
     /**

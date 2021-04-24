@@ -27,7 +27,7 @@ public class InitialPopulationGenerator
      * How many {@link TestCase TestCases} should each individual start with
      */
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PACKAGE, lazy = true)
+    @Getter(value = AccessLevel.PACKAGE)
     private static final int INITIAL_NUM_TESTS = ConfigFactory.load().getInt("Genetics.Initial.NumTests");
 
     /**

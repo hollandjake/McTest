@@ -27,16 +27,14 @@ import lombok.experimental.UtilityClass;
 public class Breed
 {
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PACKAGE,
-            lazy = true)
+    @Getter(value = AccessLevel.PACKAGE)
     private static final Random RANDOM = new SecureRandom();
 
     /**
      * The probability an individual's gene will be carried into a new child
      */
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PACKAGE,
-            lazy = true)
+    @Getter(value = AccessLevel.PACKAGE)
     private static final double CROSSOVER_SELECTION_PROBABILITY = ConfigFactory.load().getDouble(
             "Genetics.CrossoverSelectionProbability");
 
@@ -44,8 +42,7 @@ public class Breed
      * The probability a gene will mutate
      */
     @Accessors(fluent = true)
-    @Getter(value = AccessLevel.PACKAGE,
-            lazy = true)
+    @Getter(value = AccessLevel.PACKAGE)
     private static final double MUTATION_PROBABILITY = ConfigFactory.load().getDouble("Genetics.MutationProbability");
 
     /**

@@ -18,6 +18,7 @@ public class TestSuite
 {
     private final Method method;
     private final File fileUnderTest;
+    private final String packageUnderTest;
     private final CoverageReport coverageReport;
     private final Set<Test> tests;
 
@@ -25,7 +26,7 @@ public class TestSuite
     {
         CompilationUnit cu = new CompilationUnit();
         Class<?> declaringClass = method.getDeclaringClass();
-        cu.setPackageDeclaration(declaringClass.getPackage().getName());
+        cu.setPackageDeclaration(packageUnderTest);
         cu.addImport("org.junit.Test");
         cu.addImport("org.junit.Assert.assertEquals", true, false);
         ClassOrInterfaceDeclaration classDeclaration = cu.addClass(declaringClass.getSimpleName());
