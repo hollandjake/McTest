@@ -36,7 +36,8 @@ public class ConditionNode implements Cloneable
         {
             return conditionCoverage.getNormalisedFitness();
         }
-        return 1 + parent.getFitness();
+
+        return 1 + parent.getParentNode().getFitness();
     }
 
     /**

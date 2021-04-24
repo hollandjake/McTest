@@ -44,6 +44,30 @@ public class End2EndTest
     }
 
     @Test
+    public void shouldGenerateTestsForIsAlphabet()
+    {
+        ClassTestGenerator.forClass("IsAlphabet.java", "../generatedTests");
+    }
+
+    @Test
+    public void shouldGenerateTestsForLeapYear()
+    {
+        ClassTestGenerator.forClass("LeapYear.java", "../generatedTests");
+    }
+
+    @Test
+    public void shouldGenerateTestsForGoodProgram()
+    {
+        ClassTestGenerator.forClass("GoodProgram.java", "../generatedTests");
+    }
+
+    @Test
+    public void shouldGenerateTestsForHackThePentagon()
+    {
+        ClassTestGenerator.forClass("HackThePentagon.java", "../generatedTests");
+    }
+
+    @Test
     public void shouldGenerateTestsForStringTest()
     {
         ClassTestGenerator.forClass("StringTest.java", "../generatedTests");
