@@ -4,8 +4,19 @@ import java.util.Objects;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 
+/**
+ * Fitness evaluator for {@link Character} and its primitive
+ */
 public class CharacterFitnessMetric extends FitnessMetric<Character>
 {
+    /**
+     * Equality - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage equals(int conditionId, Character left, Character right)
     {
@@ -17,6 +28,14 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
+    /**
+     * Inverse equality - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage notEquals(int conditionId, Character left, Character right)
     {
@@ -28,6 +47,14 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
+    /**
+     * Less than - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage less(int conditionId, Character left, Character right)
     {
@@ -39,6 +66,14 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
+    /**
+     * Less than or equal to - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage lessEquals(int conditionId, Character left, Character right)
     {
@@ -50,6 +85,14 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
+    /**
+     * Greater than - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage greater(int conditionId, Character left, Character right)
     {
@@ -61,6 +104,14 @@ public class CharacterFitnessMetric extends FitnessMetric<Character>
         return new ConditionCoverage(conditionId, result, truthDistance, falseDistance);
     }
 
+    /**
+     * Greater than or equal to - fitness evaluation between two {@link Character} inputs
+     *
+     * @param conditionId the condition this is executing under
+     * @param left left argument of the operation
+     * @param right right argument of the operation
+     * @return {@link ConditionCoverage} containing the evaluated fitness for that conditional statement
+     */
     @Override
     public ConditionCoverage greaterEquals(int conditionId, Character left, Character right)
     {
