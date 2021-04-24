@@ -83,7 +83,7 @@ public class Breed
      */
     static Set<TestCase> crossover(Set<TestCase> parentA, Set<TestCase> parentB)
     {
-        //Uniform crossover
+        // Uniform crossover
         List<TestCase> parentATests = new ArrayList<>(parentA);
         List<TestCase> parentBTests = new ArrayList<>(parentB);
 
@@ -125,7 +125,7 @@ public class Breed
      */
     static Set<TestCase> mutate(Set<TestCase> tests)
     {
-        //Uniform mutation
+        // Uniform mutation
         Set<TestCase> newTestCases = new HashSet<>();
         for (TestCase testCase : tests)
         {
@@ -141,7 +141,7 @@ public class Breed
                     double offset = RANDOM().nextGaussian();
                     if (rand < 2 / 3d)
                     {
-                        //offset can be negative so it handles both +offset and -offset
+                        // offset can be negative so it handles both +offset and -offset
                         newInput = InputMutator.add(input, offset);
                     }
                     else

@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mockStatic;
 
-@Test(groups = "E2E")
+@Test(groups = "E2E", singleThreaded = true)
 public class End2EndTest
 {
     private MockedStatic<MethodTestGenerator> methodTestGenerator;

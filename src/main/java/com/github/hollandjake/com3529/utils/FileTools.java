@@ -46,7 +46,7 @@ public class FileTools
             String packageName,
             File outputDirectory)
     {
-        //Grab details about class
+        // Grab details about class
         Method method = testSuite.getMethod();
         String className = method.getDeclaringClass().getSimpleName();
         String methodName = method.getName();
@@ -55,7 +55,7 @@ public class FileTools
         log.info("Writing generated tests for \"{}.{}.{}\"", packageName, className, methodName);
 
 
-        //Create new maven project with JUnit tests
+        // Create new maven project with JUnit tests
         URI root = outputDirectory.toURI();
         FileUtils.deleteDirectory(outputDirectory);
         outputDirectory.mkdirs();
@@ -84,22 +84,22 @@ public class FileTools
         PdfWriter.getInstance(document, new FileOutputStream(filePath.toFile()));
         document.open();
 
-        //Fonts
+        // Fonts
         Font font = FontFactory.getFont(FontFactory.HELVETICA, 25, BaseColor.BLACK);
 
-        //Logo
+        // Logo
         URL systemResource = ClassLoader.getSystemResource("logo.png");
         Image img = Image.getInstance(systemResource);
         img.setAlignment(Element.ALIGN_CENTER);
         document.add(img);
 
-        //Title
+        // Title
         Paragraph title = new Paragraph("McTest" + "\n\n");
         title.setFont(font);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
 
-        //Coverage Report Table
+        // Coverage Report Table
         List<String> failedTexts = new ArrayList<>();
         PdfPTable table = new PdfPTable(new float[] { 15, 20, 30, 15, 15 });
         addTableHeader(table);
@@ -154,14 +154,14 @@ public class FileTools
         table.setWidthPercentage(100);
         document.add(table);
 
-        //Coverage Percentage
+        // Coverage Percentage
         float conditionCoveragePercent = (1 - (float) failedTexts.size() / ((float) conditionNodeList.size() * 2))
                 * 100;
         Paragraph percentage = new Paragraph(String.format("Condition Coverage: %.00f%%", conditionCoveragePercent));
         percentage.setFont(font);
         document.add(percentage);
 
-        //Coverage did not execute...
+        // Coverage did not execute...
         if (!failedTexts.isEmpty())
         {
             Paragraph para = new Paragraph("The following conditions did not execute");

@@ -58,7 +58,7 @@ public class StringInputMutator extends InputMutator<String>
                 double rand = InputMutator.RANDOM().nextDouble();
                 if (rand < 2 / 5d)
                 {
-                    //Do character incrementing
+                    // Do character incrementing
                     int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.set(charIndex,
                                   charBuilder.modify(newString.get(charIndex),
@@ -66,19 +66,19 @@ public class StringInputMutator extends InputMutator<String>
                 }
                 else if (rand < 3 / 5d)
                 {
-                    //inject
+                    // inject
                     Character newChar = charBuilder.generate();
                     int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.add(charIndex, newChar);
                 }
                 else if (rand < 4 / 5d)
                 {
-                    //append
+                    // append
                     newString.add(charBuilder.generate());
                 }
                 else
                 {
-                    //Remove character
+                    // Remove character
                     int charIndex = InputMutator.RANDOM().nextInt(newString.size());
                     newString.remove(charIndex);
                 }

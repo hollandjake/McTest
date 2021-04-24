@@ -65,7 +65,7 @@ public class ClassTestGenerator
             }
         }
 
-        //Assume first argument is the classname unless they have specified the command
+        // Assume first argument is the classname unless they have specified the command
         if (className == null)
         {
             className = args[0];

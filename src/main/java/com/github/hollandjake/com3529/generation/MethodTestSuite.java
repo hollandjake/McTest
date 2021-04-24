@@ -53,7 +53,7 @@ public class MethodTestSuite
             Set<TestCase> minimisedTests = new HashSet<>();
             Set<String> branchesCovered = new HashSet<>();
 
-            //Order testcases set by fitness
+            // Order testcases set by fitness
             tests.parallelStream()
                  .filter(testCase -> {
                      testCase.execute();
@@ -63,7 +63,7 @@ public class MethodTestSuite
                  .forEachOrdered(testCase -> {
                      if (branchesCovered.addAll(testCase.getCoverageReport().getBranchesCovered()))
                      {
-                         //If it has increased the branches covered then add it
+                         // If it has increased the branches covered then add it
                          minimisedTests.add(testCase);
                      }
                  });

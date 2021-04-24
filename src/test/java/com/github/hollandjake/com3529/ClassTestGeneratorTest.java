@@ -45,7 +45,7 @@ public class ClassTestGeneratorTest
     public void testForClassWithClassNameOnly()
     {
         List<TestSuite> generatedTests = ClassTestGenerator.forClass("Triangle.java");
-        assertThat(generatedTests, hasSize(1)); //Only has one method so should only have one testsuite
+        assertThat(generatedTests, hasSize(1)); // Only has one method so should only have one testsuite
         assertThat(generatedTests.get(0).getTests(), not(empty()));
         filesToolsMockedStatic.verifyNoInteractions();
     }

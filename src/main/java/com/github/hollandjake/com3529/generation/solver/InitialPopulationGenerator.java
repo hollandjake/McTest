@@ -41,7 +41,7 @@ public class InitialPopulationGenerator
     {
         Class<?>[] methodParameterTypes = method.getExecutableMethod().getParameterTypes();
 
-        //Skip last one as that is the CoverageReport object
+        // Skip last one as that is the CoverageReport object
         int numInputs = methodParameterTypes.length - 1;
 
         return IntStream.range(0, populationSize).parallel().mapToObj(p -> {

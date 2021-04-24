@@ -113,7 +113,7 @@ public class StringFitnessMetric extends FitnessMetric<String>
     {
         long totalDist = 0;
 
-        //Add string length difference
+        // Add string length difference
         int minLength = Math.min(left.length(), right.length());
         int maxLength = Math.max(left.length(), right.length());
         totalDist += (maxLength - minLength) * 65535L;

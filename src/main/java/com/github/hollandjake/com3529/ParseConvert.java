@@ -58,7 +58,7 @@ public class ParseConvert
             classPath.set(String.format("%s.%s", packageName.get(), fileToTest.getName().replace(".java", "")));
         });
 
-        //Add import to class
+        // Add import to class
         Set<Class<?>> imports = new HashSet<>();
         imports.add(CoverageReport.class);
 
@@ -97,7 +97,7 @@ public class ParseConvert
                 {
                     try
                     {
-                        //Check operator is supported
+                        // Check operator is supported
                         ConditionCoverage.from(0, 0d, 0d, n.getOperator());
 
                         int conditionId = this.conditionNum.getAndIncrement();
@@ -167,10 +167,10 @@ public class ParseConvert
             }
         }, null);
 
-        //Add imports
+        // Add imports
         imports.forEach(cu::addImport);
 
-        //Save n Compile
+        // Save n Compile
         Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(classPath.get(), cu.toString());
 
         Map<Method, Tree> methodIterables = new HashMap<>();

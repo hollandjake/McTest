@@ -85,12 +85,12 @@ public class Tree implements Cloneable, Iterable<IfNode>
 
     public double getFitness()
     {
-        return 0d; //Skip this node
+        return 0d; // Skip this node
     }
 
     public double getFitness(boolean truthy)
     {
-        return 0d; //Skip this node
+        return 0d; // Skip this node
     }
 
     public Tree join(Tree other)

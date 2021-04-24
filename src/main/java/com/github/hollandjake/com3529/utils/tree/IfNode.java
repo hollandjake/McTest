@@ -37,7 +37,7 @@ public class IfNode extends Tree
 
     public double getFitness(boolean forThenChild)
     {
-        //If this if node has been reached
+        // If this if node has been reached
         ConditionCoverage totalConditionCoverage = getTotalConditionCoverage();
         if (totalConditionCoverage != null)
         {
@@ -76,7 +76,7 @@ public class IfNode extends Tree
     {
         IfNode clonedNode = new IfNode(null, ifId);
         conditions.forEach(conditionNode -> clonedNode.addCondition(conditionNode.clone()));
-        conditionOperators.forEach(clonedNode::addConditionOperator); //Operator doesnt need cloning since its an enum
+        conditionOperators.forEach(clonedNode::addConditionOperator); // Operator doesnt need cloning since its an enum
         thenPath.forEach(child -> clonedNode.addThenChild(child.clone()));
         elsePath.forEach(child -> clonedNode.addElseChild(child.clone()));
         return clonedNode;

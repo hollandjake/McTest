@@ -61,15 +61,15 @@ public class MethodTestGenerator
 
         for (long i = 1; i < MAX_ITERATIONS() + 1; i++)
         {
-            //Evaluate population
+            // Evaluate population
             population.forEach(MethodTestSuite::execute);
 
-            //Select elites
+            // Select elites
             population = NaturalSelection.overPopulation(population);
 
             double bestFitness = population.isEmpty() ? Double.MAX_VALUE : population.get(0).getFitness();
 
-            //Log fitness
+            // Log fitness
             log.debug("[Iteration: {}/{}] Best Fitness: {}", i, MAX_ITERATIONS(), bestFitness);
 
             if (bestFitness <= TARGET_FITNESS())
@@ -82,7 +82,7 @@ public class MethodTestGenerator
                 break;
             }
 
-            //Breed
+            // Breed
             population = Breed.repopulate(method, population, POPULATION_SIZE());
         }
         log.info(
