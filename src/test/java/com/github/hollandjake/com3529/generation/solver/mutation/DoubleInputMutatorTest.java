@@ -36,7 +36,7 @@ public class DoubleInputMutatorTest
     {
         Double generated = mutator.generate();
         assertThat(generated, instanceOf(Double.class));
-        assertThat(generated, allOf(greaterThanOrEqualTo(-100d),lessThanOrEqualTo(100d)));
+        assertThat(generated, allOf(greaterThanOrEqualTo(-100d), lessThanOrEqualTo(100d)));
     }
 
     @Test

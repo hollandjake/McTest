@@ -16,8 +16,6 @@ import java.util.Collections;
 
 import com.github.hollandjake.com3529.generation.ConditionCoverage;
 import com.github.hollandjake.com3529.generation.CoverageReport;
-import com.github.hollandjake.com3529.generation.Method;
-import com.github.hollandjake.com3529.generation.MethodTestSuite;
 import com.github.hollandjake.com3529.testsuite.TestSuite;
 import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.javaparser.Position;
@@ -32,13 +30,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.commons.io.FileUtils;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
-import org.mockito.stubbing.Answer;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import test.tmp.IgnoreUntil;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -116,7 +110,8 @@ public class FileToolsTest
         filesToolsMockedStatic.verify(times(1), () -> FileTools.writePOMToFile(any(), anyString()));
     }
 
-    @Test(enabled = false, expectedExceptions = IOException.class)
+    @Test(enabled = false,
+          expectedExceptions = IOException.class)
     public void testGenerateJUnitTestsThrowsException()
     {
         TestSuite mockTestSuite = mock(TestSuite.class);
@@ -174,7 +169,7 @@ public class FileToolsTest
         try (
                 MockedConstruction<FileOutputStream> mockOutputStream = mockConstruction(FileOutputStream.class);
                 MockedStatic<Image> imageMockedStatic = mockStatic(Image.class);
-                MockedStatic<PdfWriter> pdfWriterMockedStatic = mockStatic(PdfWriter.class);
+                MockedStatic<PdfWriter> pdfWriterMockedStatic = mockStatic(PdfWriter.class)
         )
         {
             Image mockImage = mock(Image.class);
@@ -218,7 +213,7 @@ public class FileToolsTest
         try (
                 MockedConstruction<FileOutputStream> mockOutputStream = mockConstruction(FileOutputStream.class);
                 MockedStatic<Image> imageMockedStatic = mockStatic(Image.class);
-                MockedStatic<PdfWriter> pdfWriterMockedStatic = mockStatic(PdfWriter.class);
+                MockedStatic<PdfWriter> pdfWriterMockedStatic = mockStatic(PdfWriter.class)
         )
         {
             Image mockImage = mock(Image.class);
@@ -239,7 +234,8 @@ public class FileToolsTest
         }
     }
 
-    @Test(enabled = false, expectedExceptions = FileNotFoundException.class)
+    @Test(enabled = false,
+          expectedExceptions = FileNotFoundException.class)
     public void testGenerateCoverageReportThrowsException()
     {
         TestSuite mockTestSuite = mock(TestSuite.class);
@@ -270,7 +266,8 @@ public class FileToolsTest
         }
     }
 
-    @Test(enabled = false, expectedExceptions = IOException.class)
+    @Test(enabled = false,
+          expectedExceptions = IOException.class)
     public void testWriteToFileThrowsException()
     {
         filesToolsMockedStatic.when(() -> FileTools.writeToFile(any(), anyString())).thenCallRealMethod();
@@ -303,11 +300,15 @@ public class FileToolsTest
         {
             FileTools.copyFile(mockFile, mockFile);
         }
-        filesMockedStatic.verify(times(1), () -> Files.copy(any(Path.class), any(Path.class), eq(StandardCopyOption.REPLACE_EXISTING)));
+        filesMockedStatic.verify(times(1),
+                                 () -> Files.copy(any(Path.class),
+                                                  any(Path.class),
+                                                  eq(StandardCopyOption.REPLACE_EXISTING)));
         filesMockedStatic.close();
     }
 
-    @Test(enabled = false, expectedExceptions = IOException.class)
+    @Test(enabled = false,
+          expectedExceptions = IOException.class)
     public void testCopyFileThrowsException()
     {
         filesToolsMockedStatic.when(() -> FileTools.copyFile(any(), any())).thenCallRealMethod();

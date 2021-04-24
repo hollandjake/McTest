@@ -57,7 +57,7 @@ public class TestSuite
         tests.stream().parallel()
              .map(Test::generateTestCase)
              .map(test -> test.setName(new SimpleName("test" + i.getAndIncrement())))
-             .forEach(classDeclaration::addMember);
+             .forEachOrdered(classDeclaration::addMember);
 
         return cu;
     }

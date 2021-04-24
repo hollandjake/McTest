@@ -36,7 +36,7 @@ public class IntegerInputMutatorTest
     {
         Integer generated = mutator.generate();
         assertThat(generated, instanceOf(Integer.class));
-        assertThat(generated, allOf(greaterThanOrEqualTo(-100),lessThanOrEqualTo(100)));
+        assertThat(generated, allOf(greaterThanOrEqualTo(-100), lessThanOrEqualTo(100)));
     }
 
     @Test

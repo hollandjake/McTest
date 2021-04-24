@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.oneOf;
@@ -64,7 +63,7 @@ public class BreedTest
         TestCase testCase2 = mock(TestCase.class);
         TestCase testCase3 = mock(TestCase.class);
         TestCase testCase4 = mock(TestCase.class);
-        Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3,testCase4));
+        Set<TestCase> parentATests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3, testCase4));
         Set<TestCase> parentBTests = new HashSet<>(Arrays.asList(testCase1, testCase2, testCase3));
 
         breed.when(Breed::CROSSOVER_SELECTION_PROBABILITY).thenReturn(0.5);
@@ -104,7 +103,7 @@ public class BreedTest
     {
         breed.when(Breed::MUTATION_PROBABILITY).thenReturn(0.5);
         TestCase testCase = mock(TestCase.class);
-        when(testCase.getInputs()).thenReturn(new Object[]{1,2,3});
+        when(testCase.getInputs()).thenReturn(new Object[] { 1, 2, 3 });
         Set<TestCase> outputs = Breed.mutate(Collections.singleton(testCase));
         assertThat(outputs, not(equalTo(Collections.singleton(testCase))));
 
@@ -141,6 +140,6 @@ public class BreedTest
 
         assertThat(output, hasSize(populationSize));
         assertThat(output, either(hasItem(testSuite1)).or(hasItem(testSuite2)));
-        breed.verify(never(), () -> Breed.crossover(any(),any()));
+        breed.verify(never(), () -> Breed.crossover(any(), any()));
     }
 }

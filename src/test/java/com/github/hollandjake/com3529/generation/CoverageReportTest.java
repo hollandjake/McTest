@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.BranchNode;
+import com.github.hollandjake.com3529.utils.tree.ConditionNode;
 import com.github.hollandjake.com3529.utils.tree.Tree;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
@@ -16,8 +16,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;

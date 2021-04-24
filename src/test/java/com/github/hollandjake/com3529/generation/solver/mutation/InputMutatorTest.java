@@ -39,7 +39,7 @@ public class InputMutatorTest
     public void testAdd()
     {
         assertThat(InputMutator.add(1, 1), instanceOf(Integer.class));
-        assertThat(InputMutator.add((Integer) 1, 1), instanceOf(Integer.class));
+        assertThat(InputMutator.add(1, 1), instanceOf(Integer.class));
         assertThat(InputMutator.add(1f, 1), instanceOf(Float.class));
         assertThat(InputMutator.add(1F, 1), instanceOf(Float.class));
         assertThat(InputMutator.add(1d, 1), instanceOf(Double.class));

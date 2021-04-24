@@ -45,7 +45,7 @@ public class NaturalSelectionTest
         when(testSuite3.getFitness()).thenReturn(3d);
 
         assertEquals(
-                Arrays.asList(testSuite1,testSuite2),
+                Arrays.asList(testSuite1, testSuite2),
                 NaturalSelection.overPopulation(Arrays.asList(testSuite3, testSuite2, testSuite1))
         );
     }

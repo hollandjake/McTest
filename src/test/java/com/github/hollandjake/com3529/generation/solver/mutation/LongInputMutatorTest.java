@@ -36,7 +36,7 @@ public class LongInputMutatorTest
     {
         Long generated = mutator.generate();
         assertThat(generated, instanceOf(Long.class));
-        assertThat(generated, allOf(greaterThanOrEqualTo(-100L),lessThanOrEqualTo(100L)));
+        assertThat(generated, allOf(greaterThanOrEqualTo(-100L), lessThanOrEqualTo(100L)));
     }
 
     @Test

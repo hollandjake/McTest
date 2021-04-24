@@ -150,10 +150,10 @@ public class BranchNodeTest
         branchNode.addCondition(mockCondition);
         branchNode.addConditionOperator(BinaryExpr.Operator.OR);
         branchNode.addCondition(mockCondition);
-        ConditionCoverage coverage1 = new ConditionCoverage(0,true, 2d, 1d);
-        ConditionCoverage coverage2 = new ConditionCoverage(1,true, 1d, 2d);
-        ConditionCoverage coverage3 = new ConditionCoverage(2,false, 5d, 5d);
-        ConditionCoverage expected = new ConditionCoverage(0,null, 6d, 6d);
+        ConditionCoverage coverage1 = new ConditionCoverage(0, true, 2d, 1d);
+        ConditionCoverage coverage2 = new ConditionCoverage(1, true, 1d, 2d);
+        ConditionCoverage coverage3 = new ConditionCoverage(2, false, 5d, 5d);
+        ConditionCoverage expected = new ConditionCoverage(0, null, 6d, 6d);
 
         when(mockCondition.getConditionCoverage()).thenReturn(coverage1, coverage2, coverage3);
 
@@ -168,8 +168,8 @@ public class BranchNodeTest
         branchNode.addCondition(mockCondition);
         branchNode.addConditionOperator(BinaryExpr.Operator.DIVIDE);
         branchNode.addCondition(mockCondition);
-        ConditionCoverage coverage1 = new ConditionCoverage(0,true, 2d, 1d);
-        ConditionCoverage coverage2 = new ConditionCoverage(1,true, 1d, 2d);
+        ConditionCoverage coverage1 = new ConditionCoverage(0, true, 2d, 1d);
+        ConditionCoverage coverage2 = new ConditionCoverage(1, true, 1d, 2d);
 
         when(mockCondition.getConditionCoverage()).thenReturn(coverage1, coverage2);
 

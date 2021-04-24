@@ -36,7 +36,7 @@ public class FloatInputMutatorTest
     {
         Float generated = mutator.generate();
         assertThat(generated, instanceOf(Float.class));
-        assertThat(generated, allOf(greaterThanOrEqualTo(-100f),lessThanOrEqualTo(100f)));
+        assertThat(generated, allOf(greaterThanOrEqualTo(-100f), lessThanOrEqualTo(100f)));
     }
 
     @Test

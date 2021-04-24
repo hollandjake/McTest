@@ -25,7 +25,7 @@ public class CharacterInputMutatorTest
     {
         Character generated = mutator.generate();
         assertThat(generated, instanceOf(Character.class));
-        assertThat((int) generated, allOf(greaterThanOrEqualTo(32),lessThanOrEqualTo(128)));
+        assertThat((int) generated, allOf(greaterThanOrEqualTo(32), lessThanOrEqualTo(128)));
     }
 
     @Test

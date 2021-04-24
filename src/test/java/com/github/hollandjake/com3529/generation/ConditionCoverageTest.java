@@ -131,8 +131,8 @@ public class ConditionCoverageTest
     @Test
     public void testGetNormalisedFitness()
     {
-        ConditionCoverage conditionCoverage = new ConditionCoverage(0 ,true, 1d, 1d);
+        ConditionCoverage conditionCoverage = new ConditionCoverage(0, true, 1d, 1d);
 
-        assertEquals(conditionCoverage.getNormalisedFitness(), 2/3d);
+        assertEquals(conditionCoverage.getNormalisedFitness(), 2 / 3d);
     }
 }
