@@ -35,8 +35,10 @@ public class ConditionNodeTest
     @Test
     public void testGetFitnessWithNullCoverage()
     {
-        BranchNode mockParent = mock(BranchNode.class);
+        Tree mockTree = mock(Tree.class);
+        BranchNode mockParent = new BranchNode(mockTree, 1);
         ConditionNode conditionNode = new ConditionNode(mockParent, 0, null, "testConditionString", mock(Range.class));
+        mockParent.addCondition(conditionNode);
 
         when(mockParent.getFitness()).thenReturn(1d);
 
