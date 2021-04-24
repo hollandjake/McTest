@@ -25,5 +25,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
             allowUpdates: true
+            omitBodyDuringUpdate: true
             artifacts: "target/McTest.jar"
             token: ${{ secrets.GITHUB_TOKEN }}
